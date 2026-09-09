@@ -1558,8 +1558,8 @@ let communesLayer = null, communesGeoData = null;
 
 function initMap() {
   map = L.map('map', { center: [47.47, -0.55], zoom: 9, zoomControl: true });
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap © CARTO', maxZoom: 19,
+    L.tileLayer('https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png', {
+    attribution: '© IGN-F/Geoportail', maxZoom: 19,
   }).addTo(map);
   markersGroup = L.layerGroup().addTo(map);
   setTimeout(() => map.invalidateSize(), 300);
