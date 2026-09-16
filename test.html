@@ -6,8 +6,6 @@
   <title>Eurêka ! — Maine-et-Loire</title>
   <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700;800&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
   <style>
@@ -784,11 +782,11 @@
         </button>
         <button id="an-btn-src-finess" class="an-src-btn" title="Établissements sanitaires et médico-sociaux (FINESS)">
           <span class="an-src-dot" style="background:#0d9488"></span>
-          Santé <span id="an-finess-status" style="font-size:9px;opacity:.7"></span>
+          FINESS <span id="an-finess-status" style="font-size:9px;opacity:.7"></span>
         </button>
         <button id="an-btn-src-local" class="an-src-btn active" title="Mes fiches personnelles (table Grist)">
           <span class="an-src-dot" style="background:#ea580c"></span>
-          Perso
+          Services du Département
         </button>
       </div>
       <div class="rf-live-badge">
@@ -1208,7 +1206,6 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════
    NAVIGATION ONGLETS
@@ -1695,12 +1692,7 @@ function initMap() {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19,
     className: 'map-tiles-grey',
   }).addTo(map);
-  markersGroup = L.markerClusterGroup({
-    chunkedLoading: true,
-    spiderfyOnMaxZoom: true,
-    showCoverageOnHover: false,
-    maxClusterRadius: 50,
-  });
+  markersGroup = L.layerGroup();
   map.addLayer(markersGroup);
   setTimeout(() => map.invalidateSize(), 300);
   loadCommunesGeoJSON();
@@ -1850,7 +1842,7 @@ function getFinessCfg(r) {
   const code = (r.type_service||'').replace('finess_','');
   const g = FINESS_GROUPS[code];
   return g ? { color:g.color, label:g.label, emoji:'🏥' }
-           : { color:'#0d9488', label: r._groupLabel || 'Santé', emoji:'🏥' };
+           : { color:'#0d9488', label: r._groupLabel || 'FINESS', emoji:'🏥' };
 }
 
 function updateSourceToggles() {
@@ -2076,7 +2068,7 @@ function buildPopup(r) {
   }
   const addr = [r.adresse_voie, r.code_postal, r.nom_commune].filter(Boolean).join(', ');
   const hasCoords = r.latitude && r.longitude;
-  return `<div class="popup-inner"><div class="popup-flag"><span class="popup-flag-dot" style="background:#ea580c"></span><span class="popup-local-badge">⭐ Perso</span><span class="popup-flag-type" style="color:#ea580c;margin-left:4px">${cfg.label}</span></div>
+  return `<div class="popup-inner"><div class="popup-flag"><span class="popup-flag-dot" style="background:#ea580c"></span><span class="popup-local-badge">⭐ Services du Département</span><span class="popup-flag-type" style="color:#ea580c;margin-left:4px">${cfg.label}</span></div>
   <div class="popup-nom">${r.nom}</div><div class="popup-divider"></div>
   <div class="popup-body">${addr?`<div class="popup-row">${svgPin}<span>${addr}</span></div>`:''}${r.telephone?`<div class="popup-row">${svgTel}<span>${r.telephone}</span></div>`:''}${r.mission?`<div class="popup-mission">${r.mission.slice(0,180)}</div>`:''}${!hasCoords?`<button class="popup-btn-geocode" onclick="anGeocodeRecord('${r.id}')">📍 Géolocaliser</button>`:''}</div>
   ${r.site_internet?`<div class="popup-links"><a class="popup-btn popup-btn-primary" href="${r.site_internet}" target="_blank">Site web →</a></div>`:''}</div>`;
@@ -2121,8 +2113,8 @@ function anRenderList() {
       </div>
       <div class="an-card-foot">
         <span class="an-badge" style="color:${isLocal?'#ea580c':cfg.color}">${cfg.label}</span>
-        ${isLocal?'<span class="an-badge-local">⭐ Perso</span>':''}
-        ${isFiness?'<span class="an-badge-finess">🏥 Santé</span>':''}
+        ${isLocal?'<span class="an-badge-local">⭐ Services du Département</span>':''}
+        ${isFiness?'<span class="an-badge-finess">🏥 FINESS</span>':''}
         ${isLocal && r.latitude && r.longitude ? '<span class="an-badge-coords">🗺️ Géolocalisé</span>' : ''}
         ${h?'<span class="an-badge-horaires">Ouvert</span>':''}
         ${excerpt?'<span class="an-badge-mission">Mission</span>':''}
@@ -2172,7 +2164,7 @@ function anRenderMarkers() {
     newMarkers.push(marker);
     markerMap[r.id]={marker,record:r};
   });
-  markersGroup.addLayers(newMarkers);
+  newMarkers.forEach(m => markersGroup.addLayer(m));
   const capNotice = document.getElementById('an-cap-notice');
   if (capNotice) capNotice.style.display = capped ? 'block' : 'none';
 }
