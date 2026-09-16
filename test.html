@@ -1669,6 +1669,7 @@ const API_BASE   = 'https://api-lannuaire.service-public.fr/api/explore/v2.1/cat
 const BAN_URL    = 'https://api-adresse.data.gouv.fr/search/';
 const FINESS_URL = 'https://data.paysdelaloire.fr/api/explore/v2.1/catalog/datasets/etablissements-du-domaine-sanitaire-et-social-2019/exports/geojson?lang=fr&refine=dep_code%3A%2249%22&timezone=Europe%2FBerlin';
 const GEOJSON_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/catalog/datasets/224900019_communes-de-maine-et-loire/exports/geojson?lang=fr&timezone=Europe%2FBerlin';
+const GEOJSON_DELEGUEES_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/catalog/datasets/224900019_communes-deleguees-de-maine-et-loire/exports/geojson?lang=fr&timezone=Europe%2FBerlin';
 const DEPT = '49';
 const PAGE_SIZE = 50;
 const MARKER_RENDER_CAP = 1500; // sécurité : au-delà, on affiche un message plutôt que de saturer la carte
@@ -1685,6 +1686,7 @@ let anState = {
 
 let map, markersGroup, markerMap = {};
 let communesLayer = null, communesGeoData = null;
+let communesDelegueesGeoData = null, delegueesIndex = new Map();
 
 function initMap() {
   map = L.map('map', { center: [47.47, -0.55], zoom: 9, zoomControl: true });
@@ -1696,6 +1698,7 @@ function initMap() {
   map.addLayer(markersGroup);
   setTimeout(() => map.invalidateSize(), 300);
   loadCommunesGeoJSON();
+  loadCommunesDelegueesGeoJSON();
   loadFinessData();
 }
 
@@ -1715,6 +1718,23 @@ async function loadCommunesGeoJSON() {
   const b = communesLayer.getBounds();
   if (b.isValid()) map.fitBounds(b, { padding: [10, 10] });
 } catch(e) {}
+  } catch(e) {}
+}
+
+async function loadCommunesDelegueesGeoJSON() {
+  try {
+    const res = await fetch(GEOJSON_DELEGUEES_URL);
+    if (!res.ok) throw new Error();
+    communesDelegueesGeoData = await res.json();
+    delegueesIndex = new Map();
+    (communesDelegueesGeoData.features || []).forEach(f => {
+      const nom = f.properties?.com_del_nom || '';
+      if (!nom) return;
+      const k = normalize(nom);
+      if (!delegueesIndex.has(k)) delegueesIndex.set(k, []);
+      delegueesIndex.get(k).push(f);
+    });
+    if (anState.allRecords && anState.allRecords.length) buildCommunesIndex(anState.allRecords);
   } catch(e) {}
 }
 
@@ -1752,6 +1772,39 @@ function communeStyleSelected() {
 }
 
 let selectedCommuneName = '';
+let delegueeHighlightLayer = null;
+let delegueeMarker = null;
+
+function findDelegueeFeature(nom) {
+  const feats = delegueesIndex.get(normalize(nom));
+  return feats && feats.length ? feats[0] : null;
+}
+
+function highlightDeleguee(nom, fallbackCenter) {
+  clearDelegueeHighlight();
+  const feature = findDelegueeFeature(nom);
+  if (feature) {
+    delegueeHighlightLayer = L.geoJSON(feature, { style: communeStyleSelected() }).addTo(map);
+    delegueeHighlightLayer.bringToFront();
+    if (markersGroup) markersGroup.bringToFront();
+    try { map.fitBounds(delegueeHighlightLayer.getBounds(), { padding: [30, 30], maxZoom: 15 }); } catch(e) {}
+    return true;
+  }
+  // repli : pas de géométrie trouvée pour cette déléguée, on affiche un simple repère au centre calculé
+  if (fallbackCenter) {
+    delegueeMarker = L.circleMarker([fallbackCenter.lat, fallbackCenter.lng], {
+      radius: 14, color: '#003189', weight: 2.5, opacity: 1,
+      fillColor: '#003189', fillOpacity: 0.18, interactive: false,
+    }).addTo(map);
+    delegueeMarker.bringToFront();
+    map.setView([fallbackCenter.lat, fallbackCenter.lng], 14);
+  }
+  return false;
+}
+function clearDelegueeHighlight() {
+  if (delegueeHighlightLayer) { delegueeHighlightLayer.remove(); delegueeHighlightLayer = null; }
+  if (delegueeMarker) { delegueeMarker.remove(); delegueeMarker = null; }
+}
 
 function onEachCommune(feature, layer) {
   const nom = feature.properties?.nom || feature.properties?.libelle || feature.properties?.NOM_COM || '';
@@ -2211,6 +2264,9 @@ function buildCommunesIndex(records){
     }
     if(!r._local){const nd=extractCommuneDeleguee(r);if(nd){const k=normalize(nd);if(!dMap.has(k))dMap.set(k,{nom:nd,cp,count:0,type:'deleguee'});dMap.get(k).count++;}}
   });
+  delegueesIndex.forEach((feats,k)=>{
+    if(!dMap.has(k))dMap.set(k,{nom:feats[0].properties?.com_del_nom||'',cp:'',count:0,type:'deleguee'});
+  });
   const all=[...cMap.values()];
   dMap.forEach((v,k)=>{if(!cMap.has(k))all.push(v);});
   communesIndex=all.sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
@@ -2253,6 +2309,7 @@ function selectCommune(commune){
   updateRadiusCircle();
   anApplyFilters();
   if(commune.type!=='deleguee'){
+    clearDelegueeHighlight();
     highlightCommune(commune.nom);
     setTimeout(()=>{anState.communeCenter=getCommuneCenter(commune.nom);},100);
     if(communesLayer){
@@ -2260,7 +2317,12 @@ function selectCommune(commune){
       communesLayer.eachLayer(l=>{const n=(l.feature?.properties?.nom||l.feature?.properties?.libelle||'').toUpperCase();if(n===commune.nom.toUpperCase())found=l;});
       if(found){map.fitBounds(found.getBounds(),{padding:[30,30],maxZoom:14});showRadiusRow(true);return;}
     }
-  }else{resetCommuneStyles();anState.communeCenter=getCommuneCenter(commune.nom,'deleguee');}
+  }else{
+    const parentNom=getParentCommuneNom(commune.nom);
+    if(parentNom)highlightCommune(parentNom);else resetCommuneStyles();
+    anState.communeCenter=getCommuneCenter(commune.nom,'deleguee');
+    highlightDeleguee(commune.nom,anState.communeCenter);
+  }
   showRadiusRow(true);
 }
 
@@ -2298,7 +2360,18 @@ function updateRadiusCircle(){
 }
 
 function showRadiusRow(show){document.getElementById('an-radius-row').style.display=show?'flex':'none';}
+function getParentCommuneNom(deleguéeNom){
+  const feature=findDelegueeFeature(deleguéeNom);
+  if(feature?.properties?.com_del_nom_nvelle)return feature.properties.com_del_nom_nvelle;
+  const r=anState.allRecords.find(rec=>(extractCommuneDeleguee(rec)||'').toUpperCase()===deleguéeNom.toUpperCase());
+  if(!r)return null;
+  return r._local||r._finess?r.nom_commune||null:(parseAddr(r)?.nom_commune||null);
+}
 function getCommuneCenter(nom,type){
+  if(type==='deleguee'){
+    const feature=findDelegueeFeature(nom);
+    if(feature){try{const l=L.geoJSON(feature);const b=l.getBounds();if(b.isValid())return{lat:(b.getNorth()+b.getSouth())/2,lng:(b.getEast()+b.getWest())/2};}catch(e){}}
+  }
   if(type!=='deleguee'&&communesLayer){let center=null;communesLayer.eachLayer(l=>{const n=(l.feature?.properties?.nom||l.feature?.properties?.libelle||'').toUpperCase();if(n===nom.toUpperCase()){const b=l.getBounds();center={lat:(b.getNorth()+b.getSouth())/2,lng:(b.getEast()+b.getWest())/2};}});if(center)return center;}
   const pts=anState.allRecords.filter(r=>{
     if(type==='deleguee')return(extractCommuneDeleguee(r)||'').toUpperCase()===nom.toUpperCase();
@@ -2400,7 +2473,7 @@ document.getElementById('an-btn-reset').addEventListener('click',()=>{
   Object.assign(anState,{searchText:'',missionText:'',typeFilter:'',communeFilter:'',communeInput:'',communeType:'',communeCenter:null,radiusKm:0,geoFilterActive:false,dilaVisible:true,finessVisible:true,localVisible:true});
   document.querySelectorAll('.an-radius-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.an-radius-btn[data-km="0"]').classList.add('active');
-  showRadiusRow(false);updateRadiusCircle();closeDropdown();resetCommuneStyles();
+  showRadiusRow(false);updateRadiusCircle();closeDropdown();resetCommuneStyles();clearDelegueeHighlight();
   updateGeocodeBanner();updateSourceToggles();anMergeAndFilter();
   if(map&&communesLayer)map.fitBounds(communesLayer.getBounds(),{padding:[10,10]});
   else if(map)map.setView([47.47,-0.55],9);
