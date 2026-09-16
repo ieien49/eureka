@@ -1351,6 +1351,10 @@ const ek = (() => {
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
           Imprimer
         </button>
+        <button class="ek-edit-btn" onclick="ek.mailFiche()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Envoyer par mail
+        </button>
       </div>
       <div class="ek-section">
         <div class="ek-section-title"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Informations générales</div>
@@ -1518,6 +1522,51 @@ const ek = (() => {
     win.document.close();
   }
 
+  function tField(label, value) {
+    return value ? (label + ' : ' + value + '\n') : '';
+  }
+
+  function buildMailBody(r) {
+    const dir = getVal(r.NOM_DE_LA_DIRECTION);
+    const polRaw = r.POLITIQUE_DEPARTEMENTALE;
+    const pol = (typeof polRaw === 'number' && polRaw > 0) ? getPolitique(polRaw) : getVal(polRaw);
+    const hasComplement = getVal(r.COMPLEMENT_D_INFORMATIONS) || getVal(r.OBSERVATION);
+    const titre = getVal(r.DISPOSITIF) || 'Sans titre';
+    // NB : comme pour l'impression, la section "Contact assistante" (usage interne) est exclue.
+    let t = titre + '\n' + '='.repeat(titre.length) + '\n\n';
+    if (dir) t += 'Direction : ' + dir + '\n';
+    if (pol) t += 'Politique départementale : ' + pol + '\n';
+    if (getVal(r.PUBLIC_CIBLE)) t += '\nPublic cible : ' + getVal(r.PUBLIC_CIBLE) + '\n';
+    t += '\n--- Informations générales ---\n';
+    t += tField('Service porteur', getVal(r.SERVICE_PORTEUR_DU_DISPOSITIF));
+    t += tField('Indexation', getVal(r.INDEXATION));
+    t += '\n--- Contact public ---\n';
+    t += tField('Téléphone', getVal(r.TEL_PUBLIC));
+    t += tField('Horaires', getVal(r.HORAIRES));
+    t += tField('Email', getVal(r.MAIL_PUBLIC));
+    t += tField('Page web', getVal(r.PAGE_WEB));
+    t += tField('Page web 2', getVal(r.PAGE_WEB2));
+    if (hasComplement) {
+      t += '\n--- Informations complémentaires ---\n';
+      t += tField("Complément d'informations", getVal(r.COMPLEMENT_D_INFORMATIONS));
+      t += tField('Observation', getVal(r.OBSERVATION));
+    }
+    return t;
+  }
+
+  function mailFiche() {
+    if (!selectedRecord) return;
+    const r = selectedRecord;
+    const titre = getVal(r.DISPOSITIF) || 'Dispositif';
+    const dest = prompt("Adresse mail de l'usager (laisser vide pour choisir le destinataire depuis votre messagerie) :", '') || '';
+    const subject = 'Fiche dispositif : ' + titre;
+    const body = buildMailBody(r);
+    const url = 'mailto:' + encodeURIComponent(dest.trim())
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+    window.location.href = url;
+  }
+
   async function fetchLacunes() {
     if (typeof grist === 'undefined') return;
     try {
@@ -1579,7 +1628,7 @@ const ek = (() => {
     if (Object.keys(politiqueMap).length === 0) loadPolitiqueMap();
   }
 
-  return { init, select, search, openModal, saveChanges, closeModal, printFiche };
+  return { init, select, search, openModal, saveChanges, closeModal, printFiche, mailFiche };
 })();
 
 window.ekCloseModal = () => ek.closeModal();
