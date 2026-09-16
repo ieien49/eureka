@@ -6,6 +6,8 @@
   <title>Eurêka ! — Maine-et-Loire</title>
   <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700;800&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
   <style>
@@ -276,6 +278,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .an-map-wrap { flex: 1; position: relative; height: 100%; }
     #map { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+    #an-cap-notice { position: absolute; z-index: 500; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(193,55,60,0.95); color: #fff; font-size: 11.5px; font-weight: 600; padding: 7px 14px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); max-width: 90%; text-align: center; }
     .leaflet-popup-content-wrapper { border-radius: 6px !important; box-shadow: var(--shadow-md) !important; padding: 0 !important; overflow: hidden !important; border: 1px solid var(--rf-grey-300) !important; }
     .leaflet-popup-content { margin: 0 !important; width: 240px !important; }
     .leaflet-popup-tip-container { display: none !important; }
@@ -992,6 +995,9 @@
       </div>
       <div class="an-map-wrap">
         <div id="map"></div>
+        <div id="an-cap-notice" style="display:none">
+          Trop de résultats pour tout afficher sur la carte (limité à 1500 points) — affinez votre recherche pour voir tous les points.
+        </div>
       </div>
     </div>
 
@@ -1202,6 +1208,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════
    NAVIGATION ONGLETS
@@ -1667,6 +1674,7 @@ const FINESS_URL = 'https://data.paysdelaloire.fr/api/explore/v2.1/catalog/datas
 const GEOJSON_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/catalog/datasets/224900019_communes-de-maine-et-loire/exports/geojson?lang=fr&timezone=Europe%2FBerlin';
 const DEPT = '49';
 const PAGE_SIZE = 50;
+const MARKER_RENDER_CAP = 1500; // sécurité : au-delà, on affiche un message plutôt que de saturer la carte
 const GRIST_TABLE_AN = 'Organismes_locaux';
 const EK_EDIT_PASSWORD = 'grist';
 
@@ -1687,7 +1695,13 @@ function initMap() {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19,
     className: 'map-tiles-grey',
   }).addTo(map);
-  markersGroup = L.layerGroup().addTo(map);
+  markersGroup = L.markerClusterGroup({
+    chunkedLoading: true,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    maxClusterRadius: 50,
+  });
+  map.addLayer(markersGroup);
   setTimeout(() => map.invalidateSize(), 300);
   loadCommunesGeoJSON();
   loadFinessData();
@@ -1934,25 +1948,51 @@ function buildTypeSelect() {
   });
 }
 
+// NB perf : ces fonctions mémoïsent leur résultat sur l'enregistrement lui-même
+// (propriété __xxx) pour ne parser chaque champ JSON qu'une seule fois, même si
+// la fonction est appelée plusieurs fois par cycle de rendu (liste + marqueurs + popup).
 function getCfg(r) {
-  if (r._finess) return getFinessCfg(r);
-  try {
-    const key = JSON.parse(r.pivot||'[]')[0]?.type_service_local || '';
-    return TYPE_CFG[key] || { color: '#64748b', emoji: '🏢', label: key ? labelFromKey(key) : 'Autre' };
-  } catch { return { color:'#64748b', emoji:'🏢', label:'Autre' }; }
+  if ('__cfg' in r) return r.__cfg;
+  let cfg;
+  if (r._finess) { cfg = getFinessCfg(r); }
+  else {
+    try {
+      const key = JSON.parse(r.pivot||'[]')[0]?.type_service_local || '';
+      cfg = TYPE_CFG[key] || { color: '#64748b', emoji: '🏢', label: key ? labelFromKey(key) : 'Autre' };
+    } catch { cfg = { color:'#64748b', emoji:'🏢', label:'Autre' }; }
+  }
+  return r.__cfg = cfg;
 }
 
 function getTypeKey(r) {
-  if (r._local) return r.type_service || '';
-  try { return JSON.parse(r.pivot||'[]')[0]?.type_service_local || ''; } catch { return ''; }
+  if ('__typeKey' in r) return r.__typeKey;
+  let k;
+  if (r._local) { k = r.type_service || ''; }
+  else { try { k = JSON.parse(r.pivot||'[]')[0]?.type_service_local || ''; } catch { k = ''; } }
+  return r.__typeKey = k;
 }
 
 function parseAddr(r) {
-  try { const a = JSON.parse(r.adresse||'[]'); return a.find(x=>x.type_adresse==='Adresse')||a[0]||null; } catch { return null; }
+  if ('__addr' in r) return r.__addr;
+  try { const a = JSON.parse(r.adresse||'[]'); r.__addr = a.find(x=>x.type_adresse==='Adresse')||a[0]||null; }
+  catch { r.__addr = null; }
+  return r.__addr;
 }
-function parseTel(r) { try { return JSON.parse(r.telephone||'[]')[0]?.valeur||null; } catch { return null; } }
-function parseSite(r) { try { return JSON.parse(r.site_internet||'[]')[0]?.valeur||null; } catch { return null; } }
+function parseTel(r) {
+  if ('__tel' in r) return r.__tel;
+  try { r.__tel = JSON.parse(r.telephone||'[]')[0]?.valeur||null; } catch { r.__tel = null; }
+  return r.__tel;
+}
+function parseSite(r) {
+  if ('__site' in r) return r.__site;
+  try { r.__site = JSON.parse(r.site_internet||'[]')[0]?.valeur||null; } catch { r.__site = null; }
+  return r.__site;
+}
 function parseHoraires(r) {
+  if ('__horaires' in r) return r.__horaires;
+  return r.__horaires = parseHorairesUncached(r);
+}
+function parseHorairesUncached(r) {
   try {
     const h = JSON.parse(r.plage_ouverture||'[]');
     if (!h.length) return null;
@@ -2088,7 +2128,10 @@ function anRenderMarkers() {
   if (!map || !markersGroup) return;
   markersGroup.clearLayers();
   Object.keys(markerMap).forEach(k => delete markerMap[k]);
-  anState.filtered.forEach(r => {
+  const capped = anState.filtered.length > MARKER_RENDER_CAP;
+  const toShow = capped ? anState.filtered.slice(0, MARKER_RENDER_CAP) : anState.filtered;
+  const newMarkers = [];
+  toShow.forEach(r => {
     let lat, lng;
     if (r._local||r._finess){lat=parseFloat(r.latitude);lng=parseFloat(r.longitude);}
     else{const a=parseAddr(r);if(!a?.latitude||!a?.longitude)return;lat=parseFloat(a.latitude);lng=parseFloat(a.longitude);}
@@ -2097,9 +2140,12 @@ function anRenderMarkers() {
     const marker=L.marker([lat,lng],{icon:makeIcon(r)})
       .bindPopup(buildPopup(r),{maxWidth:280,minWidth:260})
       .on('click',()=>anSelectCard(r.id,false));
-    markersGroup.addLayer(marker);
+    newMarkers.push(marker);
     markerMap[r.id]={marker,record:r};
   });
+  markersGroup.addLayers(newMarkers);
+  const capNotice = document.getElementById('an-cap-notice');
+  if (capNotice) capNotice.style.display = capped ? 'block' : 'none';
 }
 
 function anSelectCard(id,pan=true){
@@ -2124,7 +2170,11 @@ function anSelectCard(id,pan=true){
 
 let communesIndex=[];
 function normalize(str){return str.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[-–—]/g,' ').replace(/\s+/g,' ').toLowerCase().trim();}
-function extractCommuneDeleguee(r){const m=(r.nom||'').match(/[Mm]airie\s+d[eé]l[eé]gu[eé]e?\s*[-–—de]+\s*(.+)/);return m?m[1].trim():null;}
+function extractCommuneDeleguee(r){
+  if ('__communeDeleguee' in r) return r.__communeDeleguee;
+  const m=(r.nom||'').match(/[Mm]airie\s+d[eé]l[eé]gu[eé]e?\s*[-–—de]+\s*(.+)/);
+  return r.__communeDeleguee = m?m[1].trim():null;
+}
 
 function buildCommunesIndex(records){
   const cMap=new Map(),dMap=new Map();
@@ -2193,11 +2243,12 @@ function selectCommune(commune){
   showRadiusRow(true);
 }
 
+let communeTimer;
 communeInput.addEventListener('input',e=>{
   anState.communeFilter='';anState.communeInput=e.target.value;anState.communeType='';
   anState.communeCenter=null;anState.radiusKm=0;showRadiusRow(false);updateRadiusCircle();
-  if(communesIndex.length)showDropdown(e.target.value);
-  anApplyFilters();
+  if(communesIndex.length)showDropdown(e.target.value); // autocomplete : reste instantané
+  clearTimeout(communeTimer);communeTimer=setTimeout(anApplyFilters,300); // filtrage lourd : débounce
 });
 communeInput.addEventListener('keydown',e=>{
   const items=acDropdown.querySelectorAll('.an-ac-item');
