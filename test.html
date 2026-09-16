@@ -2260,7 +2260,7 @@ function selectCommune(commune){
       communesLayer.eachLayer(l=>{const n=(l.feature?.properties?.nom||l.feature?.properties?.libelle||'').toUpperCase();if(n===commune.nom.toUpperCase())found=l;});
       if(found){map.fitBounds(found.getBounds(),{padding:[30,30],maxZoom:14});showRadiusRow(true);return;}
     }
-  }else{resetCommuneStyles();anState.communeCenter=getCommuneCenter(commune.nom);}
+  }else{resetCommuneStyles();anState.communeCenter=getCommuneCenter(commune.nom,'deleguee');}
   showRadiusRow(true);
 }
 
@@ -2298,9 +2298,13 @@ function updateRadiusCircle(){
 }
 
 function showRadiusRow(show){document.getElementById('an-radius-row').style.display=show?'flex':'none';}
-function getCommuneCenter(nom){
-  if(communesLayer){let center=null;communesLayer.eachLayer(l=>{const n=(l.feature?.properties?.nom||l.feature?.properties?.libelle||'').toUpperCase();if(n===nom.toUpperCase()){const b=l.getBounds();center={lat:(b.getNorth()+b.getSouth())/2,lng:(b.getEast()+b.getWest())/2};}});if(center)return center;}
-  const pts=anState.allRecords.filter(r=>{const nc=r._local||r._finess?r.nom_commune:(parseAddr(r)?.nom_commune||'');return(nc||'').toUpperCase()===nom.toUpperCase();}).map(r=>r._local||r._finess?{lat:parseFloat(r.latitude),lng:parseFloat(r.longitude)}:(()=>{const a=parseAddr(r);return a?.latitude?{lat:parseFloat(a.latitude),lng:parseFloat(a.longitude)}:null;})()).filter(p=>p&&!isNaN(p.lat)&&!isNaN(p.lng));
+function getCommuneCenter(nom,type){
+  if(type!=='deleguee'&&communesLayer){let center=null;communesLayer.eachLayer(l=>{const n=(l.feature?.properties?.nom||l.feature?.properties?.libelle||'').toUpperCase();if(n===nom.toUpperCase()){const b=l.getBounds();center={lat:(b.getNorth()+b.getSouth())/2,lng:(b.getEast()+b.getWest())/2};}});if(center)return center;}
+  const pts=anState.allRecords.filter(r=>{
+    if(type==='deleguee')return(extractCommuneDeleguee(r)||'').toUpperCase()===nom.toUpperCase();
+    const nc=r._local||r._finess?r.nom_commune:(parseAddr(r)?.nom_commune||'');
+    return(nc||'').toUpperCase()===nom.toUpperCase();
+  }).map(r=>r._local||r._finess?{lat:parseFloat(r.latitude),lng:parseFloat(r.longitude)}:(()=>{const a=parseAddr(r);return a?.latitude?{lat:parseFloat(a.latitude),lng:parseFloat(a.longitude)}:null;})()).filter(p=>p&&!isNaN(p.lat)&&!isNaN(p.lng));
   if(!pts.length)return null;
   return{lat:pts.reduce((s,p)=>s+p.lat,0)/pts.length,lng:pts.reduce((s,p)=>s+p.lng,0)/pts.length};
 }
