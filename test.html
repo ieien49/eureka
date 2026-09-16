@@ -1809,15 +1809,7 @@ function clearDelegueeHighlight() {
 function onEachCommune(feature, layer) {
   const nom = feature.properties?.nom || feature.properties?.libelle || feature.properties?.NOM_COM || '';
   layer.on({ click() {
-    if (nom) {
-      const inp = document.getElementById('an-commune-input');
-      inp.value = nom;
-      anState.communeFilter = nom.toUpperCase();
-      anState.communeInput = nom;
-      highlightCommune(nom);
-      anApplyFilters();
-      map.fitBounds(layer.getBounds(), { padding: [30,30], maxZoom:14 });
-    }
+    if (nom) selectCommune({ nom, type: 'commune' });
   }});
 }
 
