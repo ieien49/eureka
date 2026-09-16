@@ -1347,6 +1347,10 @@ const ek = (() => {
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           Modifier la fiche
         </button>
+        <button class="ek-edit-btn" onclick="ek.printFiche()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
+          Imprimer
+        </button>
       </div>
       <div class="ek-section">
         <div class="ek-section-title"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Informations générales</div>
@@ -1449,6 +1453,71 @@ const ek = (() => {
 
   function closeModal() { document.getElementById('ek-modal').classList.remove('active'); }
 
+  function pField(label, value) {
+    if (!value) return '';
+    return `<div class="pf-field"><div class="pf-label">${escH(label)}</div><div class="pf-value">${escH(value)}</div></div>`;
+  }
+
+  function buildPrintContent(r) {
+    const dir = getVal(r.NOM_DE_LA_DIRECTION);
+    const polRaw = r.POLITIQUE_DEPARTEMENTALE;
+    const pol = (typeof polRaw === 'number' && polRaw > 0) ? getPolitique(polRaw) : getVal(polRaw);
+    const hasComplement = getVal(r.COMPLEMENT_D_INFORMATIONS) || getVal(r.OBSERVATION);
+    // NB : la section "Contact assistante" (usage interne) est volontairement exclue de l'impression.
+    return `
+      <div class="pf-tags">
+        ${dir ? `<span class="pf-tag pf-tag-direction">${escH(dir)}</span>` : ''}
+        ${pol ? `<span class="pf-tag pf-tag-politique">${escH(pol)}</span>` : ''}
+      </div>
+      <h1 class="pf-title">${escH(getVal(r.DISPOSITIF) || 'Sans titre')}</h1>
+      ${getVal(r.PUBLIC_CIBLE) ? `<p class="pf-subtitle">${escH(getVal(r.PUBLIC_CIBLE))}</p>` : ''}
+      <div class="pf-section">
+        <div class="pf-section-title">Informations générales</div>
+        ${pField('Service porteur', getVal(r.SERVICE_PORTEUR_DU_DISPOSITIF))}
+        ${pField('Indexation', getVal(r.INDEXATION))}
+      </div>
+      <div class="pf-section">
+        <div class="pf-section-title">Contact public</div>
+        ${pField('Téléphone', getVal(r.TEL_PUBLIC))}
+        ${pField('Horaires', getVal(r.HORAIRES))}
+        ${pField('Email', getVal(r.MAIL_PUBLIC))}
+        ${pField('Page web', getVal(r.PAGE_WEB))}
+        ${getVal(r.PAGE_WEB2) ? pField('Page web 2', getVal(r.PAGE_WEB2)) : ''}
+      </div>
+      ${hasComplement ? `<div class="pf-section">
+        <div class="pf-section-title">Informations complémentaires</div>
+        ${pField("Complément d'informations", getVal(r.COMPLEMENT_D_INFORMATIONS))}
+        ${pField('Observation', getVal(r.OBSERVATION))}
+      </div>` : ''}
+    `;
+  }
+
+  function printFiche() {
+    if (!selectedRecord) return;
+    const r = selectedRecord;
+    const titre = getVal(r.DISPOSITIF) || 'Dispositif';
+    const contenu = buildPrintContent(r);
+    const css = [
+      "body{font-family:'Source Sans 3',Arial,sans-serif;color:#1e1e1e;padding:36px;max-width:800px;margin:0 auto;}",
+      ".pf-tags{display:flex;gap:6px;margin-bottom:10px;}",
+      ".pf-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:2px;text-transform:uppercase;letter-spacing:.04em;color:#fff;}",
+      ".pf-tag-direction{background:#003189;}",
+      ".pf-tag-politique{background:#c1373c;}",
+      ".pf-title{font-size:22px;font-weight:800;color:#003189;margin:0 0 6px;}",
+      ".pf-subtitle{font-size:14px;color:#666;margin:0 0 22px;}",
+      ".pf-section{margin-bottom:22px;page-break-inside:avoid;}",
+      ".pf-section-title{font-size:13px;font-weight:700;color:#003189;border-bottom:2px solid #e8edfa;padding-bottom:5px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.03em;}",
+      ".pf-field{margin-bottom:9px;}",
+      ".pf-label{font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.03em;}",
+      ".pf-value{font-size:13px;color:#1e1e1e;white-space:pre-wrap;}",
+      "@media print{ body{padding:0;} }"
+    ].join('');
+    const win = window.open('', '_blank', 'width=794,height=1123');
+    if (!win) { alert('Autorisez les popups pour imprimer.'); return; }
+    win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>' + escH(titre) + '</title><style>' + css + '</style></head><body>' + contenu + '<script>window.onload=function(){window.print();}<\/script></body></html>');
+    win.document.close();
+  }
+
   async function fetchLacunes() {
     if (typeof grist === 'undefined') return;
     try {
@@ -1510,7 +1579,7 @@ const ek = (() => {
     if (Object.keys(politiqueMap).length === 0) loadPolitiqueMap();
   }
 
-  return { init, select, search, openModal, saveChanges, closeModal };
+  return { init, select, search, openModal, saveChanges, closeModal, printFiche };
 })();
 
 window.ekCloseModal = () => ek.closeModal();
