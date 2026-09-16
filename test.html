@@ -1707,12 +1707,15 @@ function initMap() {
   loadFinessData();
 }
 
+let outsideMaskLayer = null;
+
 async function loadCommunesGeoJSON() {
   try {
     const res = await fetch(GEOJSON_URL);
     if (!res.ok) throw new Error();
     communesGeoData = await res.json();
     communesLayer = L.geoJSON(communesGeoData, { style: communeStyleDefault, onEachFeature: onEachCommune });
+    buildOutsideMask(communesGeoData);
     markersGroup.remove();
     communesLayer.addTo(map);
     markersGroup.addTo(map);
@@ -1721,6 +1724,32 @@ async function loadCommunesGeoJSON() {
   if (b.isValid()) map.fitBounds(b, { padding: [10, 10] });
 } catch(e) {}
   } catch(e) {}
+}
+
+// Masque le fond de carte (tuiles OSM) en dehors du département : un grand
+// rectangle couvrant le monde, avec un "trou" découpé pour chaque commune du
+// département (issues du même GeoJSON que le contour déjà affiché).
+function buildOutsideMask(geojson) {
+  if (!map) return;
+  if (outsideMaskLayer) { outsideMaskLayer.remove(); outsideMaskLayer = null; }
+  const outer = [[85,-179],[85,179],[-85,179],[-85,-179]];
+  const holes = [];
+  (geojson.features || []).forEach(f => {
+    const geom = f.geometry;
+    if (!geom) return;
+    const polys = geom.type === 'Polygon' ? [geom.coordinates]
+                : geom.type === 'MultiPolygon' ? geom.coordinates
+                : [];
+    polys.forEach(rings => {
+      if (!rings || !rings[0]) return;
+      holes.push(rings[0].map(([lng, lat]) => [lat, lng]));
+    });
+  });
+  if (!holes.length) return;
+  outsideMaskLayer = L.polygon([outer, ...holes], {
+    stroke: false, fillColor: '#f0f1f3', fillOpacity: 0.95, interactive: false,
+  }).addTo(map);
+  outsideMaskLayer.bringToBack();
 }
 
 function communeStyleDefault() {
