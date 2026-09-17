@@ -543,6 +543,17 @@
   justify-content: center; height: 100%; min-height: 280px;
   gap: 10px; color: var(--rf-grey-400);
 }
+#panel-fichesMDD .fmdd-welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 280px; text-align: center; padding: 40px 24px; overflow-y: auto; }
+#panel-fichesMDD .fmdd-welcome-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--rf-blue-light); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; font-size: 30px; flex-shrink: 0; }
+#panel-fichesMDD .fmdd-welcome h2 { font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--rf-grey-900); margin-bottom: 8px; }
+#panel-fichesMDD .fmdd-welcome-tagline { font-size: 14px; color: var(--rf-grey-600); max-width: 420px; line-height: 1.5; margin-bottom: 24px; }
+#panel-fichesMDD .fmdd-welcome-stats { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; justify-content: center; }
+#panel-fichesMDD .fmdd-welcome-stat { background: var(--rf-grey-100); border: 1px solid var(--rf-grey-200); border-radius: var(--radius-md); padding: 12px 22px; min-width: 110px; }
+#panel-fichesMDD .fmdd-welcome-stat-num { font-size: 22px; font-weight: 800; color: var(--rf-blue); font-family: var(--font-serif); line-height: 1; }
+#panel-fichesMDD .fmdd-welcome-stat-label { font-size: 10.5px; color: var(--rf-grey-600); margin-top: 4px; text-transform: uppercase; letter-spacing: .03em; }
+#panel-fichesMDD .fmdd-welcome-tips { display: flex; flex-direction: column; gap: 10px; max-width: 380px; text-align: left; }
+#panel-fichesMDD .fmdd-welcome-tip { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--rf-grey-800); line-height: 1.4; }
+#panel-fichesMDD .fmdd-welcome-tip svg { width: 16px; height: 16px; color: var(--rf-blue-mid); flex-shrink: 0; margin-top: 1px; }
 #panel-fichesMDD .site-content { padding: 18px 24px; }
 #panel-fichesMDD .site-header { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--rf-grey-200); }
 #panel-fichesMDD .site-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
@@ -1103,9 +1114,24 @@
       </div>
     </div>
     <div class="main" id="mdd2-main">
-      <div class="empty" id="mdd2-empty-state">
-        <div class="empty-icon">🏢</div>
-        <div class="empty-msg">Sélectionnez un site</div>
+      <div class="fmdd-welcome" id="mdd2-empty-state">
+        <div class="fmdd-welcome-icon">🏢</div>
+        <h2>Fiches missions des MDD</h2>
+        <p class="fmdd-welcome-tagline">Consultez les cadres référents, les missions et les contacts de chaque Maison Départementale des Solidarités (MDD) du Département.</p>
+        <div class="fmdd-welcome-tips">
+          <div class="fmdd-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            <span>Sélectionnez un site dans la liste à gauche pour afficher sa fiche.</span>
+          </div>
+          <div class="fmdd-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4"/></svg>
+            <span>Retrouvez les cadres référents et les contacts par type de mission via les onglets en haut de fiche.</span>
+          </div>
+          <div class="fmdd-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
+            <span>Chaque fiche peut être imprimée directement depuis sa page.</span>
+          </div>
+        </div>
       </div>
       <div id="mdd2-site-content" style="display:none"></div>
     </div>
@@ -3407,6 +3433,22 @@ function mdd2_printFiche() {
   win.document.close();
 }
 
+function mdd2_updateWelcomeStats() {
+  const el = document.getElementById('mdd2-empty-state');
+  if (!el || el.querySelector('.fmdd-welcome-stats')) return;
+  const nbSites = mdd2_sitesData.length;
+  if (!nbSites) return;
+  const nbCadres = mdd2_cadresData.filter(c => mdd2_get(c,'nom_prenom','Nom_prenom')).length;
+  const nbMissions = MDD2_MISSIONS.length;
+  const statsHtml = '<div class="fmdd-welcome-stats">'
+    + '<div class="fmdd-welcome-stat"><div class="fmdd-welcome-stat-num">' + nbSites + '</div><div class="fmdd-welcome-stat-label">Site' + (nbSites > 1 ? 's' : '') + ' MDD</div></div>'
+    + (nbCadres ? '<div class="fmdd-welcome-stat"><div class="fmdd-welcome-stat-num">' + nbCadres + '</div><div class="fmdd-welcome-stat-label">Cadres référencés</div></div>' : '')
+    + (nbMissions ? '<div class="fmdd-welcome-stat"><div class="fmdd-welcome-stat-num">' + nbMissions + '</div><div class="fmdd-welcome-stat-label">Types de missions</div></div>' : '')
+    + '</div>';
+  const tagline = el.querySelector('.fmdd-welcome-tagline');
+  if (tagline) tagline.insertAdjacentHTML('afterend', statsHtml);
+}
+
 async function mdd2_loadAllTables() {
   if (mdd2_tablesLoaded) return;
   try {
@@ -3427,6 +3469,7 @@ async function mdd2_loadAllTables() {
     mdd2_tablesLoaded = true;
     document.getElementById('mdd2-site-loading')?.remove();
     mdd2_buildSidebar();
+    mdd2_updateWelcomeStats();
   } catch(e) {
     console.error('mdd2 fetchTable error:', e);
     const el = document.getElementById('mdd2-site-loading');
