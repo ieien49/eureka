@@ -287,7 +287,20 @@
     .an-state-msg { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 10px; color: var(--rf-grey-600); text-align: center; }
     .spinner { width: 24px; height: 24px; border: 3px solid var(--rf-grey-200); border-top-color: var(--rf-blue-mid); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .an-map-wrap { flex: 1; position: relative; height: 100%; }
+    .an-map-wrap { flex: 1; position: relative; height: 100%; overflow: hidden; }
+    .an-detail-panel { position: absolute; top: 0; right: 0; height: 100%; width: 360px; max-width: 90%; background: var(--rf-white); border-left: 1px solid var(--rf-grey-200); box-shadow: -6px 0 18px rgba(0,0,49,0.12); transform: translateX(100%); transition: transform .25s ease; z-index: 1000; display: flex; flex-direction: column; }
+    .an-detail-panel.open { transform: translateX(0); }
+    .an-detail-panel-head { display: flex; align-items: center; justify-content: flex-end; padding: 10px 10px 0; flex-shrink: 0; }
+    .an-detail-panel-close { width: 26px; height: 26px; border-radius: 50%; border: none; background: var(--rf-grey-100); color: var(--rf-grey-600); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); flex-shrink: 0; }
+    .an-detail-panel-close:hover { background: var(--rf-grey-200); color: var(--rf-grey-900); }
+    .an-detail-panel-body { flex: 1; overflow-y: auto; }
+    .an-detail-panel .popup-nom { font-size: 16px; padding: 4px 16px 12px; }
+    .an-detail-panel .popup-flag { padding: 10px 16px 0; }
+    .an-detail-panel .popup-body { padding: 12px 16px 18px; }
+    .an-detail-panel .popup-row { font-size: 12.5px; }
+    .an-detail-panel .popup-divider { margin: 0 16px; }
+    .an-detail-panel .popup-links { padding: 0 16px 18px; }
+    .an-detail-panel .popup-mission { font-size: 12px; }
     #map { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
     #an-cap-notice { position: absolute; z-index: 500; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(193,55,60,0.95); color: #fff; font-size: 11.5px; font-weight: 600; padding: 7px 14px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); max-width: 90%; text-align: center; }
     .leaflet-popup-content-wrapper { border-radius: 6px !important; box-shadow: var(--shadow-md) !important; padding: 0 !important; overflow: hidden !important; border: 1px solid var(--rf-grey-300) !important; }
@@ -1038,6 +1051,14 @@
         <div id="map"></div>
         <div id="an-cap-notice" style="display:none">
           Trop de résultats pour tout afficher sur la carte (limité à 1500 points) — affinez votre recherche pour voir tous les points.
+        </div>
+        <div class="an-detail-panel" id="an-detail-panel">
+          <div class="an-detail-panel-head">
+            <button type="button" class="an-detail-panel-close" id="an-detail-panel-close" title="Fermer" aria-label="Fermer">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="an-detail-panel-body" id="an-detail-panel-body"></div>
         </div>
       </div>
     </div>
@@ -2291,7 +2312,6 @@ function anRenderMarkers() {
     if(isNaN(lat)||isNaN(lng)||lat===0||lng===0)return;
     if (!isFinite(lat) || !isFinite(lng)) return;
     const marker=L.marker([lat,lng],{icon:makeIcon(r)})
-      .bindPopup(buildPopup(r),{maxWidth:280,minWidth:260})
       .on('click',()=>anSelectCard(r.id,false));
     newMarkers.push(marker);
     markerMap[r.id]={marker,record:r};
@@ -2301,21 +2321,34 @@ function anRenderMarkers() {
   if (capNotice) capNotice.style.display = capped ? 'block' : 'none';
 }
 
+function anShowDetailPanel(record){
+  if(!record)return;
+  document.getElementById('an-detail-panel-body').innerHTML=buildPopup(record);
+  document.getElementById('an-detail-panel').classList.add('open');
+}
+function anCloseDetailPanel(){
+  document.getElementById('an-detail-panel').classList.remove('open');
+}
+document.getElementById('an-detail-panel-close').addEventListener('click',anCloseDetailPanel);
+
 function anSelectCard(id,pan=true){
   if(anState.activeId&&markerMap[anState.activeId])
     markerMap[anState.activeId].marker.setIcon(makeIcon(markerMap[anState.activeId].record,false));
   anState.activeId=id;
+  let record=null;
   if(markerMap[id]){
-    markerMap[id].marker.setIcon(makeIcon(markerMap[id].record,true));
-    markerMap[id].marker.openPopup();
+    record=markerMap[id].record;
+    markerMap[id].marker.setIcon(makeIcon(record,true));
     if(pan){
-      const r=markerMap[id].record;
-      const a=r._local||r._finess?null:parseAddr(r);
-      const lat=a?parseFloat(a.latitude):parseFloat(r.latitude);
-      const lng=a?parseFloat(a.longitude):parseFloat(r.longitude);
+      const a=record._local||record._finess?null:parseAddr(record);
+      const lat=a?parseFloat(a.latitude):parseFloat(record.latitude);
+      const lng=a?parseFloat(a.longitude):parseFloat(record.longitude);
       if(!isNaN(lat)&&!isNaN(lng))map.flyTo([lat,lng],14,{duration:0.8});
     }
+  } else {
+    record=anState.filtered.find(r=>r.id===id)||null;
   }
+  anShowDetailPanel(record);
   const idx=anState.filtered.findIndex(r=>r.id===id);
   if(idx>=0){const tp=Math.floor(idx/PAGE_SIZE);if(tp!==anState.page)anState.page=tp;}
   anRenderList();
@@ -2580,6 +2613,7 @@ document.getElementById('an-btn-reset').addEventListener('click',()=>{
   document.querySelector('.an-radius-btn[data-km="0"]').classList.add('active');
   showRadiusRow(false);updateRadiusCircle();closeDropdown();resetCommuneStyles();clearDelegueeHighlight();
   updateCommuneClearBtn();updateSearchClearBtn();
+  anCloseDetailPanel();anState.activeId=null;
   updateGeocodeBanner();updateSourceToggles();anMergeAndFilter();
   if(map&&communesLayer)map.fitBounds(communesLayer.getBounds(),{padding:[10,10]});
   else if(map)map.setView([47.47,-0.55],9);
