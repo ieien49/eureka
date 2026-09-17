@@ -129,6 +129,18 @@
     .ek-empty-state svg { width: 64px; height: 64px; opacity: 0.3; }
     .ek-empty-state p { font-size: 15px; font-weight: 500; }
     .ek-empty-state small { font-size: 13px; color: var(--rf-grey-400); }
+    .ek-welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 40px 24px; overflow-y: auto; }
+    .ek-welcome-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--rf-blue-light); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; flex-shrink: 0; }
+    .ek-welcome-icon svg { width: 32px; height: 32px; color: var(--rf-blue); }
+    .ek-welcome h2 { font-family: var(--font-serif); font-size: 26px; font-weight: 700; color: var(--rf-grey-900); margin-bottom: 8px; }
+    .ek-welcome-tagline { font-size: 14px; color: var(--rf-grey-600); max-width: 420px; line-height: 1.5; margin-bottom: 24px; }
+    .ek-welcome-stats { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; justify-content: center; }
+    .ek-welcome-stat { background: var(--rf-grey-100); border: 1px solid var(--rf-grey-200); border-radius: var(--radius-md); padding: 12px 22px; min-width: 110px; }
+    .ek-welcome-stat-num { font-size: 22px; font-weight: 800; color: var(--rf-blue); font-family: var(--font-serif); line-height: 1; }
+    .ek-welcome-stat-label { font-size: 10.5px; color: var(--rf-grey-600); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+    .ek-welcome-tips { display: flex; flex-direction: column; gap: 10px; max-width: 380px; text-align: left; }
+    .ek-welcome-tip { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--rf-grey-800); line-height: 1.4; }
+    .ek-welcome-tip svg { width: 16px; height: 16px; color: var(--rf-blue-mid); flex-shrink: 0; margin-top: 1px; }
     .ek-card { max-width: 800px; animation: fadeSlide 0.25s ease-out; }
     @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     .ek-card-header { padding-bottom: 20px; border-bottom: 3px solid var(--rf-blue); margin-bottom: 24px; }
@@ -919,12 +931,28 @@
         </div>
       </div>
       <div class="ek-detail" id="ek-detail">
-        <div class="ek-empty-state">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-          </svg>
-          <p>Sélectionnez un dispositif</p>
-          <small>Cliquez sur un élément de la liste pour voir les détails</small>
+        <div class="ek-welcome">
+          <div class="ek-welcome-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.472V15a1 1 0 001 1h6a1 1 0 001-1v-1.528A6 6 0 0012 3z"/>
+            </svg>
+          </div>
+          <h2>Bienvenue sur Eurêka !</h2>
+          <p class="ek-welcome-tagline">L'outil de recherche des dispositifs et aides du Département de Maine-et-Loire, à destination des agents d'accueil et travailleurs sociaux.</p>
+          <div class="ek-welcome-tips">
+            <div class="ek-welcome-tip">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <span>Recherchez un dispositif par nom, mission ou public visé dans la barre de gauche.</span>
+            </div>
+            <div class="ek-welcome-tip">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+              <span>Sélectionnez un élément de la liste pour afficher sa fiche complète (contacts, horaires, service porteur…).</span>
+            </div>
+            <div class="ek-welcome-tip">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
+              <span>Une fiche trouvée peut être imprimée ou envoyée par mail directement depuis sa page.</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1332,12 +1360,36 @@ const ek = (() => {
   function renderDetail() {
     const panel = document.getElementById('ek-detail');
     if (!selectedRecord) {
-      panel.innerHTML = `<div class="ek-empty-state">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-        </svg>
-        <p>Sélectionnez un dispositif</p>
-        <small>Cliquez sur un élément de la liste pour voir les détails</small>
+      const total = allRecords.length;
+      const dirCount = new Set(allRecords.map(r => getVal(r.NOM_DE_LA_DIRECTION)).filter(Boolean)).size;
+      const serviceCount = new Set(allRecords.map(r => getVal(r.SERVICE_PORTEUR_DU_DISPOSITIF)).filter(Boolean)).size;
+      panel.innerHTML = `<div class="ek-welcome">
+        <div class="ek-welcome-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.472V15a1 1 0 001 1h6a1 1 0 001-1v-1.528A6 6 0 0012 3z"/>
+          </svg>
+        </div>
+        <h2>Bienvenue sur Eurêka !</h2>
+        <p class="ek-welcome-tagline">L'outil de recherche des dispositifs et aides du Département de Maine-et-Loire, à destination des agents d'accueil et travailleurs sociaux.</p>
+        ${total ? `<div class="ek-welcome-stats">
+          <div class="ek-welcome-stat"><div class="ek-welcome-stat-num">${total}</div><div class="ek-welcome-stat-label">Dispositif${total>1?'s':''}</div></div>
+          ${dirCount ? `<div class="ek-welcome-stat"><div class="ek-welcome-stat-num">${dirCount}</div><div class="ek-welcome-stat-label">Direction${dirCount>1?'s':''}</div></div>` : ''}
+          ${serviceCount ? `<div class="ek-welcome-stat"><div class="ek-welcome-stat-num">${serviceCount}</div><div class="ek-welcome-stat-label">Services porteurs</div></div>` : ''}
+        </div>` : ''}
+        <div class="ek-welcome-tips">
+          <div class="ek-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span>Recherchez un dispositif par nom, mission ou public visé dans la barre de gauche.</span>
+          </div>
+          <div class="ek-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            <span>Sélectionnez un élément de la liste pour afficher sa fiche complète (contacts, horaires, service porteur…).</span>
+          </div>
+          <div class="ek-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
+            <span>Une fiche trouvée peut être imprimée ou envoyée par mail directement depuis sa page.</span>
+          </div>
+        </div>
       </div>`;
       return;
     }
@@ -1637,6 +1689,7 @@ const ek = (() => {
     allRecords = records; filteredRecords = records;
     if (mappings) gristTable = mappings.tableId || mappings.table || mappings.tableName;
     renderList();
+    if (!selectedRecord) renderDetail();
     if (!lacunesPolling) fetchLacunes();
     if (Object.keys(politiqueMap).length === 0) loadPolitiqueMap();
   }
