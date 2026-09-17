@@ -288,6 +288,8 @@
     .spinner { width: 24px; height: 24px; border: 3px solid var(--rf-grey-200); border-top-color: var(--rf-blue-mid); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .an-map-wrap { flex: 1; position: relative; height: 100%; overflow: hidden; }
+    .an-marker-ico { filter: drop-shadow(0 1px 1.5px rgba(0,0,49,.28)); }
+    .an-marker-ico.active { filter: drop-shadow(0 2px 3px rgba(0,0,49,.35)); }
     .an-detail-panel { position: absolute; top: 0; right: 0; height: 100%; width: 360px; max-width: 90%; background: var(--rf-white); border-left: 1px solid var(--rf-grey-200); box-shadow: -6px 0 18px rgba(0,0,49,0.12); transform: translateX(100%); transition: transform .25s ease; z-index: 1000; display: flex; flex-direction: column; }
     .an-detail-panel.open { transform: translateX(0); }
     .an-detail-panel-head { display: flex; align-items: center; justify-content: flex-end; padding: 10px 10px 0; flex-shrink: 0; }
@@ -1793,10 +1795,10 @@ let communesLayer = null, communesGeoData = null;
 let communesDelegueesGeoData = null, delegueesIndex = new Map();
 
 function initMap() {
-  map = L.map('map', { center: [47.47, -0.55], zoom: 9, zoomControl: true });
+  map = L.map('map', { center: [47.47, -0.55], zoom: 9, zoomControl: true, preferCanvas: true });
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19,
-    className: 'map-tiles-grey',
+    className: 'map-tiles-grey', updateWhenZooming: false, keepBuffer: 4,
   }).addTo(map);
   markersGroup = L.layerGroup();
   map.addLayer(markersGroup);
@@ -2189,14 +2191,12 @@ function makeIcon(r, active=false) {
   const initiale = isLocal ? '★' : isFiness ? '+' : (cfg.label||'?').replace(/[^A-Za-zÀ-ÿ]/g,'').slice(0,1).toUpperCase();
   const ro = active ? 13 : 10, total = ro*2+4, cx = total/2, cy = ro+2, fs = active?9:7, qw=active?5:4, qh=active?6:5;
   const svg = `<svg width="${total}" height="${total+qh}" xmlns="http://www.w3.org/2000/svg">
-    <filter id="sh"><feDropShadow dx="0" dy="1" stdDeviation="${active?2:1.2}" flood-opacity="${active?.28:.18}"/></filter>
-    <g filter="url(#sh)">
       <circle cx="${cx}" cy="${cy}" r="${ro}" fill="${fillBg}" stroke="${stroke}" stroke-width="${active?2:1.5}"/>
       <polygon points="${cx},${cy+ro+qh} ${cx-qw},${cy+ro-1} ${cx+qw},${cy+ro-1}" fill="${fillBg}" stroke="${stroke}" stroke-width="${active?2:1.5}" stroke-linejoin="round"/>
       <circle cx="${cx}" cy="${cy}" r="${ro}" fill="${fillBg}"/>
       <text x="${cx}" y="${cy+fs*0.38}" text-anchor="middle" font-family="sans-serif" font-size="${isFiness?fs+2:fs}" font-weight="700" fill="${textC}">${initiale}</text>
-    </g></svg>`;
-  return L.divIcon({ html:svg, className:'', iconSize:[total,total+qh], iconAnchor:[total/2,total+qh], popupAnchor:[0,-(total+qh-2)] });
+    </svg>`;
+  return L.divIcon({ html:svg, className:'an-marker-ico'+(active?' active':''), iconSize:[total,total+qh], iconAnchor:[total/2,total+qh], popupAnchor:[0,-(total+qh-2)] });
 }
 
 function buildPopup(r) {
