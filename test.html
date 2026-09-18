@@ -1828,6 +1828,7 @@ const API_BASE   = 'https://api-lannuaire.service-public.fr/api/explore/v2.1/cat
 const BAN_URL    = 'https://api-adresse.data.gouv.fr/search/';
 const FINESS_URL = 'https://data.paysdelaloire.fr/api/explore/v2.1/catalog/datasets/etablissements-du-domaine-sanitaire-et-social-2019/exports/geojson?lang=fr&refine=dep_code%3A%2249%22&timezone=Europe%2FBerlin';
 const GEOJSON_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/catalog/datasets/224900019_communes-de-maine-et-loire/exports/geojson?lang=fr&timezone=Europe%2FBerlin';
+const DEPARTEMENT_GEOJSON_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/shared/datasets/234400034_departements-des-pays-de-la-loire@paysdelaloire/exports/geojson?lang=fr&refine=depart%3A%22MAINE-ET-LOIRE%22&timezone=Europe%2FBerlin';
 const GEOJSON_DELEGUEES_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/catalog/datasets/224900019_communes-deleguees-de-maine-et-loire/exports/geojson?lang=fr&timezone=Europe%2FBerlin';
 const DEPT = '49';
 const PAGE_SIZE = 50;
@@ -1857,11 +1858,25 @@ function initMap() {
   map.addLayer(markersGroup);
   setTimeout(() => map.invalidateSize(), 300);
   loadCommunesGeoJSON();
+  loadDepartementContour();
   loadCommunesDelegueesGeoJSON();
   loadFinessData();
 }
 
 let outsideMaskLayer = null;
+let departementLayer = null;
+
+async function loadDepartementContour() {
+  try {
+    const res = await fetch(DEPARTEMENT_GEOJSON_URL);
+    if (!res.ok) throw new Error();
+    const geojson = await res.json();
+    departementLayer = L.geoJSON(geojson, {
+      style: { color: '#003189', weight: 3, opacity: 1, fill: false, interactive: false }
+    }).addTo(map);
+    departementLayer.bringToFront();
+  } catch(e) {}
+}
 
 async function loadCommunesGeoJSON() {
   try {
