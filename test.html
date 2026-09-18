@@ -99,6 +99,8 @@
     .rf-bandeau.urgence { background: var(--rf-red-light); color: var(--rf-red); }
     .rf-bandeau-close { margin-left: auto; cursor: pointer; opacity: 0.6; }
     .rf-bandeau-close:hover { opacity: 1; }
+    .rf-bandeau-link { text-decoration: underline; font-weight: 700; }
+    .rf-bandeau-link:hover { opacity: 0.75; }
 
     /* CONTENT */
     .rf-content { flex: 1; min-height: 0; position: relative; }
@@ -3764,7 +3766,15 @@ async function loadBandeau(){
     });
     if(i === -1){ el.classList.remove('visible'); return; }
     el.className = 'rf-bandeau visible ' + (t.type?.[i] || 'info');
-    document.getElementById('rf-bandeau-msg').textContent = t.message[i] || '';
+    const escHtml = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const msg = escHtml(t.message?.[i] || '');
+    const url = t.lien_url?.[i];
+    const label = escHtml(t.lien_texte?.[i] || 'En savoir plus');
+    let html = msg;
+    if(url){
+      html += ` <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer" class="rf-bandeau-link">${label}</a>`;
+    }
+    document.getElementById('rf-bandeau-msg').innerHTML = html;
   }catch(e){ console.warn('[bandeau] table introuvable', e); }
 }
 
