@@ -92,9 +92,8 @@
     .rf-tab:not(.active) .rf-tab-badge { background: rgba(193,55,60,0.9); }
 
     /* BANDEAU D'INFORMATION */
-    .rf-bandeau { display: none; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 10px 20px; font-size: 15px; font-weight: 700; flex-shrink: 0; }
-    .rf-bandeau.visible { display: grid; }
-    #rf-bandeau-msg { grid-column: 2; text-align: center; }
+    .rf-bandeau { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 10px 20px; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+    .rf-bandeau-msg { grid-column: 2; text-align: center; }
     .rf-bandeau.info { background: var(--rf-blue-light); color: var(--rf-blue-dark); }
     .rf-bandeau.alerte { background: var(--rf-orange-light); color: var(--rf-orange); }
     .rf-bandeau.urgence { background: var(--rf-red-light); color: var(--rf-red); }
@@ -844,11 +843,8 @@
     </div>
   </header>
 
-  <!-- Bandeau d'information -->
-  <div class="rf-bandeau" id="rf-bandeau">
-    <span id="rf-bandeau-msg"></span>
-    <span class="rf-bandeau-close" onclick="document.getElementById('rf-bandeau').classList.remove('visible')">✕</span>
-  </div>
+  <!-- Bandeaux d'information -->
+  <div id="rf-bandeau-container"></div>
 
   <!-- Navigation -->
   <nav class="rf-nav">
@@ -3758,24 +3754,36 @@ async function loadBandeau(){
   if(typeof grist==='undefined')return;
   try{
     const t = await grist.docApi.fetchTable('Bandeau');
-    const el = document.getElementById('rf-bandeau');
-    const i = (t.actif||[]).findIndex((v,idx) => {
-      if(!v) return false;
-      const exp = t.date_expiration?.[idx];
-      if(exp && exp*1000 < Date.now()) return false; // dates Grist en secondes epoch
-      return true;
-    });
-    if(i === -1){ el.classList.remove('visible'); return; }
-    el.className = 'rf-bandeau visible ' + (t.type?.[i] || 'info');
+    const container = document.getElementById('rf-bandeau-container');
+    container.innerHTML = '';
     const escHtml = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const msg = escHtml(t.message?.[i] || '');
-    const url = t.lien_url?.[i];
-    const label = escHtml(t.lien_texte?.[i] || 'En savoir plus');
-    let html = msg;
-    if(url){
-      html += ` <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer" class="rf-bandeau-link">${label}</a>`;
-    }
-    document.getElementById('rf-bandeau-msg').innerHTML = html;
+    const now = Date.now();
+    (t.actif||[]).forEach((v, idx) => {
+      if(!v) return;
+      const exp = t.date_expiration?.[idx];
+      if(exp && exp*1000 < now) return; // dates Grist en secondes epoch
+
+      const msg = escHtml(t.message?.[idx] || '');
+      const url = t.lien_url?.[idx];
+      const label = escHtml(t.lien_texte?.[idx] || 'En savoir plus');
+      let html = msg;
+      if(url){
+        html += ` <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer" class="rf-bandeau-link">${label}</a>`;
+      }
+
+      const el = document.createElement('div');
+      el.className = 'rf-bandeau ' + (t.type?.[idx] || 'info');
+      const msgSpan = document.createElement('span');
+      msgSpan.className = 'rf-bandeau-msg';
+      msgSpan.innerHTML = html;
+      const closeSpan = document.createElement('span');
+      closeSpan.className = 'rf-bandeau-close';
+      closeSpan.textContent = '✕';
+      closeSpan.onclick = () => el.remove();
+      el.appendChild(msgSpan);
+      el.appendChild(closeSpan);
+      container.appendChild(el);
+    });
   }catch(e){ console.warn('[bandeau] table introuvable', e); }
 }
 
