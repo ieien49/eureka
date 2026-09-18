@@ -91,6 +91,15 @@
     @keyframes pulseBadge { 0%,100%{ box-shadow: 0 0 0 0 rgba(193,55,60,0.4); } 50%{ box-shadow: 0 0 0 4px rgba(193,55,60,0); } }
     .rf-tab:not(.active) .rf-tab-badge { background: rgba(193,55,60,0.9); }
 
+    /* BANDEAU D'INFORMATION */
+    .rf-bandeau { display: none; align-items: center; gap: 10px; padding: 8px 20px; font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
+    .rf-bandeau.visible { display: flex; }
+    .rf-bandeau.info { background: var(--rf-blue-light); color: var(--rf-blue-dark); }
+    .rf-bandeau.alerte { background: var(--rf-orange-light); color: var(--rf-orange); }
+    .rf-bandeau.urgence { background: var(--rf-red-light); color: var(--rf-red); }
+    .rf-bandeau-close { margin-left: auto; cursor: pointer; opacity: 0.6; }
+    .rf-bandeau-close:hover { opacity: 1; }
+
     /* CONTENT */
     .rf-content { flex: 1; min-height: 0; position: relative; }
     .rf-panel { position: absolute; inset: 0; display: none; opacity: 0; }
@@ -831,6 +840,12 @@
       </div>
     </div>
   </header>
+
+  <!-- Bandeau d'information -->
+  <div class="rf-bandeau" id="rf-bandeau">
+    <span id="rf-bandeau-msg"></span>
+    <span class="rf-bandeau-close" onclick="document.getElementById('rf-bandeau').classList.remove('visible')">✕</span>
+  </div>
 
   <!-- Navigation -->
   <nav class="rf-nav">
@@ -3736,12 +3751,29 @@ const aiot = (() => {
   return { init };
 })();
 
+async function loadBandeau(){
+  if(typeof grist==='undefined')return;
+  try{
+    const t = await grist.docApi.fetchTable('Bandeau');
+    const el = document.getElementById('rf-bandeau');
+    const i = (t.actif||[]).findIndex((v,idx) => {
+      if(!v) return false;
+      const exp = t.date_expiration?.[idx];
+      if(exp && exp*1000 < Date.now()) return false; // dates Grist en secondes epoch
+      return true;
+    });
+    if(i === -1){ el.classList.remove('visible'); return; }
+    el.className = 'rf-bandeau visible ' + (t.type?.[i] || 'info');
+    document.getElementById('rf-bandeau-msg').textContent = t.message[i] || '';
+  }catch(e){ console.warn('[bandeau] table introuvable', e); }
+}
+
 function start(){
   if(typeof L!=='undefined'){initMap();anLoadData();}
   else setTimeout(start,100);
   mdd.loadMdsVoies();
   mdd.loadInfos();
-  if(typeof grist!=='undefined') mdd2_loadAllTables();
+  if(typeof grist!=='undefined'){ mdd2_loadAllTables(); loadBandeau(); }
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);
