@@ -1299,6 +1299,28 @@
   </div>
 </div>
 
+<!-- ═══ MODAL ENVOI MAIL EURÊKA ═══ -->
+<div class="rf-modal-overlay" id="ek-mail-modal">
+  <div class="rf-modal" style="max-width:440px">
+    <div class="rf-modal-header">
+      <span class="rf-modal-title">Envoyer la fiche par mail</span>
+      <button class="rf-modal-close" onclick="ek.closeMailModal()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="rf-modal-body">
+      <div class="rf-form-group">
+        <label class="rf-form-label">Destinataire (facultatif)</label>
+        <input type="email" class="rf-form-input" id="ek-mail-dest" placeholder="usager@exemple.fr">
+      </div>
+    </div>
+    <div class="rf-modal-footer">
+      <button class="rf-btn rf-btn-secondary" onclick="ek.closeMailModal()">Annuler</button>
+      <button class="rf-btn rf-btn-primary" onclick="ek.confirmMail()">Envoyer</button>
+    </div>
+  </div>
+</div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
@@ -1679,14 +1701,26 @@ const ek = (() => {
 
   function mailFiche() {
     if (!selectedRecord) return;
+    document.getElementById('ek-mail-dest').value = '';
+    document.getElementById('ek-mail-modal').classList.add('active');
+    setTimeout(() => document.getElementById('ek-mail-dest').focus(), 50);
+  }
+
+  function closeMailModal() {
+    document.getElementById('ek-mail-modal').classList.remove('active');
+  }
+
+  function confirmMail() {
     const r = selectedRecord;
+    if (!r) return;
     const titre = getVal(r.DISPOSITIF) || 'Dispositif';
-    const dest = prompt("Adresse mail de l'usager (laisser vide pour choisir le destinataire depuis votre messagerie) :", '') || '';
+    const dest = (document.getElementById('ek-mail-dest').value || '').trim();
     const subject = 'Fiche dispositif : ' + titre;
     const body = buildMailBody(r);
-    const url = 'mailto:' + encodeURIComponent(dest.trim())
+    const url = 'mailto:' + encodeURIComponent(dest)
       + '?subject=' + encodeURIComponent(subject)
       + '&body=' + encodeURIComponent(body);
+    closeMailModal();
     window.location.href = url;
   }
 
@@ -1752,7 +1786,7 @@ const ek = (() => {
     if (Object.keys(politiqueMap).length === 0) loadPolitiqueMap();
   }
 
-  return { init, select, search, openModal, saveChanges, closeModal, printFiche, mailFiche };
+  return { init, select, search, openModal, saveChanges, closeModal, printFiche, mailFiche, closeMailModal, confirmMail };
 })();
 
 window.ekCloseModal = () => ek.closeModal();
@@ -1775,6 +1809,11 @@ if (document.getElementById('ek-clear')) {
   });
 }
 
+if (document.getElementById('ek-mail-modal')) {
+  document.getElementById('ek-mail-modal').addEventListener('click', function(e) {
+    if (e.target === this) ek.closeMailModal();
+  });
+}
 if (document.getElementById('ek-modal')) {
   document.getElementById('ek-modal').addEventListener('click', function(e) {
     if (e.target === this) ek.closeModal();
