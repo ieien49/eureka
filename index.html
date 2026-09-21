@@ -1082,7 +1082,7 @@
 
     <div class="header">
       <h1>📞 Planning AIOT</h1>
-      <button class="btn-print" onclick="window.print()" title="Imprimer en A4 paysage">🖨️ Imprimer</button>
+      <button class="btn-print" onclick="aiot.exportPdf()" title="Télécharger le planning en PDF (A4 paysage)">🖨️ Imprimer</button>
       <div class="week-nav">
         <button class="btn-nav" id="aiot-btn-prev" title="Semaine précédente">&#8249;</button>
         <div class="week-label" id="aiot-week-label">—</div>
@@ -1201,6 +1201,7 @@
 </div>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════
@@ -3301,6 +3302,114 @@ const aiot = (() => {
     setInterval(applyTodayHighlight, 60000);
   }
 
+  function exportPdf() {
+    const jsPDF = window.jspdf && window.jspdf.jsPDF;
+    if (!jsPDF) { alert('Bibliothèque PDF non chargée : vérifiez la connexion puis réessayez.'); return; }
+
+    const rows = Array.from(document.querySelectorAll('#aiot-planning-body tr'))
+      .filter(tr => tr.querySelector('td.site-label'))
+      .map(tr => ({
+        site: tr.querySelector('td.site-label').textContent.trim(),
+        cells: Array.from(tr.querySelectorAll('textarea')).map(ta => ta.value.trim())
+      }));
+    if (!rows.length) { alert('Aucune donnée à exporter.'); return; }
+
+    const BLUE50 = [230, 241, 251], BLUE100 = [181, 212, 244], BLUE800 = [12, 68, 124];
+    const GRAY100 = [211, 209, 199], GRAY600 = [95, 94, 90], TEXT = [44, 44, 42], RED = [255, 0, 0];
+    const JOURS_LBL = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const PW = 297, PH = 210, M = 10, PAD = 1.5, MIN_H = 11;
+    const SITE_W = 34;
+    const COL_W = (PW - 2 * M - SITE_W) / 10;
+    const HEAD_Y = M + 11, H_DAY = 7, H_SLOT = 6;
+    const BODY_Y = HEAD_Y + H_DAY + H_SLOT;
+    const AVAIL = PH - M - 5 - BODY_Y;           // 5 mm réservés au pied de page
+    const lineH = f => f * 0.3528 * 1.25;        // pt -> mm
+
+    function layout(f) {
+      const lines = rows.map(r => r.cells.map(c => {
+        if (!c) return [];
+        const red = c.trimStart().startsWith('!');
+        doc.setFont('helvetica', red ? 'bold' : 'normal'); doc.setFontSize(f);
+        return doc.splitTextToSize(c, COL_W - 2 * PAD);
+      }));
+      const siteLines = rows.map(r => {
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(f);
+        return doc.splitTextToSize(r.site, SITE_W - 2 * PAD);
+      });
+      const heights = rows.map((_, i) => {
+        const n = Math.max(siteLines[i].length, ...lines[i].map(l => l.length));
+        return Math.max(MIN_H, n * lineH(f) + 2 * PAD);
+      });
+      return { lines, siteLines, heights, total: heights.reduce((a, b) => a + b, 0) };
+    }
+
+    let fs = 9, L = layout(fs);
+    while (L.total > AVAIL && fs > 4) { fs -= 0.5; L = layout(fs); }
+
+    // Titre
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(...BLUE800);
+    doc.text('Planning AIOT', M, M + 5);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
+    doc.text(formatWeek(currentMonday), PW - M, M + 5, { align: 'right' });
+
+    // En-têtes
+    doc.setDrawColor(...BLUE100); doc.setLineWidth(0.2);
+    doc.setFillColor(...BLUE50);
+    doc.rect(M, HEAD_Y, SITE_W, H_DAY + H_SLOT, 'FD');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...BLUE800);
+    doc.text('Site', M + PAD + 1, HEAD_Y + (H_DAY + H_SLOT) / 2, { baseline: 'middle' });
+    JOURS_LBL.forEach((jour, j) => {
+      const x = M + SITE_W + j * 2 * COL_W;
+      doc.setFillColor(...BLUE50);
+      doc.rect(x, HEAD_Y, 2 * COL_W, H_DAY, 'FD');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...BLUE800);
+      doc.text(jour, x + COL_W, HEAD_Y + H_DAY / 2, { align: 'center', baseline: 'middle' });
+      ['Matin', 'Après-midi'].forEach((lbl, s) => {
+        const sx = x + s * COL_W;
+        doc.setFillColor(...BLUE50);
+        doc.rect(sx, HEAD_Y + H_DAY, COL_W, H_SLOT, 'FD');
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...GRAY600);
+        doc.text(lbl, sx + COL_W / 2, HEAD_Y + H_DAY + H_SLOT / 2, { align: 'center', baseline: 'middle' });
+      });
+    });
+
+    // Corps
+    doc.setDrawColor(...GRAY100);
+    let y = BODY_Y;
+    rows.forEach((r, i) => {
+      const h = L.heights[i];
+      doc.setFillColor(...BLUE50);
+      doc.rect(M, y, SITE_W, h, 'FD');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(fs); doc.setTextColor(...BLUE800);
+      const sh = L.siteLines[i].length * lineH(fs);
+      L.siteLines[i].forEach((ln, k) => doc.text(ln, M + PAD, y + (h - sh) / 2 + k * lineH(fs), { baseline: 'top' }));
+
+      r.cells.forEach((c, k) => {
+        const x = M + SITE_W + k * COL_W;
+        doc.rect(x, y, COL_W, h, 'S');
+        const ls = L.lines[i][k];
+        if (!ls.length) return;
+        const red = c.trimStart().startsWith('!');
+        doc.setFont('helvetica', red ? 'bold' : 'normal'); doc.setFontSize(fs);
+        doc.setTextColor(...(red ? RED : TEXT));
+        const th = ls.length * lineH(fs);
+        ls.forEach((ln, m) => doc.text(ln, x + COL_W / 2, y + (h - th) / 2 + m * lineH(fs), { align: 'center', baseline: 'top' }));
+      });
+      y += h;
+    });
+
+    // Pied de page
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...GRAY600);
+    doc.text('Imprimé le ' + new Date().toLocaleDateString('fr-FR'), PW - M, PH - M + 2, { align: 'right' });
+
+    const p = n => String(n).padStart(2, '0');
+    const d = currentMonday;
+    doc.save(`Planning_AIOT_${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}.pdf`);
+  }
+
+
   async function init() {
     if (initialized) return;
     initialized = true;
@@ -3309,7 +3418,7 @@ const aiot = (() => {
     await loadWeek();
   }
 
-  return { init };
+  return { init, exportPdf };
 })();
 
 function start(){
