@@ -839,6 +839,17 @@
     .pcfg-guest-link-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
     .pcfg-guest-copied { font-size: 11.5px; color: var(--rf-green); opacity: 0; transition: opacity .2s; }
     .pcfg-guest-copied.vis { opacity: 1; }
+    .pcfg-bandeau-card { border: 1px solid var(--rf-grey-300); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 10px; background: var(--rf-grey-100); }
+    .pcfg-bandeau-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .pcfg-bandeau-del { border: none; background: transparent; color: var(--rf-grey-600); cursor: pointer; font-size: 14px; padding: 2px 6px; margin-left: auto; }
+    .pcfg-bandeau-del:hover { color: var(--rf-red); }
+    .pcfg-bandeau-msg { width: 100%; padding: 6px 8px; border: 1px solid var(--rf-grey-300); border-radius: var(--radius-sm); background: #fff; font-family: var(--font-main); font-size: 12.5px; color: var(--rf-grey-900); outline: none; resize: vertical; min-height: 40px; box-sizing: border-box; }
+    .pcfg-bandeau-msg:focus { border-color: var(--rf-blue); }
+    .pcfg-bandeau-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .pcfg-bandeau-row select, .pcfg-bandeau-row input[type="text"], .pcfg-bandeau-row input[type="date"] { padding: 5px 7px; border: 1px solid var(--rf-grey-300); border-radius: var(--radius-sm); background: #fff; font-family: var(--font-main); font-size: 12px; color: var(--rf-grey-900); outline: none; }
+    .pcfg-bandeau-row select:focus, .pcfg-bandeau-row input:focus { border-color: var(--rf-blue); }
+    .pcfg-bandeau-row label { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--rf-grey-600); cursor: pointer; }
+    .pcfg-bandeau-field-label { font-size: 10px; color: var(--rf-grey-600); }
     .pcfg-toast {
       position: fixed; bottom: 20px; right: 20px; z-index: 1100; background: var(--rf-grey-900); color: #fff;
       padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
@@ -915,7 +926,7 @@
 
       <div class="pcfg-section-title">Structure du document</div>
       <div class="pcfg-hint" style="margin-bottom:8px">
-        Vérifie que la table Grist « Parametres » (nécessaire pour enregistrer ces réglages) existe dans ce document, et la crée si besoin.
+        Vérifie que les tables Grist « Parametres » et « Bandeau » (nécessaires pour ces réglages) existent dans ce document, et les crée si besoin.
       </div>
       <button class="btn-ghost" style="width:100%;justify-content:center;margin-bottom:8px" onclick="pcfgCheckTables()">Vérifier la table</button>
       <div id="pcfgTablesStatus" class="pcfg-hint" style="margin-bottom:4px"></div>
@@ -932,6 +943,14 @@
       </div>
       <div id="pcfgGuestsList"></div>
       <button class="btn-ghost" style="width:100%;margin-bottom:8px" onclick="pcfgAddGuest()">+ Nouvelle vue partagée</button>
+
+      <div class="pcfg-section-title">Bandeaux d'information</div>
+      <div class="pcfg-hint" style="margin-bottom:8px">
+        Messages affichés en haut de l'écran, pour tous les utilisateurs. Décoche « Actif » pour masquer un bandeau sans le supprimer. Une date d'expiration (facultative) le masque automatiquement une fois passée.
+      </div>
+      <div id="pcfgBandeauxStatus" class="pcfg-hint" style="margin-bottom:4px"></div>
+      <div id="pcfgBandeauxList"></div>
+      <button class="btn-ghost" style="width:100%;margin-bottom:8px" onclick="pcfgAddBandeau()">+ Nouveau bandeau</button>
 
       <div class="pcfg-close-row">
         <button class="btn-ghost" onclick="closePcfgModal()">Fermer</button>
@@ -1461,6 +1480,7 @@ let pcfgHiddenTabs = [];   // clés des onglets masqués
 let pcfgTabLabels  = {};   // libellés personnalisés { key: 'Libellé' }
 let pcfgTabOrder   = [];   // ordre personnalisé des onglets
 let pcfgGuestProfiles = []; // vues partagées : [{ slug, label, tabs:[...] }]
+let pcfgBandeaux = []; // bandeaux d'information, chargés directement depuis la table Grist "Bandeau"
 const pcfgUrlParams = new URLSearchParams(location.search);
 const pcfgGuestSlug = pcfgUrlParams.get('vue');
 let pcfgGuestProfile = null;
@@ -1488,6 +1508,14 @@ const PCFG_REQUIRED_TABLES = [
     { id: 'cle',    type: 'Text' },
     { id: 'valeur', type: 'Text' },
   ]},
+  { id: 'Bandeau', label: 'Bandeau', cols: [
+    { id: 'actif',           type: 'Bool' },
+    { id: 'message',         type: 'Text' },
+    { id: 'type',            type: 'Choice', widgetOptions: JSON.stringify({ choices: ['info','alerte','urgence'] }) },
+    { id: 'lien_url',        type: 'Text' },
+    { id: 'lien_texte',      type: 'Text' },
+    { id: 'date_expiration', type: 'Date' },
+  ]},
 ];
 
 function pcfgEsc(str) { return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1506,11 +1534,14 @@ function pcfgToast(msg, type) {
   el._pcfgT = setTimeout(() => el.classList.remove('show'), 2200);
 }
 
-function openPcfgModal() {
+async function openPcfgModal() {
   document.getElementById('pcfgOv').classList.add('open');
   document.getElementById('pcfgTablesStatus').innerHTML = '';
   pcfgRenderTabsSection();
   pcfgRenderGuests();
+  document.getElementById('pcfgBandeauxStatus').innerHTML = 'Chargement…';
+  await pcfgLoadBandeaux();
+  pcfgRenderBandeaux();
 }
 function closePcfgModal() { document.getElementById('pcfgOv').classList.remove('open'); }
 function handlePcfgOvClick(e) { if (e.target === document.getElementById('pcfgOv')) closePcfgModal(); }
@@ -1533,13 +1564,13 @@ async function pcfgCheckTables() {
   }
   const missing = PCFG_REQUIRED_TABLES.filter(t => !existing.includes(t.id));
   if (!missing.length) {
-    pcfgSetTablesStatus('✓ La table Paramètres est déjà présente.');
+    pcfgSetTablesStatus('✓ Les tables nécessaires sont déjà présentes.');
     return;
   }
   const names = missing.map(t => t.label || t.id).join(', ');
   pcfgSetTablesStatus(
-    `Table manquante : ${names}.<br>` +
-    `<button class="btn-ghost" style="margin-top:6px" onclick="pcfgInstallTables()">Créer cette table</button>`
+    `Table(s) manquante(s) : ${names}.<br>` +
+    `<button class="btn-ghost" style="margin-top:6px" onclick="pcfgInstallTables()">Créer ${missing.length>1?'ces tables':'cette table'}</button>`
   );
 }
 
@@ -1554,15 +1585,17 @@ async function pcfgInstallTables() {
   }
   const missing = PCFG_REQUIRED_TABLES.filter(t => !existing.includes(t.id));
   if (!missing.length) {
-    pcfgSetTablesStatus('✓ La table Paramètres est déjà présente.');
+    pcfgSetTablesStatus('✓ Les tables nécessaires sont déjà présentes.');
     return;
   }
   const actions = missing.map(t => ['AddTable', t.id, t.cols]);
   try {
     await grist.docApi.applyUserActions(actions);
-    pcfgSetTablesStatus('✓ Table créée : ' + missing.map(t=>t.label||t.id).join(', ') + '.');
+    pcfgSetTablesStatus('✓ Table(s) créée(s) : ' + missing.map(t=>t.label||t.id).join(', ') + '.');
     await fetchPcfgConfig();
     applyHiddenTabs();
+    await pcfgLoadBandeaux();
+    pcfgRenderBandeaux();
   } catch (e) {
     pcfgSetTablesStatus('Erreur lors de la création : ' + e.message);
   }
@@ -1833,6 +1866,109 @@ function pcfgRenderGuests() {
       </div>
     </div>`;
   }).join('');
+}
+
+// ── Bandeaux d'information (table Grist "Bandeau") ──
+const PCFG_BANDEAU_TYPES = [
+  { value: 'info',    label: 'Information' },
+  { value: 'alerte',  label: 'Alerte' },
+  { value: 'urgence', label: 'Urgence' },
+];
+
+async function pcfgLoadBandeaux() {
+  pcfgBandeaux = [];
+  if (typeof grist === 'undefined') return;
+  try {
+    const t = await grist.docApi.fetchTable('Bandeau');
+    const ids = t.id || [];
+    pcfgBandeaux = ids.map((id, idx) => ({
+      id,
+      actif: !!(t.actif?.[idx]),
+      message: t.message?.[idx] || '',
+      type: t.type?.[idx] || 'info',
+      lien_url: t.lien_url?.[idx] || '',
+      lien_texte: t.lien_texte?.[idx] || '',
+      date_expiration: t.date_expiration?.[idx] || null, // epoch secondes ou null
+    })).sort((a, b) => a.id - b.id);
+    document.getElementById('pcfgBandeauxStatus').innerHTML = '';
+  } catch (e) {
+    document.getElementById('pcfgBandeauxStatus').innerHTML =
+      `Table « Bandeau » introuvable. Utilise « Vérifier la table » ci-dessus pour la créer.`;
+  }
+}
+
+function pcfgBandeauDateStr(epochSec) {
+  if (!epochSec) return '';
+  const d = new Date(epochSec * 1000);
+  return d.toISOString().slice(0, 10);
+}
+function pcfgBandeauDateToEpoch(dateStr) {
+  if (!dateStr) return null;
+  return Math.floor(new Date(dateStr + 'T00:00:00Z').getTime() / 1000);
+}
+
+async function pcfgUpdateBandeau(id, patch) {
+  try {
+    await grist.docApi.applyUserActions([['UpdateRecord', 'Bandeau', id, patch]]);
+    const rec = pcfgBandeaux.find(b => b.id === id);
+    if (rec) Object.assign(rec, patch);
+    loadBandeau();
+    pcfgToast('Bandeau mis à jour');
+  } catch (e) { pcfgToast(e.message, 'error'); }
+}
+
+async function pcfgAddBandeau() {
+  if (typeof grist === 'undefined') { pcfgToast('Indisponible hors de Grist (mode démo).', 'error'); return; }
+  try {
+    const result = await grist.docApi.applyUserActions([['AddRecord', 'Bandeau', null, {
+      actif: true, message: 'Nouveau message', type: 'info', lien_url: '', lien_texte: '', date_expiration: null,
+    }]]);
+    const newId = result.retValues[0];
+    pcfgBandeaux.push({ id: newId, actif: true, message: 'Nouveau message', type: 'info', lien_url: '', lien_texte: '', date_expiration: null });
+    pcfgRenderBandeaux();
+    loadBandeau();
+    pcfgToast('Bandeau ajouté');
+  } catch (e) { pcfgToast(e.message, 'error'); }
+}
+
+async function pcfgDeleteBandeau(id) {
+  if (!confirm('Supprimer ce bandeau ?')) return;
+  try {
+    await grist.docApi.applyUserActions([['RemoveRecord', 'Bandeau', id]]);
+    pcfgBandeaux = pcfgBandeaux.filter(b => b.id !== id);
+    pcfgRenderBandeaux();
+    loadBandeau();
+    pcfgToast('Bandeau supprimé');
+  } catch (e) { pcfgToast(e.message, 'error'); }
+}
+
+function pcfgRenderBandeaux() {
+  const box = document.getElementById('pcfgBandeauxList');
+  if (!box) return;
+  if (!pcfgBandeaux.length) { box.innerHTML = '<div class="pcfg-hint" style="margin-bottom:8px">Aucun bandeau pour l\'instant.</div>'; return; }
+  box.innerHTML = pcfgBandeaux.map(b => `
+    <div class="pcfg-bandeau-card" data-bandeau="${b.id}">
+      <div class="pcfg-bandeau-head">
+        <label style="display:flex;align-items:center;gap:5px;font-size:12.5px;cursor:pointer">
+          <input type="checkbox" ${b.actif?'checked':''} onchange="pcfgUpdateBandeau(${b.id},{actif:this.checked})"> Actif
+        </label>
+        <button class="pcfg-bandeau-del" onclick="pcfgDeleteBandeau(${b.id})" title="Supprimer">✕</button>
+      </div>
+      <textarea class="pcfg-bandeau-msg" placeholder="Message affiché dans le bandeau" onchange="pcfgUpdateBandeau(${b.id},{message:this.value})">${pcfgEsc(b.message)}</textarea>
+      <div class="pcfg-bandeau-row">
+        <span class="pcfg-bandeau-field-label">Type</span>
+        <select onchange="pcfgUpdateBandeau(${b.id},{type:this.value})">
+          ${PCFG_BANDEAU_TYPES.map(t => `<option value="${t.value}" ${b.type===t.value?'selected':''}>${t.label}</option>`).join('')}
+        </select>
+        <span class="pcfg-bandeau-field-label">Expire le</span>
+        <input type="date" value="${pcfgBandeauDateStr(b.date_expiration)}" onchange="pcfgUpdateBandeau(${b.id},{date_expiration:pcfgBandeauDateToEpoch(this.value)})">
+      </div>
+      <div class="pcfg-bandeau-row">
+        <span class="pcfg-bandeau-field-label">Lien (facultatif)</span>
+        <input type="text" placeholder="https://…" style="flex:1;min-width:140px" value="${pcfgEsc(b.lien_url)}" onchange="pcfgUpdateBandeau(${b.id},{lien_url:this.value})">
+        <input type="text" placeholder="Texte du lien" style="width:120px" value="${pcfgEsc(b.lien_texte)}" onchange="pcfgUpdateBandeau(${b.id},{lien_texte:this.value})">
+      </div>
+    </div>`).join('');
 }
 
 /* ═══════════════════════════════════════════════════════
