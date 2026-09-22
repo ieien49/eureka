@@ -853,8 +853,11 @@
     body.pcfg-hide-edit-mdd [data-pcfg-edit="mdd"],
     body.pcfg-hide-edit-annuaire [data-pcfg-edit="annuaire"],
     body.pcfg-hide-edit-logigramme [data-pcfg-edit="logigramme"],
-    body.pcfg-hide-edit-fichesMDD [data-pcfg-edit="fichesMDD"],
-    body.pcfg-hide-edit-aiot [data-pcfg-edit="aiot"] { display: none !important; }
+    body.pcfg-hide-edit-fichesMDD [data-pcfg-edit="fichesMDD"] { display: none !important; }
+    /* Planning AIOT : pas de bouton "Modifier" séparé, le contenu (textarea) est édité
+       directement dans la grille ; en vue restreinte on le passe en lecture seule plutôt
+       que de le masquer. */
+    body.pcfg-hide-edit-aiot #aiot-planning-body textarea { pointer-events: none; background: var(--rf-grey-100); color: var(--rf-grey-600); }
     .pcfg-guest-editchk { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--rf-grey-600); cursor: pointer; margin-left: 18px; }
   </style>
 </head>
@@ -1474,7 +1477,11 @@ const PCFG_TABS = [
 const PCFG_DEFAULT_TAB_ORDER = PCFG_TABS.map(t => t.key);
 // Onglets contenant des actions de modification (bouton "Modifier", lien Grist, etc.)
 // repérables via [data-pcfg-edit="<clé>"] dans le HTML — liste à étendre si besoin.
-const PCFG_EDIT_CAPABLE_TABS = ['eureka', 'fichesMDD'];
+const PCFG_EDIT_CAPABLE_TABS = ['eureka', 'fichesMDD', 'aiot'];
+// Libellé de la case "masquer l'édition" dans les vues partagées : par défaut
+// on parle de boutons de modification, mais le planning AIOT s'édite en direct
+// dans la grille, donc on adapte le texte pour cet onglet.
+const PCFG_EDIT_LABELS = { aiot: 'Lecture seule (planning non modifiable)' };
 
 const PCFG_REQUIRED_TABLES = [
   { id: 'Parametres', label: 'Paramètres', cols: [
@@ -1639,6 +1646,13 @@ function pcfgApplyGuestEditRestrictions() {
   PCFG_EDIT_CAPABLE_TABS.forEach(key => {
     document.body.classList.toggle('pcfg-hide-edit-' + key, hidden.includes(key));
   });
+  if (typeof aiot !== 'undefined' && aiot.applyEditLock) aiot.applyEditLock();
+}
+
+// Vrai si la vue courante (vue partagée avec "Lecture seule" cochée pour aiot)
+// ne doit pas pouvoir modifier le contenu du planning AIOT.
+function pcfgIsAiotEditLocked() {
+  return !!(pcfgGuestProfile && (pcfgGuestProfile.editHidden || []).includes('aiot'));
 }
 
 async function pcfgSaveParam(cle, valeurObj) {
@@ -1802,7 +1816,7 @@ function pcfgRenderGuests() {
       const lbl = pcfgTabLabels[key] || (t ? t.label : key);
       const on = p.tabs.includes(key);
       const editRow = (on && PCFG_EDIT_CAPABLE_TABS.includes(key))
-        ? `<label class="pcfg-guest-editchk"><input type="checkbox" ${editHidden.includes(key)?'checked':''} onchange="pcfgToggleGuestEditHidden('${p.slug}','${key}')"> Masquer les boutons de modification</label>`
+        ? `<label class="pcfg-guest-editchk"><input type="checkbox" ${editHidden.includes(key)?'checked':''} onchange="pcfgToggleGuestEditHidden('${p.slug}','${key}')"> ${pcfgEsc(PCFG_EDIT_LABELS[key] || 'Masquer les boutons de modification')}</label>`
         : '';
       return `<div><label class="pcfg-guest-chk"><input type="checkbox" ${on?'checked':''} onchange="pcfgToggleGuestTab('${p.slug}','${key}')"> ${pcfgEsc(lbl)}</label>${editRow}</div>`;
     }).join('');
@@ -2003,11 +2017,6 @@ const ek = (() => {
   function openModal() {
     
     if (!selectedRecord) return;
-    const pwd = prompt('Mot de passe requis pour modifier cette fiche :');
-    if (pwd !== EK_EDIT_PASSWORD) {
-      if (pwd !== null) alert('Mot de passe incorrect.');
-      return;
-    }
     const r = selectedRecord;
     const editableFields = [
       { name: 'DISPOSITIF', label: 'Dispositif', type: 'text' },
@@ -2296,7 +2305,6 @@ const DEPT = '49';
 const PAGE_SIZE = 50;
 const MARKER_RENDER_CAP = 1500; // sécurité : au-delà, on affiche un message plutôt que de saturer la carte
 const GRIST_TABLE_AN = 'Organismes_locaux';
-const EK_EDIT_PASSWORD = 'grist';
 
 let anState = {
   apiRecords: [], localRecords: [], finessRecords: [], allRecords: [], filtered: [],
@@ -4135,6 +4143,10 @@ const aiot = (() => {
           ta.dataset.siteId = siteId;
           ta.dataset.col = col;
           if (rec) ta.dataset.rowId = rec.id;
+          if (typeof pcfgIsAiotEditLocked === 'function' && pcfgIsAiotEditLocked()) {
+            ta.readOnly = true;
+            ta.tabIndex = -1;
+          }
 
           ta.addEventListener('keydown', e => {
             if (e.key === 'Tab') {
@@ -4371,7 +4383,15 @@ const aiot = (() => {
     await loadWeek();
   }
 
-  return { init, exportPdf };
+  function applyEditLock() {
+    const locked = typeof pcfgIsAiotEditLocked === 'function' && pcfgIsAiotEditLocked();
+    document.querySelectorAll('#aiot-planning-body textarea').forEach(ta => {
+      ta.readOnly = locked;
+      ta.tabIndex = locked ? -1 : 0;
+    });
+  }
+
+  return { init, exportPdf, applyEditLock };
 })();
 
 async function loadBandeau(){
