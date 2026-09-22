@@ -834,7 +834,7 @@
     .pcfg-guest-del { border: none; background: transparent; color: var(--rf-grey-600); cursor: pointer; font-size: 14px; padding: 2px 6px; }
     .pcfg-guest-del:hover { color: var(--rf-red); }
     .pcfg-guest-sub { font-size: 10.5px; font-weight: 700; color: var(--rf-grey-600); text-transform: uppercase; letter-spacing: .05em; margin: 8px 0 4px; }
-    .pcfg-guest-grid { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+    .pcfg-guest-grid { display: flex; flex-direction: column; gap: 4px; }
     .pcfg-guest-chk { display: flex; align-items: center; gap: 5px; font-size: 12.5px; cursor: pointer; color: var(--rf-grey-900); }
     .pcfg-guest-link-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
     .pcfg-guest-copied { font-size: 11.5px; color: var(--rf-green); opacity: 0; transition: opacity .2s; }
@@ -846,6 +846,16 @@
     }
     .pcfg-toast.show { opacity: 1; transform: translateY(0); }
     .pcfg-toast.error { background: var(--rf-red); }
+    /* Masquage des actions de modification dans les vues partagées (profils invités) :
+       chaque bouton/lien de modification porte data-pcfg-edit="<clé onglet>" ;
+       ces règles couvrent tous les onglets, qu'ils aient ou non ce type d'action. */
+    body.pcfg-hide-edit-eureka [data-pcfg-edit="eureka"],
+    body.pcfg-hide-edit-mdd [data-pcfg-edit="mdd"],
+    body.pcfg-hide-edit-annuaire [data-pcfg-edit="annuaire"],
+    body.pcfg-hide-edit-logigramme [data-pcfg-edit="logigramme"],
+    body.pcfg-hide-edit-fichesMDD [data-pcfg-edit="fichesMDD"],
+    body.pcfg-hide-edit-aiot [data-pcfg-edit="aiot"] { display: none !important; }
+    .pcfg-guest-editchk { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--rf-grey-600); cursor: pointer; margin-left: 18px; }
   </style>
 </head>
 <body>
@@ -1462,6 +1472,9 @@ const PCFG_TABS = [
   { key: 'aiot',       label: 'Planning AIOT' },
 ];
 const PCFG_DEFAULT_TAB_ORDER = PCFG_TABS.map(t => t.key);
+// Onglets contenant des actions de modification (bouton "Modifier", lien Grist, etc.)
+// repérables via [data-pcfg-edit="<clé>"] dans le HTML — liste à étendre si besoin.
+const PCFG_EDIT_CAPABLE_TABS = ['eureka', 'fichesMDD'];
 
 const PCFG_REQUIRED_TABLES = [
   { id: 'Parametres', label: 'Paramètres', cols: [
@@ -1614,6 +1627,18 @@ function applyHiddenTabs() {
     const firstVisible = getPcfgTabOrder().find(k => !pcfgHiddenTabs.includes(k) && (!pcfgGuestProfile || pcfgGuestProfile.tabs.includes(k)));
     if (firstVisible) switchTab(firstVisible);
   }
+  pcfgApplyGuestEditRestrictions();
+}
+
+// Masque, pour une vue partagée, les actions de modification des onglets
+// listés dans son champ editHidden (indépendant de la visibilité des onglets
+// eux-mêmes) — via des classes sur <body>, actives quelle que soit la façon
+// dont le contenu du panneau est ensuite re-rendu par ses propres modules.
+function pcfgApplyGuestEditRestrictions() {
+  const hidden = pcfgGuestProfile ? (pcfgGuestProfile.editHidden || []) : [];
+  PCFG_EDIT_CAPABLE_TABS.forEach(key => {
+    document.body.classList.toggle('pcfg-hide-edit-' + key, hidden.includes(key));
+  });
 }
 
 async function pcfgSaveParam(cle, valeurObj) {
@@ -1725,6 +1750,17 @@ function pcfgToggleGuestTab(slug, key) {
   if (!p) return;
   const i = p.tabs.indexOf(key);
   if (i === -1) p.tabs.push(key); else p.tabs.splice(i,1);
+  // Un onglet décoché n'a plus de raison de garder ses modifs masquées/affichées.
+  if (i !== -1 && p.editHidden) p.editHidden = p.editHidden.filter(k => k !== key);
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgToggleGuestEditHidden(slug, key) {
+  const p = pcfgGuestProfiles.find(x => x.slug === slug);
+  if (!p) return;
+  if (!p.editHidden) p.editHidden = [];
+  const i = p.editHidden.indexOf(key);
+  if (i === -1) p.editHidden.push(key); else p.editHidden.splice(i,1);
   pcfgSaveGuestProfiles();
 }
 
@@ -1760,11 +1796,15 @@ function pcfgRenderGuests() {
   if (!pcfgGuestProfiles.length) { box.innerHTML = '<div class="pcfg-hint" style="margin-bottom:8px">Aucune vue partagée pour l\'instant.</div>'; return; }
   const visibleTabs = getPcfgTabOrder().filter(k => !pcfgHiddenTabs.includes(k));
   box.innerHTML = pcfgGuestProfiles.map(p => {
+    const editHidden = p.editHidden || [];
     const tabsH = visibleTabs.map(key => {
       const t = PCFG_TABS.find(x => x.key === key);
       const lbl = pcfgTabLabels[key] || (t ? t.label : key);
       const on = p.tabs.includes(key);
-      return `<label class="pcfg-guest-chk"><input type="checkbox" ${on?'checked':''} onchange="pcfgToggleGuestTab('${p.slug}','${key}')"> ${pcfgEsc(lbl)}</label>`;
+      const editRow = (on && PCFG_EDIT_CAPABLE_TABS.includes(key))
+        ? `<label class="pcfg-guest-editchk"><input type="checkbox" ${editHidden.includes(key)?'checked':''} onchange="pcfgToggleGuestEditHidden('${p.slug}','${key}')"> Masquer les boutons de modification</label>`
+        : '';
+      return `<div><label class="pcfg-guest-chk"><input type="checkbox" ${on?'checked':''} onchange="pcfgToggleGuestTab('${p.slug}','${key}')"> ${pcfgEsc(lbl)}</label>${editRow}</div>`;
     }).join('');
     return `<div class="pcfg-guest-card">
       <div class="pcfg-guest-head">
@@ -1910,7 +1950,7 @@ const ek = (() => {
         </div>
         <h1 class="ek-card-title">${escH(getVal(r.DISPOSITIF) || 'Sans titre')}</h1>
         ${getVal(r.PUBLIC_CIBLE) ? `<p class="ek-card-subtitle">${escH(getVal(r.PUBLIC_CIBLE))}</p>` : ''}
-        <button class="ek-edit-btn" onclick="ek.openModal()">
+        <button class="ek-edit-btn" data-pcfg-edit="eureka" onclick="ek.openModal()">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           Modifier la fiche
         </button>
@@ -3795,7 +3835,7 @@ html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px
 + '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>'
 + 'Imprimer'
 + '</button>'
-+ '<a class="edit-grist-btn" href="https://grist.maine-et-loire.fr/o/sru/6bhrtFTAaUhL/EUREKA3/p/41?style=light" target="_blank">'
++ '<a class="edit-grist-btn" data-pcfg-edit="fichesMDD" href="https://grist.maine-et-loire.fr/o/sru/6bhrtFTAaUhL/EUREKA3/p/41?style=light" target="_blank">'
 + '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>'
 + 'Modifier'
 + '</a>'
