@@ -800,6 +800,52 @@
     .map-tiles-grey {
   filter: grayscale(1) brightness(1.1) contrast(0.95);
 }
+
+    /* ══ RÉGLAGES WIDGET (roue crantée + modale) ══ */
+    .pcfg-gear-btn {
+      width: 32px; height: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-sm); background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.85); cursor: pointer; transition: var(--transition);
+    }
+    .pcfg-gear-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.4); color: #fff; }
+    .pcfg-ov {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    .pcfg-ov.open { display: flex; }
+    .pcfg-box {
+      width: 480px; max-width: calc(100vw - 40px); max-height: calc(100vh - 60px); overflow-y: auto;
+      background: var(--rf-white); border-radius: var(--radius-md); padding: 20px 22px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.25); font-family: var(--font-main);
+    }
+    .pcfg-title { font-size: 16px; font-weight: 800; color: var(--rf-blue-dark); margin-bottom: 14px; }
+    .pcfg-section-title { font-size: 11px; font-weight: 700; color: var(--rf-grey-600); text-transform: uppercase; letter-spacing: 0.07em; margin: 16px 0 8px; }
+    .pcfg-hint { font-size: 12px; color: var(--rf-grey-600); line-height: 1.5; }
+    .pcfg-close-row { display: flex; justify-content: flex-end; margin-top: 18px; }
+    .pcfg-tabrow { display: flex; align-items: center; gap: 8px; padding: 5px 0; }
+    .pcfg-tabrow-move { display: flex; flex-direction: column; gap: 1px; }
+    .pcfg-tabrow-move button { border: none; background: var(--rf-grey-200); color: var(--rf-grey-600); width: 16px; height: 13px; font-size: 9px; line-height: 1; cursor: pointer; border-radius: 3px; padding: 0; }
+    .pcfg-tabrow-move button:hover:not(:disabled) { background: var(--rf-blue); color: #fff; }
+    .pcfg-tabrow-move button:disabled { opacity: .3; cursor: default; }
+    .pcfg-tabrow-input { flex: 1; padding: 5px 8px; border: 1px solid var(--rf-grey-300); border-radius: var(--radius-sm); background: var(--rf-grey-100); font-family: var(--font-main); font-size: 12.5px; color: var(--rf-grey-900); outline: none; }
+    .pcfg-tabrow-input:focus { border-color: var(--rf-blue); }
+    .pcfg-guest-card { border: 1px solid var(--rf-grey-300); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 10px; background: var(--rf-grey-100); }
+    .pcfg-guest-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .pcfg-guest-del { border: none; background: transparent; color: var(--rf-grey-600); cursor: pointer; font-size: 14px; padding: 2px 6px; }
+    .pcfg-guest-del:hover { color: var(--rf-red); }
+    .pcfg-guest-sub { font-size: 10.5px; font-weight: 700; color: var(--rf-grey-600); text-transform: uppercase; letter-spacing: .05em; margin: 8px 0 4px; }
+    .pcfg-guest-grid { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+    .pcfg-guest-chk { display: flex; align-items: center; gap: 5px; font-size: 12.5px; cursor: pointer; color: var(--rf-grey-900); }
+    .pcfg-guest-link-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .pcfg-guest-copied { font-size: 11.5px; color: var(--rf-green); opacity: 0; transition: opacity .2s; }
+    .pcfg-guest-copied.vis { opacity: 1; }
+    .pcfg-toast {
+      position: fixed; bottom: 20px; right: 20px; z-index: 1100; background: var(--rf-grey-900); color: #fff;
+      padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+      box-shadow: var(--shadow-md); opacity: 0; transform: translateY(8px); transition: all .2s ease; pointer-events: none;
+    }
+    .pcfg-toast.show { opacity: 1; transform: translateY(0); }
+    .pcfg-toast.error { background: var(--rf-red); }
   </style>
 </head>
 <body>
@@ -840,11 +886,45 @@
         <span class="rf-live-dot"></span>
         <span id="an-total-count" style="display:none">…</span>
       </div>
+      <button class="pcfg-gear-btn" id="pcfgGearBtn" onclick="openPcfgModal()" title="Réglages du widget">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
     </div>
   </header>
 
   <!-- Bandeaux d'information -->
   <div id="rf-bandeau-container"></div>
+
+  <!-- ══ MODALE RÉGLAGES WIDGET ══ -->
+  <div class="pcfg-ov" id="pcfgOv" onclick="handlePcfgOvClick(event)">
+    <div class="pcfg-box">
+      <div class="pcfg-title">Réglages du widget</div>
+
+      <div class="pcfg-section-title">Structure du document</div>
+      <div class="pcfg-hint" style="margin-bottom:8px">
+        Vérifie que la table Grist « Parametres » (nécessaire pour enregistrer ces réglages) existe dans ce document, et la crée si besoin.
+      </div>
+      <button class="btn-ghost" style="width:100%;justify-content:center;margin-bottom:8px" onclick="pcfgCheckTables()">Vérifier la table</button>
+      <div id="pcfgTablesStatus" class="pcfg-hint" style="margin-bottom:4px"></div>
+
+      <div class="pcfg-section-title">Onglets</div>
+      <div class="pcfg-hint" style="margin-bottom:8px">
+        Décoche un onglet pour le masquer (les données restent intactes, seul l'affichage change). Le champ personnalise le libellé affiché. Les flèches ▲▼ changent l'ordre. Réglage commun à tous les utilisateurs du document.
+      </div>
+      <div id="pcfgTabsSection"></div>
+
+      <div class="pcfg-section-title">Vues partagées</div>
+      <div class="pcfg-hint" style="margin-bottom:8px">
+        Génère un lien qui n'affiche que certains onglets — pratique pour partager une vue simplifiée à un contact externe (profil invité). <strong>Ce n'est pas une restriction de sécurité</strong> : la personne garde accès à l'ensemble des données du document Grist par d'autres moyens ; c'est uniquement pour alléger l'affichage.
+      </div>
+      <div id="pcfgGuestsList"></div>
+      <button class="btn-ghost" style="width:100%;margin-bottom:8px" onclick="pcfgAddGuest()">+ Nouvelle vue partagée</button>
+
+      <div class="pcfg-close-row">
+        <button class="btn-ghost" onclick="closePcfgModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Navigation -->
   <nav class="rf-nav">
@@ -1358,6 +1438,347 @@ function switchTab(name) {
   if (name === 'aiot') {
     if (typeof grist !== 'undefined') aiot.init();
   }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RÉGLAGES WIDGET — roue crantée : onglets, ordre, vues partagées
+   (table Grist "Parametres", clé/valeur, valeur = JSON)
+═══════════════════════════════════════════════════════ */
+let pcfgHiddenTabs = [];   // clés des onglets masqués
+let pcfgTabLabels  = {};   // libellés personnalisés { key: 'Libellé' }
+let pcfgTabOrder   = [];   // ordre personnalisé des onglets
+let pcfgGuestProfiles = []; // vues partagées : [{ slug, label, tabs:[...] }]
+const pcfgUrlParams = new URLSearchParams(location.search);
+const pcfgGuestSlug = pcfgUrlParams.get('vue');
+let pcfgGuestProfile = null;
+
+// Correspond aux data-panel de la nav (.rf-tab)
+const PCFG_TABS = [
+  { key: 'eureka',     label: 'Dispositifs' },
+  { key: 'mdd',        label: 'Quelle MDD ?' },
+  { key: 'annuaire',   label: 'Annuaire' },
+  { key: 'logigramme', label: 'Référentiels' },
+  { key: 'fichesMDD',  label: 'Fiches missions' },
+  { key: 'aiot',       label: 'Planning AIOT' },
+];
+const PCFG_DEFAULT_TAB_ORDER = PCFG_TABS.map(t => t.key);
+
+const PCFG_REQUIRED_TABLES = [
+  { id: 'Parametres', label: 'Paramètres', cols: [
+    { id: 'cle',    type: 'Text' },
+    { id: 'valeur', type: 'Text' },
+  ]},
+];
+
+function pcfgEsc(str) { return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function pcfgToast(msg, type) {
+  let el = document.getElementById('pcfgToastEl');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'pcfgToastEl';
+    el.className = 'pcfg-toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.className = 'pcfg-toast show' + (type === 'error' ? ' error' : '');
+  clearTimeout(el._pcfgT);
+  el._pcfgT = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function openPcfgModal() {
+  document.getElementById('pcfgOv').classList.add('open');
+  document.getElementById('pcfgTablesStatus').innerHTML = '';
+  pcfgRenderTabsSection();
+  pcfgRenderGuests();
+}
+function closePcfgModal() { document.getElementById('pcfgOv').classList.remove('open'); }
+function handlePcfgOvClick(e) { if (e.target === document.getElementById('pcfgOv')) closePcfgModal(); }
+
+// ── Installateur : vérifie/crée uniquement la table Parametres ──
+function pcfgSetTablesStatus(html) {
+  const el = document.getElementById('pcfgTablesStatus');
+  if (el) el.innerHTML = html;
+}
+
+async function pcfgCheckTables() {
+  if (typeof grist === 'undefined') { pcfgSetTablesStatus('Indisponible hors de Grist (mode démo).'); return; }
+  pcfgSetTablesStatus('Vérification en cours…');
+  let existing;
+  try {
+    existing = await grist.docApi.listTables();
+  } catch (e) {
+    pcfgSetTablesStatus('Erreur lors de la lecture des tables : ' + e.message);
+    return;
+  }
+  const missing = PCFG_REQUIRED_TABLES.filter(t => !existing.includes(t.id));
+  if (!missing.length) {
+    pcfgSetTablesStatus('✓ La table Paramètres est déjà présente.');
+    return;
+  }
+  const names = missing.map(t => t.label || t.id).join(', ');
+  pcfgSetTablesStatus(
+    `Table manquante : ${names}.<br>` +
+    `<button class="btn-ghost" style="margin-top:6px" onclick="pcfgInstallTables()">Créer cette table</button>`
+  );
+}
+
+async function pcfgInstallTables() {
+  pcfgSetTablesStatus('Création en cours…');
+  let existing;
+  try {
+    existing = await grist.docApi.listTables();
+  } catch (e) {
+    pcfgSetTablesStatus('Erreur lors de la lecture des tables : ' + e.message);
+    return;
+  }
+  const missing = PCFG_REQUIRED_TABLES.filter(t => !existing.includes(t.id));
+  if (!missing.length) {
+    pcfgSetTablesStatus('✓ La table Paramètres est déjà présente.');
+    return;
+  }
+  const actions = missing.map(t => ['AddTable', t.id, t.cols]);
+  try {
+    await grist.docApi.applyUserActions(actions);
+    pcfgSetTablesStatus('✓ Table créée : ' + missing.map(t=>t.label||t.id).join(', ') + '.');
+    await fetchPcfgConfig();
+    applyHiddenTabs();
+  } catch (e) {
+    pcfgSetTablesStatus('Erreur lors de la création : ' + e.message);
+  }
+}
+
+// ── Chargement / application de la config ──
+async function fetchPcfgConfig() {
+  pcfgHiddenTabs = [];
+  pcfgTabLabels = {};
+  pcfgTabOrder = [];
+  pcfgGuestProfiles = [];
+  if (typeof grist === 'undefined') return;
+  try {
+    const t = await grist.docApi.fetchTable('Parametres');
+    if (t && t.cle) {
+      const get = (cle) => { const idx = t.cle.findIndex(c => c === cle); return idx !== -1 ? t.valeur?.[idx] : undefined; };
+      const raw1 = get('onglets_masques');
+      if (raw1) { try { pcfgHiddenTabs = JSON.parse(raw1) || []; } catch(e) { pcfgHiddenTabs = []; } }
+      const raw2 = get('libelles_onglets');
+      if (raw2) { try { pcfgTabLabels = JSON.parse(raw2) || {}; } catch(e) { pcfgTabLabels = {}; } }
+      const raw3 = get('ordre_onglets');
+      if (raw3) { try { pcfgTabOrder = JSON.parse(raw3) || []; } catch(e) { pcfgTabOrder = []; } }
+      const raw4 = get('vues_partagees');
+      if (raw4) { try { pcfgGuestProfiles = JSON.parse(raw4) || []; } catch(e) { pcfgGuestProfiles = []; } }
+    }
+  } catch(e) { /* table Parametres absente : réglages par défaut */ }
+}
+
+function getPcfgTabOrder() {
+  const order = pcfgTabOrder.filter(k => PCFG_DEFAULT_TAB_ORDER.includes(k));
+  PCFG_DEFAULT_TAB_ORDER.forEach(k => { if (!order.includes(k)) order.push(k); });
+  return order;
+}
+
+function pcfgApplyTabOrder() {
+  const container = document.querySelector('.rf-nav');
+  if (!container) return;
+  getPcfgTabOrder().forEach(key => {
+    const el = container.querySelector(`[data-panel="${key}"]`);
+    if (el) container.appendChild(el);
+  });
+}
+
+function pcfgApplyTabLabels() {
+  PCFG_TABS.forEach(t => {
+    const el = document.querySelector(`.rf-tab[data-panel="${t.key}"] .tab-label-main`);
+    if (el) el.textContent = pcfgTabLabels[t.key] || t.label;
+  });
+}
+
+function pcfgResolveGuestProfile() {
+  pcfgGuestProfile = pcfgGuestSlug ? (pcfgGuestProfiles.find(p => p.slug === pcfgGuestSlug) || null) : null;
+}
+
+function applyHiddenTabs() {
+  pcfgResolveGuestProfile();
+  const gearBtn = document.getElementById('pcfgGearBtn');
+  if (gearBtn) gearBtn.style.display = pcfgGuestProfile ? 'none' : '';
+  let activeIsHidden = false;
+  document.querySelectorAll('.rf-tab').forEach(t => {
+    const key = t.dataset.panel;
+    const hide = pcfgHiddenTabs.includes(key) || (pcfgGuestProfile && !pcfgGuestProfile.tabs.includes(key));
+    t.style.display = hide ? 'none' : '';
+    if (hide && t.classList.contains('active')) activeIsHidden = true;
+  });
+  pcfgApplyTabLabels();
+  pcfgApplyTabOrder();
+  if (activeIsHidden) {
+    const firstVisible = getPcfgTabOrder().find(k => !pcfgHiddenTabs.includes(k) && (!pcfgGuestProfile || pcfgGuestProfile.tabs.includes(k)));
+    if (firstVisible) switchTab(firstVisible);
+  }
+}
+
+async function pcfgSaveParam(cle, valeurObj) {
+  const valeur = JSON.stringify(valeurObj);
+  const t = await grist.docApi.fetchTable('Parametres');
+  const idx = t?.cle ? t.cle.findIndex(c => c === cle) : -1;
+  if (idx !== -1) {
+    await grist.docApi.applyUserActions([['UpdateRecord','Parametres',t.id[idx],{valeur}]]);
+  } else {
+    await grist.docApi.applyUserActions([['AddRecord','Parametres',null,{cle,valeur}]]);
+  }
+}
+
+async function pcfgSaveHiddenTabs(newHidden) {
+  pcfgHiddenTabs = newHidden;
+  try {
+    await pcfgSaveParam('onglets_masques', newHidden);
+    applyHiddenTabs();
+    pcfgToast('Onglets mis à jour');
+  } catch(e) { pcfgToast(e.message, 'error'); }
+}
+
+function pcfgRenderTabsSection() {
+  const el = document.getElementById('pcfgTabsSection');
+  if (!el) return;
+  const order = getPcfgTabOrder();
+  el.innerHTML = order.map((key, i) => {
+    const t = PCFG_TABS.find(x => x.key === key);
+    if (!t) return '';
+    return `
+    <div class="pcfg-tabrow" data-tab="${t.key}">
+      <div class="pcfg-tabrow-move">
+        <button onclick="pcfgMoveTab('${t.key}',-1)" ${i===0?'disabled':''}>▲</button>
+        <button onclick="pcfgMoveTab('${t.key}',1)" ${i===order.length-1?'disabled':''}>▼</button>
+      </div>
+      <input type="checkbox" data-tabkey="${t.key}" ${pcfgHiddenTabs.includes(t.key)?'':'checked'} onchange="pcfgHandleTabCheckbox(this)">
+      <input type="text" class="pcfg-tabrow-input" placeholder="${pcfgEsc(t.label)}" value="${pcfgEsc(pcfgTabLabels[t.key]||'')}" onchange="pcfgSetTabLabel('${t.key}', this.value)">
+    </div>`;
+  }).join('');
+}
+
+function pcfgHandleTabCheckbox(checkbox) {
+  const key = checkbox.dataset.tabkey;
+  let next = pcfgHiddenTabs.filter(k => k !== key);
+  if (!checkbox.checked) next.push(key);
+  // Toujours garder au moins un onglet visible
+  if (next.length >= PCFG_TABS.length) {
+    checkbox.checked = true;
+    pcfgToast('Il doit rester au moins un onglet visible', 'error');
+    return;
+  }
+  pcfgSaveHiddenTabs(next);
+}
+
+// ── Ordre et libellés des onglets ──
+function pcfgMoveTab(key, dir) {
+  const order = getPcfgTabOrder();
+  const i = order.indexOf(key);
+  const j = i + dir;
+  if (j < 0 || j >= order.length) return;
+  [order[i], order[j]] = [order[j], order[i]];
+  pcfgTabOrder = order;
+  pcfgSaveOrderAndLabels();
+}
+
+function pcfgSetTabLabel(key, value) {
+  const v = (value || '').trim();
+  if (v) pcfgTabLabels[key] = v; else delete pcfgTabLabels[key];
+  pcfgSaveOrderAndLabels();
+}
+
+async function pcfgSaveOrderAndLabels() {
+  try {
+    await pcfgSaveParam('ordre_onglets', pcfgTabOrder);
+    await pcfgSaveParam('libelles_onglets', pcfgTabLabels);
+    applyHiddenTabs();
+    pcfgRenderTabsSection();
+    pcfgToast('Onglets mis à jour');
+  } catch(e) { pcfgToast(e.message, 'error'); }
+}
+
+// ── Vues partagées (liens invité / profils invités) ──
+function pcfgSlug(s) {
+  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'invite';
+}
+
+function pcfgAddGuest() {
+  let base = 'invite', slug = base, n = 1;
+  while (pcfgGuestProfiles.some(p => p.slug === slug)) { n++; slug = base + '-' + n; }
+  pcfgGuestProfiles.push({
+    slug,
+    label: 'Nouvelle vue',
+    tabs: getPcfgTabOrder().filter(k => !pcfgHiddenTabs.includes(k)),
+  });
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgRenameGuest(oldSlug, newLabel) {
+  const p = pcfgGuestProfiles.find(x => x.slug === oldSlug);
+  if (!p) return;
+  p.label = newLabel;
+  const newSlug = pcfgSlug(newLabel);
+  if (newSlug !== oldSlug && !pcfgGuestProfiles.some(x => x.slug === newSlug)) p.slug = newSlug;
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgToggleGuestTab(slug, key) {
+  const p = pcfgGuestProfiles.find(x => x.slug === slug);
+  if (!p) return;
+  const i = p.tabs.indexOf(key);
+  if (i === -1) p.tabs.push(key); else p.tabs.splice(i,1);
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgDeleteGuest(slug) {
+  if (!confirm('Supprimer cette vue partagée ?')) return;
+  pcfgGuestProfiles = pcfgGuestProfiles.filter(p => p.slug !== slug);
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgCopyGuestLink(slug) {
+  const url = location.origin + location.pathname + '?vue=' + encodeURIComponent(slug);
+  navigator.clipboard.writeText(url).then(() => pcfgShowGuestCopied(slug)).catch(() => prompt('Copie manuelle :', url));
+}
+
+function pcfgShowGuestCopied(slug) {
+  const el = document.getElementById('pcfg-guest-copied-' + slug);
+  if (!el) return;
+  el.classList.add('vis');
+  setTimeout(() => el.classList.remove('vis'), 1400);
+}
+
+async function pcfgSaveGuestProfiles() {
+  try {
+    await pcfgSaveParam('vues_partagees', pcfgGuestProfiles);
+    pcfgRenderGuests();
+    pcfgToast('Vues partagées mises à jour');
+  } catch(e) { pcfgToast(e.message, 'error'); }
+}
+
+function pcfgRenderGuests() {
+  const box = document.getElementById('pcfgGuestsList');
+  if (!box) return;
+  if (!pcfgGuestProfiles.length) { box.innerHTML = '<div class="pcfg-hint" style="margin-bottom:8px">Aucune vue partagée pour l\'instant.</div>'; return; }
+  const visibleTabs = getPcfgTabOrder().filter(k => !pcfgHiddenTabs.includes(k));
+  box.innerHTML = pcfgGuestProfiles.map(p => {
+    const tabsH = visibleTabs.map(key => {
+      const t = PCFG_TABS.find(x => x.key === key);
+      const lbl = pcfgTabLabels[key] || (t ? t.label : key);
+      const on = p.tabs.includes(key);
+      return `<label class="pcfg-guest-chk"><input type="checkbox" ${on?'checked':''} onchange="pcfgToggleGuestTab('${p.slug}','${key}')"> ${pcfgEsc(lbl)}</label>`;
+    }).join('');
+    return `<div class="pcfg-guest-card">
+      <div class="pcfg-guest-head">
+        <input type="text" class="pcfg-tabrow-input" value="${pcfgEsc(p.label)}" onchange="pcfgRenameGuest('${p.slug}', this.value)">
+        <button class="pcfg-guest-del" onclick="pcfgDeleteGuest('${p.slug}')" title="Supprimer">✕</button>
+      </div>
+      <div class="pcfg-guest-sub">Onglets visibles</div>
+      <div class="pcfg-guest-grid">${tabsH}</div>
+      <div class="pcfg-guest-link-row">
+        <button class="btn-ghost" onclick="pcfgCopyGuestLink('${p.slug}')">Copier le lien</button>
+        <span class="pcfg-guest-copied" id="pcfg-guest-copied-${p.slug}">Copié ✓</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -3950,12 +4371,17 @@ async function loadBandeau(){
   }catch(e){ console.warn('[bandeau] table introuvable', e); }
 }
 
+async function pcfgInit() {
+  await fetchPcfgConfig();
+  applyHiddenTabs();
+}
+
 function start(){
   if(typeof L!=='undefined'){initMap();anLoadData();}
   else setTimeout(start,100);
   mdd.loadMdsVoies();
   mdd.loadInfos();
-  if(typeof grist!=='undefined'){ mdd2_loadAllTables(); loadBandeau(); }
+  if(typeof grist!=='undefined'){ mdd2_loadAllTables(); loadBandeau(); pcfgInit(); }
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);
