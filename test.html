@@ -662,6 +662,15 @@
   font-family: var(--font-main);
   transition: all .15s;
 }
+#panel-fichesMDD .print-fiche-btn.print-fiche-btn-test {
+  border: 1px dashed #8b5cf6;
+  color: #7c3aed;
+  background: #f5f3ff;
+}
+#panel-fichesMDD .print-fiche-btn.print-fiche-btn-test:hover {
+  border-color: #7c3aed;
+  background: #ede9fe;
+}
 #panel-fichesMDD .print-fiche-btn:hover {
   border-color: var(--rf-blue);
   color: var(--rf-blue);
@@ -3979,6 +3988,10 @@ html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px
 + '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>'
 + 'Imprimer'
 + '</button>'
++ '<button class="print-fiche-btn print-fiche-btn-test" onclick="mdd2_printFiche2()" title="Version test — mise en page inspirée du document type MDS">'
++ '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>'
++ 'Imprimer 2'
++ '</button>'
 + '<a class="edit-grist-btn" data-pcfg-edit="fichesMDD" href="https://grist.maine-et-loire.fr/o/sru/6bhrtFTAaUhL/EUREKA3/p/41?style=light" target="_blank">'
 + '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>'
 + 'Modifier'
@@ -4138,6 +4151,128 @@ function mdd2_printFiche() {
   const win = window.open('', '_blank', 'width=900,height:1100');
   if (!win) { alert('Autorisez les popups pour imprimer.'); return; }
   win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>' + mdd2_esc(name) + '</title><style>' + css + '</style></head><body>' + content.innerHTML + '<script>window.onload=function(){window.print();}<\/script></body></html>');
+  win.document.close();
+}
+
+/* ── Version test "Imprimer 2" : mise en page compacte 2 colonnes,
+   inspirée du document type "MDS ANGERS OUEST" (annuaire papier). ── */
+function mdd2_p2Phones(...nums) {
+  return nums.filter(Boolean).map(n => mdd2_esc(n)).join(' / ');
+}
+
+function mdd2_p2CadreLine(code, cadre) {
+  const nom  = mdd2_get(cadre, 'nom_prenom', 'Nom_prenom');
+  if (!nom) return '';
+  const port = mdd2_get(cadre, 'telephone_portable', 'Telephone_portable');
+  const lig  = mdd2_get(cadre, 'ligne_directe', 'Ligne_directe');
+  const tel  = mdd2_p2Phones(lig, port);
+  return '<div class="p2-cadre-line"><span class="p2-cadre-code">' + mdd2_esc(code) + '</span> '
+       + '<span class="p2-cadre-nom">' + mdd2_esc(nom) + '</span>'
+       + (tel ? ' <span class="p2-cadre-tel">' + tel + '</span>' : '')
+       + '</div>';
+}
+
+function mdd2_p2PersonList(text) {
+  if (!text) return '';
+  let html = '';
+  text.split('\n').filter(l => l.trim()).forEach(line => {
+    if (line.indexOf('|') === -1) {
+      html += '<div class="p2-person">' + mdd2_esc(line.trim()) + '</div>';
+      return;
+    }
+    const p = mdd2_parsePerson(line);
+    const fnStr = p.fn ? ' — ' + mdd2_esc(p.fn) : '';
+    const tel = mdd2_p2Phones(p.ligne, p.portable);
+    html += '<div class="p2-person"><span class="p2-person-nom">' + mdd2_esc(p.name) + fnStr + '</span>'
+          + (tel ? ' <span class="p2-person-tel">' + tel + '</span>' : '')
+          + '</div>';
+  });
+  return html;
+}
+
+function mdd2_printFiche2() {
+  if (!mdd2_currentSiteId) { alert('Sélectionnez un site.'); return; }
+  const site = mdd2_sitesData.find(s => String(s.id) === String(mdd2_currentSiteId));
+  if (!site) { alert('Site introuvable.'); return; }
+  const name = mdd2_get(site, 'nom_site', 'Nom_site') || 'Site';
+  const obs  = mdd2_get(site, 'observations', 'Observations');
+  const siteCadres = mdd2_cadresData.filter(c => String(mdd2_get(c,'site','Site') || c.site) === String(mdd2_currentSiteId));
+  const siteMissions = mdd2_missionsData.filter(m => String(mdd2_get(m,'site','Site') || m.site) === String(mdd2_currentSiteId));
+
+  // Bloc cadres, en tête de page (comme le bandeau "CADRES" du document de référence)
+  let cadresHtml = '';
+  MDD2_CADRE_TYPES.forEach(t => {
+    if (t === 'RATPE') {
+      siteCadres.filter(c => mdd2_get(c,'type_cadre','Type_cadre') === 'RATPE')
+        .forEach(r => { cadresHtml += mdd2_p2CadreLine('RATPE', r); });
+      return;
+    }
+    const cadre = siteCadres.find(c => mdd2_get(c,'type_cadre','Type_cadre') === t);
+    if (cadre) cadresHtml += mdd2_p2CadreLine(t, cadre);
+  });
+
+  // Blocs missions, destinés à s'écouler en 2 colonnes comme dans le document de référence
+  let missionsHtml = '';
+  MDD2_MISSIONS.forEach(mType => {
+    const mRow = siteMissions.find(m => (mdd2_get(m,'type_mission','Type_mission')||'').split('+').map(s => s.trim()).includes(mType));
+    if (!mRow) return;
+    const groups = mdd2_groupesData.filter(g => String(mdd2_get(g,'mission','Mission') || g.mission) === String(mRow.id));
+    groups.forEach((g, i) => {
+      const label = mdd2_get(g,'label','Label');
+      const pave  = mdd2_get(g,'pave','Pave');
+      const ass   = mdd2_get(g,'assistantes','Assistantes');
+      const tms   = mdd2_get(g,'tms','Tms');
+      const obsG  = mdd2_get(g,'observation','Observation');
+      if (!ass && !tms && !pave && !obsG) return;
+      const titre = i === 0
+        ? mdd2_esc(mType) + (label && label !== mType ? ' · ' + mdd2_esc(label) : '')
+        : mdd2_esc(label || mType);
+      missionsHtml += '<div class="p2-block">';
+      missionsHtml += '<div class="p2-block-title">' + titre + '</div>';
+      if (pave) missionsHtml += '<div class="p2-pave">' + mdd2_esc(pave) + '</div>';
+      missionsHtml += mdd2_p2PersonList(ass);
+      if (ass && tms) missionsHtml += '<div class="p2-sub">Assistants de service social</div>';
+      missionsHtml += mdd2_p2PersonList(tms);
+      if (obsG) missionsHtml += '<div class="p2-obs">' + mdd2_formatObs(obsG) + '</div>';
+      missionsHtml += '</div>';
+    });
+  });
+
+  const today = new Date().toLocaleDateString('fr-FR');
+  const css = [
+    '@page{size:A4 portrait;margin:14mm 12mm}',
+    'body{font-family:Arial,Helvetica,sans-serif;color:#1a1e2a;font-size:9.5px;line-height:1.35;margin:0}',
+    '.p2-updated{text-align:right;font-size:8px;color:#8a8f9c;margin-bottom:4px}',
+    '.p2-title{font-family:Georgia,serif;font-size:20px;font-weight:700;color:#003189;text-align:center;margin:0}',
+    '.p2-subtitle{text-align:center;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#333;margin:2px 0 10px}',
+    '.p2-hr{border:none;border-top:2px solid #003189;margin:0 0 10px}',
+    '.p2-cadres{margin-bottom:12px}',
+    '.p2-cadre-line{display:inline-block;margin:0 16px 3px 0;font-size:9.5px}',
+    '.p2-cadre-code{display:inline-block;min-width:38px;font-weight:700;color:#003189}',
+    '.p2-cadre-nom{font-weight:600}',
+    '.p2-cadre-tel{color:#444}',
+    '.p2-cols{column-count:2;column-gap:16px}',
+    '.p2-block{break-inside:avoid;page-break-inside:avoid;margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid #e2e5ec}',
+    '.p2-block-title{font-weight:700;color:#003189;font-size:10px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px}',
+    '.p2-pave{font-size:9px;color:#555;margin-bottom:4px}',
+    '.p2-sub{font-size:9px;font-weight:700;color:#555;margin:5px 0 2px}',
+    '.p2-person{margin-bottom:1px}',
+    '.p2-person-nom{font-weight:600}',
+    '.p2-person-tel{color:#444}',
+    '.p2-obs{margin-top:4px;font-size:8.5px;font-style:italic;color:#666;white-space:pre-wrap}',
+  ].join('');
+  const contenu =
+    '<div class="p2-updated">MAJ le ' + today + '</div>'
+    + '<div class="p2-title">' + mdd2_esc(name) + '</div>'
+    + '<div class="p2-subtitle">Missions — Assistants administratifs — Personnels rattachés</div>'
+    + '<hr class="p2-hr">'
+    + '<div class="p2-cadres">' + cadresHtml + '</div>'
+    + (obs ? '<div class="p2-obs" style="margin-bottom:10px">' + mdd2_formatObs(obs) + '</div>' : '')
+    + '<div class="p2-cols">' + missionsHtml + '</div>';
+
+  const win = window.open('', '_blank', 'width=900,height=1100');
+  if (!win) { alert('Autorisez les popups pour imprimer.'); return; }
+  win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>' + mdd2_esc(name) + '</title><style>' + css + '</style></head><body>' + contenu + '<script>window.onload=function(){window.print();}<\/script></body></html>');
   win.document.close();
 }
 
