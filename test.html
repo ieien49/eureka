@@ -783,6 +783,24 @@
 }
 #panel-aiot .btn-print:hover { background: var(--aiot-blue-50); border-color: var(--aiot-blue-100); color: var(--aiot-blue-800); }
 
+#panel-aiot .update-banner {
+  display: none; align-items: center; gap: 8px; margin-bottom: 10px; padding: 7px 12px;
+  background: var(--aiot-amber-50); border: 1px solid #EF9F27; border-radius: 8px;
+  font-size: 12px; font-weight: 500; color: #8a5a05;
+}
+#panel-aiot .update-banner.visible { display: flex; }
+#panel-aiot .update-banner .dot-blink {
+  width: 7px; height: 7px; border-radius: 50%; background: #EF9F27; flex-shrink: 0;
+  animation: aiot-blink 1.1s ease-in-out infinite;
+}
+@keyframes aiot-blink { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+#panel-aiot .update-banner .btn-refresh {
+  margin-left: auto; display: flex; align-items: center; gap: 5px; padding: 4px 10px; border: 1px solid #EF9F27;
+  background: #fff; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: inherit; font-weight: 600;
+  color: #8a5a05; transition: background .15s;
+}
+#panel-aiot .update-banner .btn-refresh:hover { background: #fdf1d9; }
+
 @media print {
   @page { size: A4 landscape; margin: 10mm; }
   #panel-aiot .statusbar, #panel-aiot .legend, #panel-aiot .btn-print { display: none !important; }
@@ -1308,6 +1326,12 @@
         <div class="week-label" id="aiot-week-label">—</div>
         <button class="btn-nav" id="aiot-btn-next" title="Semaine suivante">&#8250;</button>
       </div>
+    </div>
+
+    <div class="update-banner" id="aiot-update-banner">
+      <div class="dot-blink"></div>
+      <span>Attention : mise à jour disponible, un autre agent a modifié ce planning.</span>
+      <button class="btn-refresh" id="aiot-btn-refresh" title="Recharger les données de cet onglet">⟳ Actualiser</button>
     </div>
 
     <div class="statusbar">
@@ -4333,6 +4357,23 @@ const aiot = (() => {
   let siteList = [];
   let saveTimers = {};
   let initialized = false;
+  let lastKnownHash = '';
+  let updatePollTimer = null;
+
+  function computeHash(recs) {
+    return recs
+      .map(r => [r.site, ...JOURS.flatMap(j => SLOTS.map(s => r[`${j}_${s}`] || ''))].join('|'))
+      .sort()
+      .join(';');
+  }
+  function showUpdateBanner() {
+    const b = document.getElementById('aiot-update-banner');
+    if (b) b.classList.add('visible');
+  }
+  function hideUpdateBanner() {
+    const b = document.getElementById('aiot-update-banner');
+    if (b) b.classList.remove('visible');
+  }
 
   function getMonday(d) {
     const date = new Date(d);
@@ -4475,6 +4516,7 @@ const aiot = (() => {
       }
       textareas.forEach(ta => ta.classList.remove('dirty', 'error'));
       setStatus('saved', 'Enregistré ✓');
+      lastKnownHash = computeHash(records);
       setTimeout(() => setStatus('', `${records.length} site(s) configuré(s) pour cette semaine`), 2000);
     } catch (err) {
       textareas.forEach(ta => ta.classList.add('error'));
@@ -4501,9 +4543,35 @@ const aiot = (() => {
         }
       }
       render();
+      lastKnownHash = computeHash(records);
+      hideUpdateBanner();
     } catch (err) {
       setStatus('error', 'Erreur de chargement : ' + (err.message || ''));
       console.error(err);
+    }
+  }
+
+  async function checkForUpdates() {
+    // Ne rien faire si le tableau n'a pas encore été chargé une première fois.
+    if (!lastKnownHash) return;
+    try {
+      const allRecords = await grist.docApi.fetchTable(TABLE_ID);
+      const semVal = mondayToGristDate(currentMonday);
+      const current = [];
+      const count = allRecords.id.length;
+      for (let i = 0; i < count; i++) {
+        if (allRecords.semaine[i] === semVal) {
+          const row = { site: allRecords.site[i] };
+          JOURS.forEach(j => SLOTS.forEach(s => {
+            const col = `${j}_${s}`;
+            row[col] = allRecords[col] ? allRecords[col][i] : '';
+          }));
+          current.push(row);
+        }
+      }
+      if (computeHash(current) !== lastKnownHash) showUpdateBanner();
+    } catch (err) {
+      // Sondage silencieux : une erreur réseau ponctuelle ne doit pas gêner l'agent.
     }
   }
 
@@ -4536,6 +4604,17 @@ const aiot = (() => {
       loadWeek();
     });
     setInterval(applyTodayHighlight, 60000);
+
+    document.getElementById('aiot-btn-refresh').addEventListener('click', () => {
+      const hasDirty = document.querySelector('#panel-aiot textarea.dirty');
+      if (hasDirty && !confirm("Des modifications non enregistrées sont présentes dans ce tableau. Actualiser va les remplacer par la version à jour. Continuer ?")) {
+        return;
+      }
+      loadWeek();
+    });
+
+    if (updatePollTimer) clearInterval(updatePollTimer);
+    updatePollTimer = setInterval(checkForUpdates, 15000);
   }
 
   function exportPdf() {
