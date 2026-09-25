@@ -662,15 +662,6 @@
   font-family: var(--font-main);
   transition: all .15s;
 }
-#panel-fichesMDD .print-fiche-btn.print-fiche-btn-test {
-  border: 1px dashed #8b5cf6;
-  color: #7c3aed;
-  background: #f5f3ff;
-}
-#panel-fichesMDD .print-fiche-btn.print-fiche-btn-test:hover {
-  border-color: #7c3aed;
-  background: #ede9fe;
-}
 #panel-fichesMDD .print-fiche-btn:hover {
   border-color: var(--rf-blue);
   color: var(--rf-blue);
@@ -4008,13 +3999,9 @@ function mdd2_renderSite(siteId) {
   html += '<div class="site-header">';
 html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">'
       + '<h2 style="margin:0">' + mdd2_esc(name) + '</h2>'
-      + '<button class="print-fiche-btn" style="margin-left:auto" onclick="mdd2_printFiche()">'
+      + '<button class="print-fiche-btn" style="margin-left:auto" onclick="mdd2_printFiche2()">'
 + '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>'
 + 'Imprimer'
-+ '</button>'
-+ '<button class="print-fiche-btn print-fiche-btn-test" onclick="mdd2_printFiche2()" title="Version test — mise en page inspirée du document type MDS">'
-+ '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>'
-+ 'Imprimer 2'
 + '</button>'
 + '<a class="edit-grist-btn" data-pcfg-edit="fichesMDD" href="https://grist.maine-et-loire.fr/o/sru/6bhrtFTAaUhL/EUREKA3/p/41?style=light" target="_blank">'
 + '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>'
@@ -4151,35 +4138,7 @@ function mdd2_switchMission(m) {
 }
 
 
-function mdd2_printFiche() {
-  const content = document.getElementById('mdd2-site-content');
-  if (!content) return;
-  const site = mdd2_sitesData.find(s => String(s.id) === String(mdd2_currentSiteId));
-  const name = site ? (mdd2_get(site, 'nom_site', 'Nom_site') || 'Fiche') : 'Fiche';
-  const css = [
-    'body{font-family:Arial,sans-serif;color:#1a1e2a;padding:24px;font-size:12px}',
-    'h2{font-size:18px;color:#003189;border-bottom:2px solid #003189;padding-bottom:8px;margin-bottom:14px}',
-    '.edit-grist-btn,.print-fiche-btn,.missions-nav{display:none !important}',
-    '.mission-panel{display:block !important;margin-bottom:20px;page-break-inside:avoid}',
-    '.mission-panel:before{content:attr(data-print-label);display:block;font-weight:700;font-size:13px;color:#003189;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}',
-    '.groupe-card{border:1px solid #dde2ea;border-radius:8px;margin-bottom:12px;overflow:hidden}',
-    '.groupe-head{padding:8px 12px;background:#f6f6f6;font-weight:600}',
-    '.groupe-body{display:grid;grid-template-columns:1fr 1fr}',
-    '.groupe-col{padding:10px 12px;border-top:1px solid #dde2ea}',
-    '.groupe-col+.groupe-col{border-left:1px solid #dde2ea}',
-    '.cadres-table{width:100%;border-collapse:collapse;margin-bottom:16px}',
-    '.cadres-table td{padding:5px 8px;border-bottom:1px solid #dde2ea}',
-    '.badge{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}',
-    '.obs-box{background:#f6f6f6;padding:8px 12px;border-radius:6px;margin-top:6px;white-space:pre-wrap}',
-  ].join('');
-  const win = window.open('', '_blank', 'width=900,height:1100');
-  if (!win) { alert('Autorisez les popups pour imprimer.'); return; }
-  win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>' + mdd2_esc(name) + '</title><style>' + css + '</style></head><body>' + content.innerHTML + '<script>window.onload=function(){window.print();}<\/script></body></html>');
-  win.document.close();
-}
-
-/* ── Version test "Imprimer 2" : mise en page compacte 2 colonnes,
-   inspirée du document type "MDS ANGERS OUEST" (annuaire papier). ── */
+/* ── Mise en page compacte 2 colonnes, inspirée du document type "MDS ANGERS OUEST" (annuaire papier). ── */
 function mdd2_p2Phones(...nums) {
   return nums.filter(Boolean).map(n => mdd2_esc(n)).join(' / ');
 }
