@@ -1692,6 +1692,11 @@ function applyHiddenTabs() {
     if (firstVisible) switchTab(firstVisible);
   }
   pcfgApplyGuestEditRestrictions();
+  // Le profil invité est connu seulement maintenant : re-filtrer le référentiel
+  if (typeof logiRenderFiltresTags === 'function' && typeof DEM !== 'undefined' && DEM.length) {
+    logiRenderFiltresTags();
+    logiRenderCartes((document.getElementById('s-input') || {}).value || '');
+  }
 }
 
 // Masque, pour une vue partagée, les actions de modification des onglets
@@ -3535,9 +3540,16 @@ function logiFiltr(v){var sc=document.getElementById('s-clear');if(sc)sc.classNa
 function logiViderRecherche(){var i=document.getElementById('s-input');if(i){i.value='';i.focus();}var s=document.getElementById('s-clear');if(s)s.className='';logiRenderCartes('');}
 window.logiFiltr=logiFiltr;window.logiViderRecherche=logiViderRecherche;
 
+function logiDemVisibles(){
+  return DEM.filter(function(d){
+    // Dans une vue partagée (profil invité), on masque les démarches taguées "Test"
+    return !(pcfgGuestProfile && d.tags.some(function(t){return t.trim().toLowerCase()==='test';}));
+  });
+}
+
 function logiRenderFiltresTags(){
   var zone=document.getElementById('tags-filtre');if(!zone)return;zone.innerHTML='';
-  var tous={};DEM.forEach(function(d){d.tags.forEach(function(t){tous[t]=true;});});
+  var tous={};logiDemVisibles().forEach(function(d){d.tags.forEach(function(t){tous[t]=true;});});
   var lst=Object.keys(tous).sort();if(!lst.length)return;
   lst.forEach(function(t){var pill=document.createElement('button');pill.className='tag-pill'+(logiTagActif===t?' actif':'');pill.textContent=t;pill.addEventListener('click',function(){logiTagActif=(logiTagActif===t)?null:t;logiRenderFiltresTags();logiRenderCartes(document.getElementById('s-input').value||'');});zone.appendChild(pill);});
 }
@@ -3546,7 +3558,7 @@ function logiRenderCartes(filtre){
   var liste=document.getElementById('logi-liste');if(!liste)return;liste.innerHTML='';
   if(!DEM.length){liste.innerHTML='<div class="no-res">Aucune démarche configurée.</div>';return;}
   var f=(filtre||'').toLowerCase().trim();
-  var vis=DEM.filter(function(d){if(logiTagActif&&d.tags.indexOf(logiTagActif)===-1)return false;if(!f)return true;return(d.nom||'').toLowerCase().indexOf(f)!==-1||(d.desc||'').toLowerCase().indexOf(f)!==-1||d.tags.some(function(t){return t.toLowerCase().indexOf(f)!==-1;});});
+  var vis=logiDemVisibles().filter(function(d){if(logiTagActif&&d.tags.indexOf(logiTagActif)===-1)return false;if(!f)return true;return(d.nom||'').toLowerCase().indexOf(f)!==-1||(d.desc||'').toLowerCase().indexOf(f)!==-1||d.tags.some(function(t){return t.toLowerCase().indexOf(f)!==-1;});});
   if(!vis.length){liste.innerHTML='<div class="no-res">Aucun résultat pour « <strong>'+logiEsc(filtre)+'</strong> »</div>';return;}
   vis.forEach(function(dem){
     var nb=Object.values(NDS).filter(function(n){return n.dem_id===dem.id;}).length;
