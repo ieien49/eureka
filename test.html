@@ -1545,6 +1545,7 @@ const hdd = {
 ═══════════════════════════════════════════════════════ */
 let pcfgHiddenTabs = [];   // clés des onglets masqués
 let pcfgTabLabels  = {};   // libellés personnalisés { key: 'Libellé' }
+let pcfgTabSubLabels = {}; // sous-titres personnalisés { key: 'Sous-titre' }
 let pcfgTabOrder   = [];   // ordre personnalisé des onglets
 let pcfgGuestProfiles = []; // vues partagées : [{ slug, label, tabs:[...] }]
 let pcfgBandeaux = []; // bandeaux d'information, chargés directement depuis la table Grist "Bandeau"
@@ -1554,13 +1555,13 @@ let pcfgGuestProfile = null;
 
 // Correspond aux data-panel de la nav (.rf-tab)
 const PCFG_TABS = [
-  { key: 'eureka',     label: 'Dispositifs' },
-  { key: 'mdd',        label: 'Quelle MDD ?' },
-  { key: 'annuaire',   label: 'Annuaire' },
-  { key: 'logigramme', label: 'Référentiels' },
-  { key: 'fichesMDD',  label: 'Fiches missions' },
-  { key: 'aiot',       label: 'Planning AIOT' },
-  { key: 'hdd',        label: 'Orientation des appels' },
+  { key: 'eureka',     label: 'Dispositifs', sub: 'du Département' },
+  { key: 'mdd',        label: 'Quelle MDD ?', sub: 'Maisons du Département' },
+  { key: 'annuaire',   label: 'Annuaire', sub: 'À la carte' },
+  { key: 'logigramme', label: 'Référentiels', sub: 'Logigrammes' },
+  { key: 'fichesMDD',  label: 'Fiches missions', sub: 'MDD' },
+  { key: 'aiot',       label: 'Planning AIOT', sub: 'AIO-Téléphone' },
+  { key: 'hdd',        label: 'Orientation', sub: 'des appels' },
 ];
 const PCFG_DEFAULT_TAB_ORDER = PCFG_TABS.map(t => t.key);
 // Onglets contenant des actions de modification (bouton "Modifier", lien Grist, etc.)
@@ -1673,6 +1674,7 @@ async function pcfgInstallTables() {
 async function fetchPcfgConfig() {
   pcfgHiddenTabs = [];
   pcfgTabLabels = {};
+  pcfgTabSubLabels = {};
   pcfgTabOrder = [];
   pcfgGuestProfiles = [];
   if (typeof grist === 'undefined') return;
@@ -1684,6 +1686,8 @@ async function fetchPcfgConfig() {
       if (raw1) { try { pcfgHiddenTabs = JSON.parse(raw1) || []; } catch(e) { pcfgHiddenTabs = []; } }
       const raw2 = get('libelles_onglets');
       if (raw2) { try { pcfgTabLabels = JSON.parse(raw2) || {}; } catch(e) { pcfgTabLabels = {}; } }
+      const raw2b = get('sous_titres_onglets');
+      if (raw2b) { try { pcfgTabSubLabels = JSON.parse(raw2b) || {}; } catch(e) { pcfgTabSubLabels = {}; } }
       const raw3 = get('ordre_onglets');
       if (raw3) { try { pcfgTabOrder = JSON.parse(raw3) || []; } catch(e) { pcfgTabOrder = []; } }
       const raw4 = get('vues_partagees');
@@ -1711,6 +1715,8 @@ function pcfgApplyTabLabels() {
   PCFG_TABS.forEach(t => {
     const el = document.querySelector(`.rf-tab[data-panel="${t.key}"] .tab-label-main`);
     if (el) el.textContent = pcfgTabLabels[t.key] || t.label;
+    const sb = document.querySelector(`.rf-tab[data-panel="${t.key}"] .tab-label-sub`);
+    if (sb) sb.textContent = pcfgTabSubLabels[t.key] || t.sub || '';
   });
 }
 
@@ -1795,7 +1801,8 @@ function pcfgRenderTabsSection() {
         <button onclick="pcfgMoveTab('${t.key}',1)" ${i===order.length-1?'disabled':''}>▼</button>
       </div>
       <input type="checkbox" data-tabkey="${t.key}" ${pcfgHiddenTabs.includes(t.key)?'':'checked'} onchange="pcfgHandleTabCheckbox(this)">
-      <input type="text" class="pcfg-tabrow-input" placeholder="${pcfgEsc(t.label)}" value="${pcfgEsc(pcfgTabLabels[t.key]||'')}" onchange="pcfgSetTabLabel('${t.key}', this.value)">
+      <input type="text" class="pcfg-tabrow-input" placeholder="${pcfgEsc(t.label)}" value="${pcfgEsc(pcfgTabLabels[t.key]||'')}" onchange="pcfgSetTabLabel('${t.key}', this.value)" title="Titre de l'onglet">
+      <input type="text" class="pcfg-tabrow-input" style="min-width:0" placeholder="${pcfgEsc(t.sub||'Sous-titre')}" value="${pcfgEsc(pcfgTabSubLabels[t.key]||'')}" onchange="pcfgSetTabSubLabel('${t.key}', this.value)" title="Sous-titre de l'onglet">
     </div>`;
   }).join('');
 }
@@ -1830,10 +1837,17 @@ function pcfgSetTabLabel(key, value) {
   pcfgSaveOrderAndLabels();
 }
 
+function pcfgSetTabSubLabel(key, value) {
+  const v = (value || '').trim();
+  if (v) pcfgTabSubLabels[key] = v; else delete pcfgTabSubLabels[key];
+  pcfgSaveOrderAndLabels();
+}
+
 async function pcfgSaveOrderAndLabels() {
   try {
     await pcfgSaveParam('ordre_onglets', pcfgTabOrder);
     await pcfgSaveParam('libelles_onglets', pcfgTabLabels);
+    await pcfgSaveParam('sous_titres_onglets', pcfgTabSubLabels);
     applyHiddenTabs();
     pcfgRenderTabsSection();
     pcfgToast('Onglets mis à jour');
