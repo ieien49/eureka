@@ -4371,20 +4371,30 @@ function maCanEdit() {
   return !(pcfgGuestProfile && (pcfgGuestProfile.editHidden || []).includes('fichesMDD'));
 }
 
+// Une iframe neuve à chaque ouverture : document.open() réutilise la même fenêtre,
+// donc les const/let du script embarqué seraient redéclarés (erreur) à la 2e ouverture.
+function maFreshFrame() {
+  const old = document.getElementById('ma-frame');
+  const f = document.createElement('iframe');
+  f.id = 'ma-frame';
+  f.title = 'Mission Admin';
+  f.style.cssText = 'flex:1;width:100%;border:0;background:#fff';
+  if (old) old.replaceWith(f);
+  return f;
+}
+
 function maOpen() {
   if (!maCanEdit()) return;   // garde-fou en plus du masquage CSS
-  const f = document.getElementById('ma-frame');
-  if (!f) return;
   window.__maSiteId = mdd2_currentSiteId;   // lu par l'iframe pour présélectionner le site
   document.getElementById('ma-modal').classList.add('active');
+  const f = maFreshFrame();
   const d = f.contentDocument;
   d.open(); d.write(MISSION_ADMIN_HTML); d.close();
 }
 
 function maClose() {
   document.getElementById('ma-modal').classList.remove('active');
-  const f = document.getElementById('ma-frame');
-  if (f && f.contentDocument) { f.contentDocument.open(); f.contentDocument.close(); }
+  maFreshFrame();   // détruit l'iframe et son script
 }
 
 // Appelée par l'iframe après un enregistrement
