@@ -4685,11 +4685,17 @@ const aiot = (() => {
 
   function bindNav() {
     document.getElementById('aiot-btn-prev').addEventListener('click', () => {
-      currentMonday = new Date(currentMonday.getTime() - 7 * 86400000);
+      const d = new Date(currentMonday);
+      d.setDate(d.getDate() - 7);
+      d.setHours(0, 0, 0, 0);
+      currentMonday = d;
       loadWeek();
     });
     document.getElementById('aiot-btn-next').addEventListener('click', () => {
-      currentMonday = new Date(currentMonday.getTime() + 7 * 86400000);
+      const d = new Date(currentMonday);
+      d.setDate(d.getDate() + 7);
+      d.setHours(0, 0, 0, 0);
+      currentMonday = d;
       loadWeek();
     });
     setInterval(applyTodayHighlight, 60000);
