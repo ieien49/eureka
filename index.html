@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -56,13 +56,11 @@
     /* HEADER */
     .rf-header { height: var(--header-h); background: var(--rf-blue); display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,49,0.25); }
     .rf-header-logo { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-    .rf-logo-anjou { height: 36px; width: auto; filter: brightness(0) invert(1); }
-    .rf-header-brand { color: var(--rf-white); display: flex; flex-direction: column; gap: 1px; }
-    .rf-header-brand-main { font-size: 11px; font-weight: 400; opacity: 0.75; line-height: 1.2; }
+    .rf-logo-anjou { height: 48px; width: auto; filter: brightness(0) invert(1); }
     .rf-header-sep { width: 1px; height: 32px; background: rgba(255,255,255,0.25); flex-shrink: 0; }
     .rf-header-title { display: flex; flex-direction: column; gap: 1px; }
-    .rf-header-title-main { font-size: 22px; font-weight: 800; color: var(--rf-white); letter-spacing: -0.02em; line-height: 1.1; }
-    .rf-header-title-sub { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.65); letter-spacing: 0.06em; text-transform: uppercase; }
+    .rf-header-title-main { font-size: 27px; font-weight: 800; color: var(--rf-white); letter-spacing: -0.02em; line-height: 1.1; }
+    .rf-header-title-sub { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.65); letter-spacing: 0.06em; text-transform: uppercase; }
     .rf-header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
     .rf-live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 0.04em; }
     .rf-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: liveBlink 2s infinite; }
@@ -92,6 +90,17 @@
     .rf-tab-badge { background: var(--rf-red); color: #fff; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 8px; margin-left: 2px; letter-spacing: 0.04em; animation: pulseBadge 2s ease-in-out infinite; }
     @keyframes pulseBadge { 0%,100%{ box-shadow: 0 0 0 0 rgba(193,55,60,0.4); } 50%{ box-shadow: 0 0 0 4px rgba(193,55,60,0); } }
     .rf-tab:not(.active) .rf-tab-badge { background: rgba(193,55,60,0.9); }
+
+    /* BANDEAU D'INFORMATION */
+    .rf-bandeau { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 10px 20px; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+    .rf-bandeau-msg { grid-column: 2; text-align: center; }
+    .rf-bandeau.info { background: var(--rf-blue-light); color: var(--rf-blue-dark); }
+    .rf-bandeau.alerte { background: var(--rf-orange-light); color: var(--rf-orange); }
+    .rf-bandeau.urgence { background: var(--rf-red-light); color: var(--rf-red); }
+    .rf-bandeau-close { grid-column: 3; justify-self: end; cursor: pointer; opacity: 0.6; }
+    .rf-bandeau-close:hover { opacity: 1; }
+    .rf-bandeau-link { text-decoration: underline; font-weight: 700; }
+    .rf-bandeau-link:hover { opacity: 0.75; }
 
     /* CONTENT */
     .rf-content { flex: 1; min-height: 0; position: relative; }
@@ -129,6 +138,18 @@
     .ek-empty-state svg { width: 64px; height: 64px; opacity: 0.3; }
     .ek-empty-state p { font-size: 15px; font-weight: 500; }
     .ek-empty-state small { font-size: 13px; color: var(--rf-grey-400); }
+    .ek-welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 40px 24px; overflow-y: auto; }
+    .ek-welcome-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--rf-blue-light); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; flex-shrink: 0; }
+    .ek-welcome-icon svg { width: 32px; height: 32px; color: var(--rf-blue); }
+    .ek-welcome h2 { font-family: var(--font-serif); font-size: 26px; font-weight: 700; color: var(--rf-grey-900); margin-bottom: 8px; }
+    .ek-welcome-tagline { font-size: 14px; color: var(--rf-grey-600); max-width: 420px; line-height: 1.5; margin-bottom: 24px; }
+    .ek-welcome-stats { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; justify-content: center; }
+    .ek-welcome-stat { background: var(--rf-grey-100); border: 1px solid var(--rf-grey-200); border-radius: var(--radius-md); padding: 12px 22px; min-width: 110px; }
+    .ek-welcome-stat-num { font-size: 22px; font-weight: 800; color: var(--rf-blue); font-family: var(--font-serif); line-height: 1; }
+    .ek-welcome-stat-label { font-size: 10.5px; color: var(--rf-grey-600); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
+    .ek-welcome-tips { display: flex; flex-direction: column; gap: 10px; max-width: 380px; text-align: left; }
+    .ek-welcome-tip { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--rf-grey-800); line-height: 1.4; }
+    .ek-welcome-tip svg { width: 16px; height: 16px; color: var(--rf-blue-mid); flex-shrink: 0; margin-top: 1px; }
     .ek-card { max-width: 800px; animation: fadeSlide 0.25s ease-out; }
     @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     .ek-card-header { padding-bottom: 20px; border-bottom: 3px solid var(--rf-blue); margin-bottom: 24px; }
@@ -204,7 +225,10 @@
     .an-search-row { display: flex; gap: 6px; margin-bottom: 6px; }
     .an-input-wrap { position: relative; flex: 1; }
     .an-input-ico { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--rf-grey-400); pointer-events: none; }
-    .an-input { width: 100%; padding: 8px 8px 8px 28px; border: 1.5px solid var(--rf-grey-300); border-radius: var(--radius-sm); font-family: var(--font-main); font-size: 12.5px; background: var(--rf-white); color: var(--rf-grey-900); outline: none; transition: var(--transition); }
+    .an-input { width: 100%; padding: 8px 26px 8px 28px; border: 1.5px solid var(--rf-grey-300); border-radius: var(--radius-sm); font-family: var(--font-main); font-size: 12.5px; background: var(--rf-white); color: var(--rf-grey-900); outline: none; transition: var(--transition); }
+    .an-input-clear { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border: none; background: none; padding: 0; display: flex; align-items: center; justify-content: center; color: var(--rf-grey-400); cursor: pointer; opacity: 0; pointer-events: none; transition: var(--transition); }
+    .an-input-clear.visible { opacity: 1; pointer-events: auto; }
+    .an-input-clear:hover { color: var(--rf-grey-800); }
     .an-input:focus { border-color: var(--rf-blue); box-shadow: 0 0 0 3px rgba(0,49,137,0.10); }
     .an-input::placeholder { color: var(--rf-grey-400); }
     .an-select { padding: 8px 22px 8px 8px; border: 1.5px solid var(--rf-grey-300); border-radius: var(--radius-sm); font-family: var(--font-main); font-size: 11.5px; background: var(--rf-white); color: var(--rf-grey-900); outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath d='M0 0l4.5 5L9 0z' fill='%23666666'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 7px center; min-width: 90px; }
@@ -274,8 +298,24 @@
     .an-state-msg { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 10px; color: var(--rf-grey-600); text-align: center; }
     .spinner { width: 24px; height: 24px; border: 3px solid var(--rf-grey-200); border-top-color: var(--rf-blue-mid); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .an-map-wrap { flex: 1; position: relative; height: 100%; }
+    .an-map-wrap { flex: 1; position: relative; height: 100%; overflow: hidden; }
+    .an-marker-ico { filter: drop-shadow(0 1px 1.5px rgba(0,0,49,.28)); }
+    .an-marker-ico.active { filter: drop-shadow(0 2px 3px rgba(0,0,49,.35)); }
+    .an-detail-panel { position: absolute; top: 0; right: 0; height: 100%; width: 360px; max-width: 90%; background: var(--rf-white); border-left: 1px solid var(--rf-grey-200); box-shadow: -6px 0 18px rgba(0,0,49,0.12); transform: translateX(100%); transition: transform .25s ease; z-index: 1000; display: flex; flex-direction: column; }
+    .an-detail-panel.open { transform: translateX(0); }
+    .an-detail-panel-head { display: flex; align-items: center; justify-content: flex-end; padding: 10px 10px 0; flex-shrink: 0; }
+    .an-detail-panel-close { width: 26px; height: 26px; border-radius: 50%; border: none; background: var(--rf-grey-100); color: var(--rf-grey-600); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); flex-shrink: 0; }
+    .an-detail-panel-close:hover { background: var(--rf-grey-200); color: var(--rf-grey-900); }
+    .an-detail-panel-body { flex: 1; overflow-y: auto; }
+    .an-detail-panel .popup-nom { font-size: 16px; padding: 4px 16px 12px; }
+    .an-detail-panel .popup-flag { padding: 10px 16px 0; }
+    .an-detail-panel .popup-body { padding: 12px 16px 18px; }
+    .an-detail-panel .popup-row { font-size: 12.5px; }
+    .an-detail-panel .popup-divider { margin: 0 16px; }
+    .an-detail-panel .popup-links { padding: 0 16px 18px; }
+    .an-detail-panel .popup-mission { font-size: 12px; }
     #map { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+    #an-cap-notice { position: absolute; z-index: 500; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(193,55,60,0.95); color: #fff; font-size: 11.5px; font-weight: 600; padding: 7px 14px; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); max-width: 90%; text-align: center; }
     .leaflet-popup-content-wrapper { border-radius: 6px !important; box-shadow: var(--shadow-md) !important; padding: 0 !important; overflow: hidden !important; border: 1px solid var(--rf-grey-300) !important; }
     .leaflet-popup-content { margin: 0 !important; width: 240px !important; }
     .leaflet-popup-tip-container { display: none !important; }
@@ -529,6 +569,17 @@
   justify-content: center; height: 100%; min-height: 280px;
   gap: 10px; color: var(--rf-grey-400);
 }
+#panel-fichesMDD .fmdd-welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 280px; text-align: center; padding: 40px 24px; overflow-y: auto; }
+#panel-fichesMDD .fmdd-welcome-icon { width: 64px; height: 64px; border-radius: 16px; background: var(--rf-blue-light); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; font-size: 30px; flex-shrink: 0; }
+#panel-fichesMDD .fmdd-welcome h2 { font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--rf-grey-900); margin-bottom: 8px; }
+#panel-fichesMDD .fmdd-welcome-tagline { font-size: 14px; color: var(--rf-grey-600); max-width: 420px; line-height: 1.5; margin-bottom: 24px; }
+#panel-fichesMDD .fmdd-welcome-stats { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; justify-content: center; }
+#panel-fichesMDD .fmdd-welcome-stat { background: var(--rf-grey-100); border: 1px solid var(--rf-grey-200); border-radius: var(--radius-md); padding: 12px 22px; min-width: 110px; }
+#panel-fichesMDD .fmdd-welcome-stat-num { font-size: 22px; font-weight: 800; color: var(--rf-blue); font-family: var(--font-serif); line-height: 1; }
+#panel-fichesMDD .fmdd-welcome-stat-label { font-size: 10.5px; color: var(--rf-grey-600); margin-top: 4px; text-transform: uppercase; letter-spacing: .03em; }
+#panel-fichesMDD .fmdd-welcome-tips { display: flex; flex-direction: column; gap: 10px; max-width: 380px; text-align: left; }
+#panel-fichesMDD .fmdd-welcome-tip { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--rf-grey-800); line-height: 1.4; }
+#panel-fichesMDD .fmdd-welcome-tip svg { width: 16px; height: 16px; color: var(--rf-blue-mid); flex-shrink: 0; margin-top: 1px; }
 #panel-fichesMDD .site-content { padding: 18px 24px; }
 #panel-fichesMDD .site-header { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--rf-grey-200); }
 #panel-fichesMDD .site-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
@@ -578,6 +629,7 @@
 #panel-fichesMDD .badge-rap   { background: #FAEEDA; color: #633806; }
 #panel-fichesMDD .badge-raa   { background: #FAECE7; color: #712B13; }
 #panel-fichesMDD .badge-ratpe { background: #FBEAF0; color: #72243E; }
+#panel-fichesMDD .badge-rpmi  { background: #E6F1FB; color: #0C447C; }
 #panel-fichesMDD .edit-grist-btn {
   display: inline-flex;
   align-items: center;
@@ -589,6 +641,8 @@
   font-size: 11px;
   color: var(--rf-grey-600);
   text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
   transition: all .15s;
 }
 #panel-fichesMDD .edit-grist-btn:hover {
@@ -767,6 +821,76 @@
     .map-tiles-grey {
   filter: grayscale(1) brightness(1.1) contrast(0.95);
 }
+
+    /* ══ RÉGLAGES WIDGET (roue crantée + modale) ══ */
+    .pcfg-gear-btn {
+      width: 32px; height: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-sm); background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.85); cursor: pointer; transition: var(--transition);
+    }
+    .pcfg-gear-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.4); color: #fff; }
+    .pcfg-ov {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    .pcfg-ov.open { display: flex; }
+    .pcfg-box {
+      width: 480px; max-width: calc(100vw - 40px); max-height: calc(100vh - 60px); overflow-y: auto;
+      background: var(--rf-white); border-radius: var(--radius-md); padding: 20px 22px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.25); font-family: var(--font-main);
+    }
+    .pcfg-title { font-size: 16px; font-weight: 800; color: var(--rf-blue-dark); margin-bottom: 14px; }
+    .pcfg-section-title { font-size: 11px; font-weight: 700; color: var(--rf-grey-600); text-transform: uppercase; letter-spacing: 0.07em; margin: 16px 0 8px; }
+    .pcfg-hint { font-size: 12px; color: var(--rf-grey-600); line-height: 1.5; }
+    .pcfg-close-row { display: flex; justify-content: flex-end; margin-top: 18px; }
+    .pcfg-tabrow { display: flex; align-items: center; gap: 8px; padding: 5px 0; }
+    .pcfg-tabrow-move { display: flex; flex-direction: column; gap: 1px; }
+    .pcfg-tabrow-move button { border: none; background: var(--rf-grey-200); color: var(--rf-grey-600); width: 16px; height: 13px; font-size: 9px; line-height: 1; cursor: pointer; border-radius: 3px; padding: 0; }
+    .pcfg-tabrow-move button:hover:not(:disabled) { background: var(--rf-blue); color: #fff; }
+    .pcfg-tabrow-move button:disabled { opacity: .3; cursor: default; }
+    .pcfg-tabrow-input { flex: 1; padding: 5px 8px; border: 1px solid var(--rf-grey-300); border-radius: var(--radius-sm); background: var(--rf-grey-100); font-family: var(--font-main); font-size: 12.5px; color: var(--rf-grey-900); outline: none; }
+    .pcfg-tabrow-input:focus { border-color: var(--rf-blue); }
+    .pcfg-guest-card { border: 1px solid var(--rf-grey-300); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 10px; background: var(--rf-grey-100); }
+    .pcfg-guest-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .pcfg-guest-del { border: none; background: transparent; color: var(--rf-grey-600); cursor: pointer; font-size: 14px; padding: 2px 6px; }
+    .pcfg-guest-del:hover { color: var(--rf-red); }
+    .pcfg-guest-sub { font-size: 10.5px; font-weight: 700; color: var(--rf-grey-600); text-transform: uppercase; letter-spacing: .05em; margin: 8px 0 4px; }
+    .pcfg-guest-grid { display: flex; flex-direction: column; gap: 4px; }
+    .pcfg-guest-chk { display: flex; align-items: center; gap: 5px; font-size: 12.5px; cursor: pointer; color: var(--rf-grey-900); }
+    .pcfg-guest-link-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .pcfg-guest-copied { font-size: 11.5px; color: var(--rf-green); opacity: 0; transition: opacity .2s; }
+    .pcfg-guest-copied.vis { opacity: 1; }
+    .pcfg-bandeau-card { border: 1px solid var(--rf-grey-300); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 10px; background: var(--rf-grey-100); }
+    .pcfg-bandeau-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .pcfg-bandeau-del { border: none; background: transparent; color: var(--rf-grey-600); cursor: pointer; font-size: 14px; padding: 2px 6px; margin-left: auto; }
+    .pcfg-bandeau-del:hover { color: var(--rf-red); }
+    .pcfg-bandeau-msg { width: 100%; padding: 6px 8px; border: 1px solid var(--rf-grey-300); border-radius: var(--radius-sm); background: #fff; font-family: var(--font-main); font-size: 12.5px; color: var(--rf-grey-900); outline: none; resize: vertical; min-height: 40px; box-sizing: border-box; }
+    .pcfg-bandeau-msg:focus { border-color: var(--rf-blue); }
+    .pcfg-bandeau-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .pcfg-bandeau-row select, .pcfg-bandeau-row input[type="text"], .pcfg-bandeau-row input[type="date"] { padding: 5px 7px; border: 1px solid var(--rf-grey-300); border-radius: var(--radius-sm); background: #fff; font-family: var(--font-main); font-size: 12px; color: var(--rf-grey-900); outline: none; }
+    .pcfg-bandeau-row select:focus, .pcfg-bandeau-row input:focus { border-color: var(--rf-blue); }
+    .pcfg-bandeau-row label { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--rf-grey-600); cursor: pointer; }
+    .pcfg-bandeau-field-label { font-size: 10px; color: var(--rf-grey-600); }
+    .pcfg-toast {
+      position: fixed; bottom: 20px; right: 20px; z-index: 1100; background: var(--rf-grey-900); color: #fff;
+      padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+      box-shadow: var(--shadow-md); opacity: 0; transform: translateY(8px); transition: all .2s ease; pointer-events: none;
+    }
+    .pcfg-toast.show { opacity: 1; transform: translateY(0); }
+    .pcfg-toast.error { background: var(--rf-red); }
+    /* Masquage des actions de modification dans les vues partagées (profils invités) :
+       chaque bouton/lien de modification porte data-pcfg-edit="<clé onglet>" ;
+       ces règles couvrent tous les onglets, qu'ils aient ou non ce type d'action. */
+    body.pcfg-hide-edit-eureka [data-pcfg-edit="eureka"],
+    body.pcfg-hide-edit-mdd [data-pcfg-edit="mdd"],
+    body.pcfg-hide-edit-annuaire [data-pcfg-edit="annuaire"],
+    body.pcfg-hide-edit-logigramme [data-pcfg-edit="logigramme"],
+    body.pcfg-hide-edit-fichesMDD [data-pcfg-edit="fichesMDD"] { display: none !important; }
+    /* Planning AIOT : pas de bouton "Modifier" séparé, le contenu (textarea) est édité
+       directement dans la grille ; en vue restreinte on le passe en lecture seule plutôt
+       que de le masquer. */
+    body.pcfg-hide-edit-aiot #aiot-planning-body textarea { pointer-events: none; background: var(--rf-grey-100); color: var(--rf-grey-600); }
+    .pcfg-guest-editchk { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--rf-grey-600); cursor: pointer; margin-left: 18px; }
   </style>
 </head>
 <body>
@@ -777,9 +901,6 @@
   <header class="rf-header">
     <div class="rf-header-logo">
       <img src="https://cdn.maine-et-loire.fr/ecosysteme_ressources/2026-02-12/img/logo_anjou.svg" alt="Anjou - Maine-et-Loire" class="rf-logo-anjou">
-      <div class="rf-header-brand">
-        <div class="rf-header-brand-main">Département de Maine-et-Loire</div>
-      </div>
     </div>
     <div class="rf-header-sep"></div>
     <div class="rf-header-title">
@@ -799,19 +920,64 @@
         </button>
         <button id="an-btn-src-finess" class="an-src-btn" title="Établissements sanitaires et médico-sociaux (FINESS)">
           <span class="an-src-dot" style="background:#0d9488"></span>
-          Santé <span id="an-finess-status" style="font-size:9px;opacity:.7"></span>
+          FINESS <span id="an-finess-status" style="font-size:9px;opacity:.7"></span>
         </button>
-        <button id="an-btn-src-local" class="an-src-btn active" title="Mes fiches personnelles (table Grist)">
+        <button id="an-btn-src-local" class="an-src-btn active" title="Services du Département (table Grist)">
           <span class="an-src-dot" style="background:#ea580c"></span>
-          Perso
+          Services du Département
         </button>
       </div>
       <div class="rf-live-badge">
         <span class="rf-live-dot"></span>
         <span id="an-total-count" style="display:none">…</span>
       </div>
+      <button class="pcfg-gear-btn" id="pcfgGearBtn" onclick="openPcfgModal()" title="Réglages du widget">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
     </div>
   </header>
+
+  <!-- Bandeaux d'information -->
+  <div id="rf-bandeau-container"></div>
+
+  <!-- ══ MODALE RÉGLAGES WIDGET ══ -->
+  <div class="pcfg-ov" id="pcfgOv" onclick="handlePcfgOvClick(event)">
+    <div class="pcfg-box">
+      <div class="pcfg-title">Réglages du widget</div>
+
+      <div class="pcfg-section-title">Structure du document</div>
+      <div class="pcfg-hint" style="margin-bottom:8px">
+        Vérifie que les tables Grist « Parametres » et « Bandeau » (nécessaires pour ces réglages) existent dans ce document, et les crée si besoin.
+      </div>
+      <button class="btn-ghost" style="width:100%;justify-content:center;margin-bottom:8px" onclick="pcfgCheckTables()">Vérifier la table</button>
+      <div id="pcfgTablesStatus" class="pcfg-hint" style="margin-bottom:4px"></div>
+
+      <div class="pcfg-section-title">Onglets</div>
+      <div class="pcfg-hint" style="margin-bottom:8px">
+        Décoche un onglet pour le masquer (les données restent intactes, seul l'affichage change). Le champ personnalise le libellé affiché. Les flèches ▲▼ changent l'ordre. Réglage commun à tous les utilisateurs du document.
+      </div>
+      <div id="pcfgTabsSection"></div>
+
+      <div class="pcfg-section-title">Vues partagées</div>
+      <div class="pcfg-hint" style="margin-bottom:8px">
+        Génère un lien qui n'affiche que certains onglets — pratique pour partager une vue simplifiée à un contact externe (profil invité). <strong>Ce n'est pas une restriction de sécurité</strong> : la personne garde accès à l'ensemble des données du document Grist par d'autres moyens ; c'est uniquement pour alléger l'affichage.
+      </div>
+      <div id="pcfgGuestsList"></div>
+      <button class="btn-ghost" style="width:100%;margin-bottom:8px" onclick="pcfgAddGuest()">+ Nouvelle vue partagée</button>
+
+      <div class="pcfg-section-title">Bandeaux d'information</div>
+      <div class="pcfg-hint" style="margin-bottom:8px">
+        Messages affichés en haut de l'écran, pour tous les utilisateurs. Décoche « Actif » pour masquer un bandeau sans le supprimer. Une date d'expiration (facultative) le masque automatiquement une fois passée.
+      </div>
+      <div id="pcfgBandeauxStatus" class="pcfg-hint" style="margin-bottom:4px"></div>
+      <div id="pcfgBandeauxList"></div>
+      <button class="btn-ghost" style="width:100%;margin-bottom:8px" onclick="pcfgAddBandeau()">+ Nouveau bandeau</button>
+
+      <div class="pcfg-close-row">
+        <button class="btn-ghost" onclick="closePcfgModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Navigation -->
   <nav class="rf-nav">
@@ -895,6 +1061,18 @@
       </div>
       <div class="tab-active-bar"></div>
     </button>
+    <button class="rf-tab" data-panel="hdd" onclick="switchTab('hdd')">
+      <div class="tab-icon-wrap">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+        </svg>
+      </div>
+      <div class="tab-label-wrap">
+        <span class="tab-label-main">Orientation</span>
+        <span class="tab-label-sub">des appels</span>
+      </div>
+      <div class="tab-active-bar"></div>
+    </button>
   </nav>
 
   <!-- Contenu -->
@@ -933,12 +1111,28 @@
         </div>
       </div>
       <div class="ek-detail" id="ek-detail">
-        <div class="ek-empty-state">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-          </svg>
-          <p>Sélectionnez un dispositif</p>
-          <small>Cliquez sur un élément de la liste pour voir les détails</small>
+        <div class="ek-welcome">
+          <div class="ek-welcome-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.472V15a1 1 0 001 1h6a1 1 0 001-1v-1.528A6 6 0 0012 3z"/>
+            </svg>
+          </div>
+          <h2>Bienvenue sur Eurêka !</h2>
+          <p class="ek-welcome-tagline">L'outil de recherche des dispositifs et aides du Département de Maine-et-Loire, à destination des agents d'accueil et travailleurs sociaux.</p>
+          <div class="ek-welcome-tips">
+            <div class="ek-welcome-tip">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <span>Recherchez un dispositif par nom, mission ou public visé dans la barre de gauche.</span>
+            </div>
+            <div class="ek-welcome-tip">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+              <span>Sélectionnez un élément de la liste pour afficher sa fiche complète (contacts, horaires, service porteur…).</span>
+            </div>
+            <div class="ek-welcome-tip">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
+              <span>Une fiche trouvée peut être imprimée ou envoyée par mail directement depuis sa page.</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -954,6 +1148,9 @@
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
                 <input type="text" class="an-input" id="an-commune-input" placeholder="Commune…" autocomplete="off"/>
+                <button type="button" class="an-input-clear" id="an-commune-clear" title="Effacer" aria-label="Effacer">
+                  <svg viewBox="0 0 12 12" width="12" height="12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </button>
               </div>
               <div class="an-ac-dropdown" id="an-ac-dropdown"></div>
             </div>
@@ -977,6 +1174,9 @@
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
               <input type="text" class="an-input" id="an-search-input" placeholder="Nom, mission…"/>
+              <button type="button" class="an-input-clear" id="an-search-clear" title="Effacer" aria-label="Effacer">
+                <svg viewBox="0 0 12 12" width="12" height="12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
             </div>
           </div>
           <div class="an-search-row">
@@ -1010,6 +1210,17 @@
       </div>
       <div class="an-map-wrap">
         <div id="map"></div>
+        <div id="an-cap-notice" style="display:none">
+          Trop de résultats pour tout afficher sur la carte (limité à 1500 points) — affinez votre recherche pour voir tous les points.
+        </div>
+        <div class="an-detail-panel" id="an-detail-panel">
+          <div class="an-detail-panel-head">
+            <button type="button" class="an-detail-panel-close" id="an-detail-panel-close" title="Fermer" aria-label="Fermer">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="an-detail-panel-body" id="an-detail-panel-body"></div>
+        </div>
       </div>
     </div>
 
@@ -1085,13 +1296,33 @@
       </div>
     </div>
     <div class="main" id="mdd2-main">
-      <div class="empty" id="mdd2-empty-state">
-        <div class="empty-icon">🏢</div>
-        <div class="empty-msg">Sélectionnez un site</div>
+      <div class="fmdd-welcome" id="mdd2-empty-state">
+        <div class="fmdd-welcome-icon">🏢</div>
+        <h2>Fiches missions des MDD</h2>
+        <p class="fmdd-welcome-tagline">Consultez les cadres référents, les missions et les contacts de chaque Maison Départementale des Solidarités (MDD) du Département.</p>
+        <div class="fmdd-welcome-tips">
+          <div class="fmdd-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            <span>Sélectionnez un site dans la liste à gauche pour afficher sa fiche.</span>
+          </div>
+          <div class="fmdd-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4"/></svg>
+            <span>Retrouvez les cadres référents et les contacts par type de mission via les onglets en haut de fiche.</span>
+          </div>
+          <div class="fmdd-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
+            <span>Chaque fiche peut être imprimée directement depuis sa page.</span>
+          </div>
+        </div>
       </div>
       <div id="mdd2-site-content" style="display:none"></div>
     </div>
   </div>
+</div>
+
+<!-- ═══ PANNEAU ORIENTATION DES APPELS (outil HDD) ═══ -->
+<div id="panel-hdd" class="rf-panel">
+  <iframe id="hdd-frame" title="Orientation des appels" style="flex:1;width:100%;height:100%;border:0;background:#fff"></iframe>
 </div>
 
 <!-- ═══ PANNEAU PLANNING AIOT ═══ -->
@@ -1203,6 +1434,19 @@
   </div>
 </div>
 
+<!-- ═══ MODAL ÉDITION FICHES MISSIONS (ex-widget Mission Admin) ═══ -->
+<div class="rf-modal-overlay" id="ma-modal">
+  <div class="rf-modal" style="max-width:1100px;width:95%;height:90vh;max-height:90vh">
+    <div class="rf-modal-header">
+      <span class="rf-modal-title">Modifier les fiches missions</span>
+      <button class="rf-modal-close" onclick="maClose()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <iframe id="ma-frame" title="Mission Admin" style="flex:1;width:100%;border:0;background:#fff"></iframe>
+  </div>
+</div>
+
 <!-- ═══ MODAL ÉDITION EURÊKA ═══ -->
 <div class="rf-modal-overlay" id="ek-modal">
   <div class="rf-modal">
@@ -1220,6 +1464,28 @@
     <div class="rf-modal-footer">
       <button class="rf-btn rf-btn-secondary" onclick="ekCloseModal()">Annuler</button>
       <button class="rf-btn rf-btn-primary" id="ek-save-btn" onclick="ekSaveChanges()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL ENVOI MAIL EURÊKA ═══ -->
+<div class="rf-modal-overlay" id="ek-mail-modal">
+  <div class="rf-modal" style="max-width:440px">
+    <div class="rf-modal-header">
+      <span class="rf-modal-title">Envoyer la fiche par mail</span>
+      <button class="rf-modal-close" onclick="ek.closeMailModal()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="rf-modal-body">
+      <div class="rf-form-group">
+        <label class="rf-form-label">Destinataire (facultatif)</label>
+        <input type="email" class="rf-form-input" id="ek-mail-dest" placeholder="usager@exemple.fr">
+      </div>
+    </div>
+    <div class="rf-modal-footer">
+      <button class="rf-btn rf-btn-secondary" onclick="ek.closeMailModal()">Annuler</button>
+      <button class="rf-btn rf-btn-primary" onclick="ek.confirmMail()">Envoyer</button>
     </div>
   </div>
 </div>
@@ -1261,6 +1527,551 @@ function switchTab(name) {
   if (name === 'aiot') {
     if (typeof grist !== 'undefined') aiot.init();
   }
+  if (name === 'hdd') {
+    if (typeof grist !== 'undefined') hdd.show();
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   MODULE ORIENTATION DES APPELS (outil HDD, embarqué en iframe)
+   - Tables Grist attendues : Themes, Contacts, Orientations, DIRECTIONS
+   - La partie admin (édition) n'est JAMAIS active dans une vue partagée (?vue=...)
+═══════════════════════════════════════════════════════ */
+const HDD_HTML = "<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Orientation des appels<\/title>\n<style>\n:root{\n  --ink:#1A2233; --muted:#5F6B7F; --line:#D9DFE8; --soft:#F4F6FA;\n  --blue:#1D4F91; --blue-soft:#E8EFFA; --amber:#7A5200; --amber-soft:#FFF6DC;\n}\n*{box-sizing:border-box}\nhtml,body{height:100%;margin:0}\nbody{\n  background:#fff;color:var(--ink);\n  font:16px/1.4 \"Segoe UI\",system-ui,-apple-system,Roboto,sans-serif;\n  display:flex;flex-direction:column;\n}\nbutton{font:inherit;color:inherit}\n:focus-visible{outline:3px solid #9DB9E3;outline-offset:2px}\n\n/* Barre du haut */\n.top{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line)}\n.search{position:relative;flex:1;max-width:620px}\n.search input{\n  width:100%;font:inherit;font-size:18px;padding:12px 16px 12px 46px;\n  border:2px solid var(--line);border-radius:12px;outline:none;background:#fff;color:var(--ink);\n}\n.search input:focus{border-color:var(--blue)}\n.search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}\n.refresh{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;padding:8px 10px;border-radius:8px}\n.refresh:hover{background:var(--soft)}\n\n.hits{\n  position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:10;background:#fff;\n  border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(26,34,51,.12);\n  max-height:65vh;overflow:auto;padding:6px;\n}\n.hits[hidden]{display:none}\n.hits .grp{padding:8px 12px 4px;color:var(--muted);font-size:14px;font-weight:600}\n.hit{display:block;width:100%;text-align:left;background:none;border:none;border-radius:8px;padding:10px 12px;cursor:pointer}\n.hit:hover,.hit:focus-visible{background:var(--blue-soft)}\n.hit small{display:block;color:var(--muted);font-size:14px}\n.none{padding:14px 12px;color:var(--muted)}\n\n/* Deux colonnes */\n.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(300px,5fr) 6fr}\n.nav{padding:20px;overflow:auto;border-right:1px solid var(--line)}\n.res{padding:22px 26px;overflow:auto}\n\n.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:16px;font-size:15px}\n.crumbs button{background:none;border:none;color:var(--blue);cursor:pointer;padding:4px 8px;border-radius:8px}\n.crumbs button:hover{background:var(--blue-soft)}\n.crumbs .cur{font-weight:600;padding:4px 8px}\n.crumbs .sep{color:var(--muted)}\n\n.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}\n.tile{\n  min-height:100px;padding:14px;text-align:left;cursor:pointer;background:#fff;\n  border:2px solid var(--line);border-radius:14px;\n  display:flex;flex-direction:column;justify-content:space-between;gap:10px;\n}\n.tile:hover{border-color:var(--blue)}\n.tile .em{font-size:26px;line-height:1;min-height:26px}\n.tile .row{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}\n.tile .nm{font-size:17px;font-weight:600;line-height:1.25}\n.tile .more{font-size:22px;line-height:1;color:var(--muted)}\n.tile.on{background:var(--blue);border-color:var(--blue);color:#fff}\n.tile.on .more{color:#fff}\n/* Couleurs par niveau : 0 = thème, 1 = sous-thème, 2 = sous-sous-thème, 3+ = niveaux suivants */\n.l0{--tc:#1D4F91;--ts:#E8EFFA;--tb:#B9CDEB}\n.l1{--tc:#0F6B5C;--ts:#E3F4F0;--tb:#A9D8CE}\n.l2{--tc:#6B3FA0;--ts:#F0E9F8;--tb:#CDB8E6}\n.l3{--tc:#9A4A00;--ts:#FFF0E0;--tb:#F0C9A0}\n.tile{background:var(--ts,#fff);border-color:var(--tb,var(--line))}\n.tile:hover{border-color:var(--tc,var(--blue))}\n.tile.on{background:var(--tc,var(--blue));border-color:var(--tc,var(--blue));color:#fff}\n.crumbs .ctag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:10px;border:2px solid var(--tb);\n  background:var(--ts);color:var(--tc);font-size:14px;font-weight:600;line-height:1.3}\n.crumbs button.ctag{cursor:pointer}\n.crumbs button.ctag:hover{background:var(--ts);border-color:var(--tc)}\n.crumbs .ctag.on{background:var(--tc);border-color:var(--tc);color:#fff}\n\n\n/* Résultat */\n.res h2{margin:0 0 4px;font-size:24px;line-height:1.2}\n.res .path{color:var(--muted);margin-bottom:18px}\n.res h3{margin:22px 0 10px;font-size:16px;color:var(--muted);font-weight:600}\n.empty{color:var(--muted);padding:40px 8px;max-width:420px}\n.empty strong{display:block;color:var(--ink);font-size:20px;margin-bottom:6px}\n.error{margin:20px;padding:16px;border:2px solid #C0392B;border-radius:12px;color:#8E2A1F}\n\n.card{\n  display:grid;grid-template-columns:auto 1fr auto;gap:6px 16px;align-items:center;\n  border:2px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:12px;\n}\n.card.first{border-color:var(--blue);padding:20px 22px}\n.card.off{opacity:.6}\n.rank{\n  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;\n  background:var(--soft);font-weight:700;color:var(--muted);\n}\n.card.first .rank{width:44px;height:44px;background:var(--blue);color:#fff;font-size:20px}\n.lbl{color:var(--blue);font-weight:600;font-size:14px;margin-bottom:2px}\n.name{font-size:19px;font-weight:600}\n.card.first .name{font-size:24px}\n.sub{color:var(--muted);font-size:15px}\n.tel{\n  border:none;cursor:pointer;background:var(--blue-soft);color:var(--blue);\n  border-radius:10px;padding:8px 14px;font-size:24px;font-weight:700;\n  font-variant-numeric:tabular-nums;display:flex;flex-direction:column;align-items:center;line-height:1.2;\n}\n.card.first .tel{font-size:32px;padding:10px 18px}\n.tel:hover{background:#D7E4F8}\n.tel .cp{font-size:12px;font-weight:500;color:var(--muted)}\n.notel{color:var(--muted);font-style:italic}\n.note{grid-column:2 / -1;margin-top:6px;padding:8px 12px;background:var(--amber-soft);color:var(--amber);border-radius:8px;font-size:15px}\n.tag{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:99px;background:var(--soft);color:var(--muted);font-size:13px;font-weight:600;vertical-align:middle}\n\n/* Dernier recours : assistante de direction */\n.card.last{border-style:dashed}\n.tels{display:flex;flex-direction:column;gap:8px;align-items:stretch}\n.telw .tlab{font-size:12px;color:var(--muted);text-align:center;margin-bottom:2px}\n.sub a{color:var(--blue)}\n\n/* Mode édition */\n.tag[hidden]{display:none}\n.ctl{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}\n.mini{font-size:14px;padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}\n.mini:hover:not(:disabled){border-color:var(--blue);color:var(--blue)}\n.mini:disabled{opacity:.4;cursor:default}\n.mini[data-act=\"rm\"]{color:#8E2A1F}\n.mini.main{background:var(--blue);border-color:var(--blue);color:#fff}\n.mini.main:hover:not(:disabled){background:#173F74;color:#fff}\n.addbox{margin-top:22px;padding:16px;border:2px dashed var(--line);border-radius:12px}\n.addbox label{display:block;font-weight:600;margin-bottom:8px}\n.addrow{display:flex;gap:10px}\n.addrow select{flex:1;min-width:0;font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}\n.tile.off{border-style:dashed;opacity:.6}\n.form{border:2px solid var(--blue);border-radius:12px;padding:14px;margin-bottom:18px}\n.form h3{margin:0 0 4px;font-size:17px;color:var(--ink)}\n.form label{display:block;font-weight:600;font-size:14px;margin:10px 0 4px}\n.form input{width:100%;font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:8px;color:var(--ink);background:#fff}\n.form input:focus{border-color:var(--blue)}\n.form select{width:100%;font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}\n.form .row2{display:flex;gap:8px;margin-top:14px}\n.fmsg{color:#8E2A1F;font-size:14px;min-height:18px;margin-top:8px}\n.admnav{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:18px}\n.thbar{margin:18px 0 14px}\n.offnote{margin:0 0 14px}\n.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:15px;z-index:20;max-width:90vw}\n.toast[hidden]{display:none}\n\n@media (max-width:760px){\n  .main{grid-template-columns:1fr;grid-template-rows:auto auto}\n  .nav{border-right:none;border-bottom:1px solid var(--line)}\n  .card{grid-template-columns:auto 1fr}\n  .tel,.tels{grid-column:1 / -1}\n}\n@media (prefers-reduced-motion:no-preference){\n  .tile,.tel,.hit{transition:background-color .12s,border-color .12s}\n}\n<\/style>\n<\/head>\n<body>\n\n<div class=\"top\">\n  <div class=\"search\">\n    <svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M20 20l-3.5-3.5\"/><\/svg>\n    <input id=\"q\" type=\"search\" autocomplete=\"off\" autofocus placeholder=\"Rechercher un sujet ou une personne\">\n    <div id=\"hits\" class=\"hits\" hidden><\/div>\n  <\/div>\n  <span class=\"tag\" id=\"admtag\" hidden>Mode édition<\/span>\n  <button class=\"refresh\" id=\"refresh\" type=\"button\">Actualiser<\/button>\n<\/div>\n\n<div class=\"main\">\n  <section class=\"nav\" id=\"nav\" aria-label=\"Thèmes\"><\/section>\n  <section class=\"res\" id=\"res\" aria-live=\"polite\"><\/section>\n<\/div>\n\n<div id=\"toast\" class=\"toast\" hidden><\/div>\n\n<script>\nconst grist = window.parent.grist;           // API Grist du widget Eureka (déjà initialisée)\nconst $ = s => document.querySelector(s);\nconst esc = s => String(s ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));\nconst norm = s => String(s ?? '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();\nconst fullName = c => [c.Prenom, c.Nom].filter(Boolean).join(' ');\nconst ADMIN = window.parent.hddAdmin === true;   // décidé par Eureka (jamais en vue partagée)\nconst cmpPrio = (a, b) => (a.Priorite ?? 9999) - (b.Priorite ?? 9999) || a.id - b.id;\n\nconst S = {\n  themes: [], byId: new Map(), kids: new Map(),\n  contacts: new Map(), orient: [], dirs: [], dirErr: null,\n  path: [], view: null, error: null, firstHit: null\n};\n\n/* ---------- Données ---------- */\nfunction rows(t){\n  const keys = Object.keys(t), n = (t.id || []).length, out = [];\n  for (let i = 0; i < n; i++){\n    const r = {};\n    for (const k of keys) r[k] = t[k][i];\n    out.push(r);\n  }\n  return out;\n}\n\nasync function fetchRows(name){\n  try { return rows(await grist.docApi.fetchTable(name)); }\n  catch (e) { throw new Error('Table « ' + name + ' » introuvable ou inaccessible.'); }\n}\n\nlet loading = false, again = false, waiter = null;\nfunction load(){            // si un chargement est en cours, un second est mis en file et la promesse attend la fin des deux\n  if (loading){ again = true; return waiter; }\n  loading = true;\n  waiter = (async () => { do { again = false; await loadOnce(); } while (again); loading = false; })();\n  return waiter;\n}\nasync function loadOnce(){\n  try {\n    const t = await fetchRows('Themes');\n    const c = await fetchRows('Contacts');\n    const o = await fetchRows('Orientations');\n\n    S.themes = t.filter(r => r.Nom && (ADMIN || r.Actif !== false))\n      .sort((a, b) => (a.Ordre ?? 9999) - (b.Ordre ?? 9999) || String(a.Nom).localeCompare(String(b.Nom), 'fr'));\n    S.byId = new Map(S.themes.map(r => [r.id, r]));\n    S.kids = new Map();\n    for (const r of S.themes){\n      const p = r.Parent || 0;\n      if (p !== 0 && !S.byId.has(p)) continue; // parent inactif ou supprimé : thème inaccessible\n      if (!S.kids.has(p)) S.kids.set(p, []);\n      S.kids.get(p).push(r);\n    }\n    if (!ADMIN){ // un thème n'est visible que si toute sa chaîne de parents est active\n      const seen = new Set();\n      const walk = (pid, d) => {\n        if (d > 12) return;\n        for (const k of S.kids.get(pid) || []) if (!seen.has(k.id)){ seen.add(k.id); walk(k.id, d + 1); }\n      };\n      walk(0, 0);\n      S.themes = S.themes.filter(t => seen.has(t.id));\n      S.byId = new Map(S.themes.map(r => [r.id, r]));\n    }\n    S.contacts = new Map(c.map(r => [r.id, r]));\n    S.orient = o.filter(r => r.Theme && r.Contact);\n\n    try {\n      const d = await fetchRows('DIRECTIONS');\n      const fk = (r, k) => { for (const key in r) if (key.toLowerCase().replace(/[^a-z0-9]/g, '') === k) return r[key] ?? ''; return ''; };\n      S.dirs = d.map(r => ({\n        id: r.id, sigle: fk(r, 'sigle'), direction: fk(r, 'direction'), assistante: fk(r, 'assistante'),\n        interne: fk(r, 'ligneinterne'), horaires: fk(r, 'horairestel'), portable: fk(r, 'portablepro'),\n        mail: fk(r, 'mailpro'), obs: fk(r, 'observation')\n      })).filter(x => String(x.sigle).trim());\n      S.dirErr = null;\n    } catch (e) { S.dirs = []; S.dirErr = e.message; }\n\n    S.path = S.path.filter(id => S.byId.has(id));\n    if (S.view && S.view.type === 'theme' && !S.byId.has(S.view.id)) { S.view = null; S.path = []; }\n    if (S.view && S.view.type === 'contact' && !S.contacts.has(S.view.id)) S.view = null;\n    S.error = null;\n  } catch (e) {\n    S.error = e.message;\n  } finally {\n    render();\n  }\n}\n\nfunction pathOf(id){\n  const p = [];\n  let cur = S.byId.get(id), n = 0;\n  while (cur && n++ < 12){ p.unshift(cur.id); cur = S.byId.get(cur.Parent); }\n  return p;\n}\n\nfunction lvl(id){ return 'l' + Math.min(pathOf(id).length - 1, 3); } // classe de couleur selon la profondeur\n\n/* ---------- Rendu : navigation ---------- */\nfunction renderNav(){\n  const el = $('#nav');\n  if (S.error) { el.innerHTML = ''; return; }\n  if (!S.themes.length){\n    el.innerHTML = (ADMIN ? formHTML() : '') +\n      '<div class=\"empty\"><strong>Aucun thème<\/strong>' + (ADMIN ? 'Créez le premier thème ci-dessous.' : 'Ajoutez des lignes dans la table Themes.') + '<\/div>' +\n      (ADMIN ? navAdminHTML() : '');\n    return;\n  }\n  const cur = S.path[S.path.length - 1] || 0;\n  let list = S.kids.get(cur) || [];\n  if (!list.length && cur) list = S.kids.get(S.byId.get(cur).Parent || 0) || [];\n\n  let crumbs = S.path.length\n    ? '<button type=\"button\" data-home=\"1\">Accueil<\/button>'\n    : '<span class=\"cur\">Accueil<\/span>';\n  S.path.forEach((id, i) => {\n    const t0 = S.byId.get(id), nm = (t0.Emoji ? esc(t0.Emoji) + ' ' : '') + esc(t0.Nom), lv = lvl(id);\n    crumbs += '<span class=\"sep\">›<\/span>';\n    crumbs += i === S.path.length - 1\n      ? '<span class=\"ctag cur on ' + lv + '\">' + nm + '<\/span>'\n      : '<button type=\"button\" class=\"ctag ' + lv + '\" data-theme=\"' + id + '\">' + nm + '<\/button>';\n  });\n\n  const tiles = list.map(t => {\n    const on = (S.path.includes(t.id) ? ' on' : '') + (effOff(t.id) ? ' off' : '');\n    const more = (S.kids.get(t.id) || []).length ? '<span class=\"more\" aria-hidden=\"true\">›<\/span>' : '';\n    return '<button type=\"button\" class=\"tile ' + lvl(t.id) + on + '\" data-theme=\"' + t.id + '\">' +\n      '<span class=\"em\" aria-hidden=\"true\">' + esc(t.Emoji || '') + '<\/span>' +\n      '<span class=\"row\"><span class=\"nm\">' + esc(t.Nom) + '<\/span>' + more + '<\/span><\/button>';\n  }).join('');\n\n  el.innerHTML = (ADMIN ? formHTML() : '') + '<div class=\"crumbs\">' + crumbs + '<\/div><div class=\"tiles\">' + tiles + '<\/div>' +\n    (ADMIN ? navAdminHTML() : '');\n}\n\n/* ---------- Rendu : résultat ---------- */\nfunction cardHTML(c, o, opt){\n  const unit = [c.Direction, c.Service].filter(Boolean).join(', ');\n  const tel = c.Telephone\n    ? '<button type=\"button\" class=\"tel\" data-tel=\"' + esc(c.Telephone) + '\" title=\"Copier le numéro\">' +\n      esc(c.Telephone) + '<span class=\"cp\">Copier<\/span><\/button>'\n    : '<span class=\"notel\">Numéro non renseigné<\/span>';\n  const note = o && o.Consigne ? '<div class=\"note\">' + esc(o.Consigne) + '<\/div>' : '';\n  const rank = opt.rank ? '<div class=\"rank\">' + opt.rank + '<\/div>' : '<div><\/div>';\n  const lbl = opt.first && opt.rank ? '<div class=\"lbl\">À appeler en premier<\/div>' : '';\n  const off = opt.off ? '<span class=\"tag\">Absent<\/span>' : '';\n  let ctl = '';\n  if (ADMIN){\n    const b = (kind, label, extra) => '<button type=\"button\" class=\"mini\" data-act=\"' + kind + '\" data-ct=\"' + c.id + '\"' +\n      (o ? ' data-or=\"' + o.id + '\"' : '') + (opt.thId ? ' data-th=\"' + opt.thId + '\"' : '') + (extra || '') + '>' + label + '<\/button>';\n    ctl = '<div class=\"ctl\">';\n    if (opt.rank) ctl += b('up', 'Monter', opt.canUp ? '' : ' disabled') + b('down', 'Descendre', opt.canDown ? '' : ' disabled');\n    ctl += b('avail', c.Disponible === false ? 'Marquer présent' : 'Marquer absent', ' title=\"S’applique à tous les thèmes de ce contact\"');\n    ctl += b('ctedit', 'Modifier le contact');\n    if (o && opt.thId) ctl += b('rm', S.confirmRm === o.id ? 'Confirmer le retrait' : 'Retirer de ce thème');\n    ctl += '<\/div>';\n  }\n  return '<article class=\"card' + (opt.first ? ' first' : '') + (opt.off ? ' off' : '') + '\">' +\n    rank +\n    '<div>' + lbl + '<div class=\"name\">' + esc(fullName(c)) + off + '<\/div>' +\n    (c.Fonction ? '<div class=\"sub\">' + esc(c.Fonction) + '<\/div>' : '') +\n    (unit ? '<div class=\"sub\">' + esc(unit) + '<\/div>' : '') + '<\/div>' +\n    tel + note + ctl + '<\/article>';\n}\n\nfunction dirsFor(list){ // directions (via SIGLE) des contacts du thème, sans doublon, dans l'ordre de priorité\n  const seen = new Set(), out = [];\n  for (const x of list){\n    const k = norm(x.c.Direction).trim();\n    if (!k) continue;\n    const d = S.dirs.find(d => norm(d.sigle).trim() === k) || S.dirs.find(d => norm(d.direction).trim() === k);\n    if (d && !seen.has(d.id)){ seen.add(d.id); out.push(d); }\n  }\n  return out;\n}\n\nfunction dirCardHTML(d){\n  const has = v => String(v ?? '').trim() !== '';\n  const tels = [['Ligne interne', d.interne], ['Portable pro', d.portable]].filter(x => has(x[1])).map(x =>\n    '<div class=\"telw\"><div class=\"tlab\">' + x[0] + '<\/div><button type=\"button\" class=\"tel\" data-tel=\"' + esc(String(x[1]).trim()) +\n    '\" title=\"Copier le numéro\">' + esc(String(x[1]).trim()) + '<span class=\"cp\">Copier<\/span><\/button><\/div>').join('');\n  const unit = has(d.direction) && norm(d.direction) !== norm(d.sigle) ? d.sigle + ' – ' + d.direction : d.sigle;\n  return '<article class=\"card last\"><div><\/div><div>' +\n    '<div class=\"name\">' + esc(has(d.assistante) ? d.assistante : 'Assistante non renseignée') + '<\/div>' +\n    '<div class=\"sub\">Assistante de direction · ' + esc(unit) + '<\/div>' +\n    (has(d.horaires) ? '<div class=\"sub\">Horaires téléphone : ' + esc(d.horaires) + '<\/div>' : '') +\n    (has(d.mail) ? '<div class=\"sub\"><a href=\"mailto:' + esc(String(d.mail).trim()) + '\" target=\"_blank\" rel=\"noopener\">' + esc(String(d.mail).trim()) + '<\/a><\/div>' : '') +\n    '<\/div>' + (tels ? '<div class=\"tels\">' + tels + '<\/div>' : '<span class=\"notel\">Numéro non renseigné<\/span>') +\n    (has(d.obs) ? '<div class=\"note\">' + esc(d.obs) + '<\/div>' : '') + '<\/article>';\n}\n\nfunction emptyHTML(title, text){\n  return '<div class=\"empty\"><strong>' + esc(title) + '<\/strong>' + esc(text) + '<\/div>';\n}\n\nfunction renderResult(){\n  renderResultBody();\n  if (!ADMIN || S.error) return;\n  const el = $('#res'), f = S.form, v = S.view;\n  if (f && (f.mode === 'ctcreate' || f.mode === 'ctedit')) el.insertAdjacentHTML('afterbegin', contactFormHTML(f));\n  if (!v || v.type === 'contact')   // sur un thème, la création de contact est dans le cadre « Ajouter un contact »\n    el.insertAdjacentHTML('beforeend', '<div class=\"admnav\"><button type=\"button\" class=\"mini\" data-act=\"ctcreate\">Créer un contact<\/button><\/div>');\n}\n\nfunction renderResultBody(){\n  const el = $('#res');\n  if (S.error){\n    el.innerHTML = '<div class=\"error\"><strong>Configuration à vérifier<\/strong><br>' + esc(S.error) +\n      '<br>Le widget attend les tables Themes, Contacts et Orientations, avec un accès « Accès complet au document ».<\/div>';\n    return;\n  }\n  const v = S.view;\n  if (!v){\n    el.innerHTML = emptyHTML('Choisissez un thème', 'Cliquez sur un pavé à gauche ou tapez un mot dans la recherche.');\n    return;\n  }\n  if (v.type === 'contact'){\n    const c = S.contacts.get(v.id);\n    el.innerHTML = c\n      ? '<h2>' + esc(fullName(c)) + '<\/h2><div class=\"path\">Fiche contact<\/div>' +\n        cardHTML(c, null, { first: true, off: c.Disponible === false })\n      : emptyHTML('Contact introuvable', 'Il a peut-être été supprimé.');\n    return;\n  }\n\n  const th = S.byId.get(v.id);\n  const names = pathOf(v.id).map(i => S.byId.get(i).Nom);\n  const list = S.orient\n    .filter(o => o.Theme === v.id && S.contacts.has(o.Contact))\n    .map(o => ({ o, c: S.contacts.get(o.Contact) }))\n    .sort((a, b) => cmpPrio(a.o, b.o));\n  const ok = list.filter(x => x.c.Disponible !== false);\n  const off = list.filter(x => x.c.Disponible === false);\n\n  let html = '<h2>' + esc(th.Nom) + '<\/h2>' +\n    (names.length > 1 ? '<div class=\"path\">' + esc(names.join(' › ')) + '<\/div>' : '<div class=\"path\"><\/div>');\n\n  if (!list.length){\n    html += (S.kids.get(v.id) || []).length\n      ? emptyHTML('Précisez le sujet', 'Choisissez un sous-thème à gauche pour voir les contacts.')\n      : emptyHTML('Aucun contact renseigné', 'Prévenez le responsable de l’annuaire pour ce thème.');\n  } else {\n    ok.forEach((x, i) => { html += cardHTML(x.c, x.o, { rank: i + 1, first: i === 0, thId: v.id, canUp: i > 0, canDown: i < ok.length - 1 }); });\n    if (!ok.length) html += emptyHTML('Aucun contact disponible', 'Tous les contacts de ce thème sont indiqués absents.');\n    const ds = dirsFor(list);\n    if (ds.length){\n      html += '<h3>En dernier recours : assistante de direction<\/h3>';\n      ds.forEach(d => { html += dirCardHTML(d); });\n    }\n    if (ADMIN && S.dirErr) html += '<div class=\"note offnote\">' + esc(S.dirErr) + ' Le dernier recours n’est pas affiché.<\/div>';\n    if (off.length){\n      html += '<h3>Indisponibles pour le moment<\/h3>';\n      off.forEach(x => { html += cardHTML(x.c, x.o, { off: true, thId: v.id }); });\n    }\n  }\n  if (ADMIN) html += addBoxHTML(v.id);\n  el.innerHTML = html;\n}\n\nfunction render(){\n  const a = document.activeElement;\n  if (S.form && a && a.closest){\n    if (a.closest('#res .form')){ renderNav(); return; }       // formulaire contact (colonne de droite)\n    if (a.closest('#nav .form')){ renderResult(); return; }    // formulaire thème (colonne de gauche)\n  }\n  renderNav(); renderResult();\n}\n\n/* ---------- Recherche ---------- */\nfunction runSearch(){\n  const n = norm($('#q').value).trim();\n  const box = $('#hits');\n  S.firstHit = null;\n  if (!n){ box.hidden = true; box.innerHTML = ''; return; }\n  const words = n.split(/\\s+/);\n\n  const th = S.themes.map(t => {\n    const names = pathOf(t.id).map(i => S.byId.get(i).Nom);\n    return { t, names, hay: norm(names.join(' ') + ' ' + (t.MotsCles || '')) };\n  }).filter(x => words.every(w => x.hay.includes(w)))\n    .sort((a, b) => (norm(a.t.Nom).includes(n) ? 0 : 1) - (norm(b.t.Nom).includes(n) ? 0 : 1) || a.names.length - b.names.length)\n    .slice(0, 8);\n\n  const pe = [...S.contacts.values()].filter(c => {\n    const hay = norm([c.Prenom, c.Nom, c.Fonction, c.Direction, c.Service].filter(Boolean).join(' '));\n    return words.every(w => hay.includes(w));\n  }).slice(0, 5);\n\n  let html = '';\n  if (th.length){\n    html += '<div class=\"grp\">Thèmes<\/div>';\n    th.forEach(x => {\n      html += '<button type=\"button\" class=\"hit\" data-theme=\"' + x.t.id + '\">' + esc(x.t.Nom) + (ADMIN && effOff(x.t.id) ? ' (désactivé)' : '') +\n        (x.names.length > 1 ? '<small>' + esc(x.names.slice(0, -1).join(' › ')) + '<\/small>' : '') + '<\/button>';\n    });\n    S.firstHit = { type: 'theme', id: th[0].t.id };\n  }\n  if (pe.length){\n    html += '<div class=\"grp\">Personnes<\/div>';\n    pe.forEach(c => {\n      html += '<button type=\"button\" class=\"hit\" data-contact=\"' + c.id + '\">' + esc(fullName(c)) +\n        '<small>' + esc([c.Direction, c.Service].filter(Boolean).join(', ')) + '<\/small><\/button>';\n    });\n    if (!S.firstHit) S.firstHit = { type: 'contact', id: pe[0].id };\n  }\n  if (!html) html = '<div class=\"none\">Aucun résultat pour « ' + esc($('#q').value.trim()) + ' ».<\/div>';\n  box.innerHTML = html;\n  box.hidden = false;\n}\n\nfunction closeSearch(clear){\n  if (clear) $('#q').value = '';\n  $('#hits').hidden = true;\n  S.firstHit = null;\n}\n\nfunction pick(type, id){\n  S.form = null;\n  if (type === 'theme'){ S.path = pathOf(id); S.view = { type: 'theme', id }; }\n  else { S.view = { type: 'contact', id }; }\n  closeSearch(true);\n  render();\n}\n\n/* ---------- Copie du numéro ---------- */\nasync function copyText(text){\n  try { await navigator.clipboard.writeText(text); return true; }\n  catch (_) {\n    const ta = document.createElement('textarea');\n    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';\n    document.body.appendChild(ta); ta.select();\n    let ok = false;\n    try { ok = document.execCommand('copy'); } catch (_) {}\n    ta.remove();\n    return ok;\n  }\n}\n\n/* ---------- Édition (mode admin) ---------- */\nfunction nomPrenom(c){ return [c.Nom, c.Prenom].map(x => String(x || '').trim()).filter(Boolean).join(' '); }\n\nfunction addBoxHTML(thId){\n  const used = new Set(S.orient.filter(o => o.Theme === thId).map(o => o.Contact));\n  const cands = [...S.contacts.values()].filter(c => !used.has(c.id) && fullName(c))\n    .sort((a, b) => nomPrenom(a).localeCompare(nomPrenom(b), 'fr'));   // ordre alphabétique des noms\n  const mkNew = '<div style=\"margin-top:12px\"><button type=\"button\" class=\"mini\" data-act=\"ctcreate\" data-th=\"' + thId + '\">Créer un nouveau contact et le rattacher ici<\/button><\/div>';\n  if (!cands.length) return '<div class=\"addbox\"><span class=\"sub\">Tous les contacts existants sont déjà rattachés à ce thème.<\/span>' + mkNew + '<\/div>';\n  return '<div class=\"addbox\"><label for=\"addsel\">Ajouter un contact existant à ce thème<\/label><div class=\"addrow\">' +\n    '<select id=\"addsel\">' + cands.map(c => '<option value=\"' + c.id + '\">' + esc(nomPrenom(c) + (c.Service ? ' – ' + c.Service : '')) + '<\/option>').join('') + '<\/select>' +\n    '<button type=\"button\" class=\"mini main\" data-act=\"add\" data-th=\"' + thId + '\">Ajouter<\/button><\/div>' +\n    '<div class=\"sub\" style=\"margin-top:8px\">Le contact est placé en dernier. Utilisez Monter pour le remonter.<\/div>' + mkNew + '<\/div>';\n}\n\nlet toastT;\nfunction flash(msg){\n  const t = $('#toast');\n  t.textContent = msg; t.hidden = false;\n  clearTimeout(toastT);\n  toastT = setTimeout(() => { t.hidden = true; }, 4500);\n}\n\nasync function apply(actions){\n  let res = null;\n  try { res = await grist.docApi.applyUserActions(actions); }\n  catch (e) { flash('Modification refusée : ' + (e && e.message ? e.message : e)); }\n  await load();\n  return res;\n}\n\nasync function movePrio(thId, orId, dir){\n  const all = S.orient.filter(o => o.Theme === thId && S.contacts.has(o.Contact)).sort(cmpPrio);\n  const rank = new Map(all.map((o, i) => [o.id, i + 1]));          // renumérote 1..n (supprime doublons et trous)\n  const ok = all.filter(o => S.contacts.get(o.Contact).Disponible !== false);\n  const i = ok.findIndex(o => o.id === orId), j = i + dir;\n  if (i < 0 || j < 0 || j >= ok.length) return;\n  const a = ok[i].id, b = ok[j].id, ra = rank.get(a);\n  rank.set(a, rank.get(b)); rank.set(b, ra);\n  const changed = all.filter(o => o.Priorite !== rank.get(o.id));\n  if (!changed.length) return;\n  await apply([['BulkUpdateRecord', 'Orientations', changed.map(o => o.id), { Priorite: changed.map(o => rank.get(o.id)) }]]);\n}\n\nasync function adminAction(btn){\n  if (!ADMIN) return;\n  const kind = btn.dataset.act;\n  const ct = Number(btn.dataset.ct), or = Number(btn.dataset.or), th = Number(btn.dataset.th);\n  if (await themeAction(kind, btn.dataset, th)) return;\n  if (kind === 'avail'){\n    const c = S.contacts.get(ct);\n    if (c) await apply([['UpdateRecord', 'Contacts', ct, { Disponible: c.Disponible === false }]]);\n  } else if (kind === 'up' || kind === 'down'){\n    await movePrio(th, or, kind === 'up' ? -1 : 1);\n  } else if (kind === 'rm'){\n    if (S.confirmRm !== or){                                          // 1er clic : demande confirmation\n      S.confirmRm = or; renderResult();\n      setTimeout(() => { if (S.confirmRm === or){ S.confirmRm = null; renderResult(); } }, 4000);\n      return;\n    }\n    S.confirmRm = null;\n    await apply([['RemoveRecord', 'Orientations', or]]);\n  } else if (kind === 'add'){\n    const sel = $('#addsel'), cid = sel ? Number(sel.value) : 0;\n    if (!cid) return;\n    const mx = Math.max(0, ...S.orient.filter(o => o.Theme === th).map(o => o.Priorite || 0));\n    await apply([['AddRecord', 'Orientations', null, { Theme: th, Contact: cid, Priorite: mx + 1 }]]);\n  }\n}\n\n/* ---------- Édition des thèmes (mode admin) ---------- */\nfunction effOff(id){ // vrai si le thème ou un de ses parents est désactivé\n  let cur = S.byId.get(id), n = 0;\n  while (cur && n++ < 12){ if (cur.Actif === false) return true; cur = S.byId.get(cur.Parent); }\n  return false;\n}\n\nfunction countDesc(id, d){ // sous-thèmes actifs que la désactivation masquerait\n  d = d || 0;\n  if (d > 12) return 0;\n  let n = 0;\n  for (const k of S.kids.get(id) || []){ if (k.Actif !== false) n++; n += countDesc(k.id, d + 1); }\n  return n;\n}\n\nfunction navAdminHTML(){\n  const cur = S.path[S.path.length - 1] || 0;\n  const curT = cur ? S.byId.get(cur) : null;\n  const hasKids = cur && (S.kids.get(cur) || []).length;\n  const btn = (par, label, main) => '<button type=\"button\" class=\"mini' + (main ? ' main' : '') + '\" data-act=\"newth\" data-par=\"' + par + '\">' + label + '<\/button>';\n  const vt = S.view && S.view.type === 'theme' ? S.byId.get(S.view.id) : null;\n  let h = (vt ? themeToolbar(vt) : '') + '<div class=\"admnav\">';\n  if (!curT) h += btn(0, 'Ajouter un thème à l’accueil', true);\n  else {\n    h += btn(cur, 'Ajouter un sous-thème à « ' + esc(curT.Nom) + ' »', true);\n    if (!hasKids) h += btn(curT.Parent || 0, 'Ajouter un thème au même niveau');\n  }\n  return h + '<\/div>';\n}\n\nfunction formHTML(){\n  const f = S.form;\n  if (!f) return '';\n  if (f.mode === 'move') return moveFormHTML(f);\n  if (f.mode === 'ctcreate' || f.mode === 'ctedit') return '';   // affiché dans la colonne de droite\n  let title, v = { Nom: '', Emoji: '', MotsCles: '' };\n  if (f.mode === 'edit'){\n    const t = S.byId.get(f.id);\n    if (!t) return '';\n    title = 'Modifier « ' + t.Nom + ' »';\n    v = { Nom: t.Nom || '', Emoji: t.Emoji || '', MotsCles: t.MotsCles || '' };\n  } else {\n    const pt = f.parent ? S.byId.get(f.parent) : null;\n    title = pt ? 'Nouveau thème dans « ' + pt.Nom + ' »' : 'Nouveau thème à l’accueil';\n  }\n  return '<div class=\"form\"><h3>' + esc(title) + '<\/h3>' +\n    '<label for=\"fNom\">Nom<\/label><input id=\"fNom\" type=\"text\" value=\"' + esc(v.Nom) + '\">' +\n    '<label for=\"fEmoji\">Emoji (facultatif)<\/label><input id=\"fEmoji\" type=\"text\" value=\"' + esc(v.Emoji) + '\">' +\n    '<label for=\"fKw\">Mots-clés pour la recherche (facultatif)<\/label><input id=\"fKw\" type=\"text\" value=\"' + esc(v.MotsCles) + '\">' +\n    '<div class=\"fmsg\" id=\"fMsg\"><\/div>' +\n    '<div class=\"row2\"><button type=\"button\" class=\"mini main\" data-act=\"fsave\">Enregistrer<\/button>' +\n    '<button type=\"button\" class=\"mini\" data-act=\"fcancel\">Annuler<\/button><\/div><\/div>';\n}\n\nfunction contactFormHTML(f){\n  let v = { Prenom: '', Nom: '', Fonction: '', Direction: '', Service: '', Telephone: '' }, title;\n  if (f.mode === 'ctedit'){\n    const c = S.contacts.get(f.id);\n    if (!c) return '';\n    v = { Prenom: c.Prenom || '', Nom: c.Nom || '', Fonction: c.Fonction || '', Direction: c.Direction || '', Service: c.Service || '', Telephone: c.Telephone || '' };\n    title = 'Modifier le contact « ' + fullName(c) + ' »';\n  } else {\n    const t = f.thId ? S.byId.get(f.thId) : null;\n    title = t ? 'Nouveau contact, rattaché à « ' + t.Nom + ' »' : 'Nouveau contact (non rattaché à un thème)';\n  }\n  const inp = (id, label, val) => '<label for=\"' + id + '\">' + label + '<\/label><input id=\"' + id + '\" type=\"text\" value=\"' + esc(val) + '\">';\n  return '<div class=\"form\"><h3>' + esc(title) + '<\/h3>' +\n    inp('fPre', 'Prénom', v.Prenom) + inp('fCnom', 'Nom', v.Nom) + inp('fFct', 'Fonction', v.Fonction) +\n    dirField(v.Direction) + inp('fSrv', 'Service', v.Service) + inp('fTel', 'Téléphone', v.Telephone) +\n    '<div class=\"fmsg\" id=\"fMsg\"><\/div>' +\n    '<div class=\"row2\"><button type=\"button\" class=\"mini main\" data-act=\"fsave\">Enregistrer<\/button>' +\n    '<button type=\"button\" class=\"mini\" data-act=\"fcancel\">Annuler<\/button><\/div><\/div>';\n}\n\nfunction dirField(val){ // liste déroulante des sigles de DIRECTIONS (champ texte si la table est absente)\n  const cur = String(val || '').trim();\n  if (!S.dirs.length)\n    return '<label for=\"fDir\">Direction<\/label><input id=\"fDir\" type=\"text\" value=\"' + esc(cur) + '\">';\n  const list = [...S.dirs].sort((a, b) => String(a.sigle).localeCompare(String(b.sigle), 'fr'));\n  const hit = list.find(d => norm(d.sigle).trim() === norm(cur));\n  let h = '<label for=\"fDir\">Direction (sigle)<\/label><select id=\"fDir\"><option value=\"\">(aucune)<\/option>';\n  if (cur && !hit) h += '<option value=\"' + esc(cur) + '\" selected>' + esc(cur) + ' (hors liste)<\/option>';\n  h += list.map(d => '<option value=\"' + esc(d.sigle) + '\"' + (hit && hit.id === d.id ? ' selected' : '') + '>' +\n    esc(d.sigle + (String(d.direction || '').trim() && norm(d.direction) !== norm(d.sigle) ? ' – ' + d.direction : '')) + '<\/option>').join('');\n  return h + '<\/select>';\n}\n\nasync function contactSave(f){\n  const v = { Prenom: $('#fPre').value.trim(), Nom: $('#fCnom').value.trim(), Fonction: $('#fFct').value.trim(),\n              Direction: $('#fDir').value.trim(), Service: $('#fSrv').value.trim(), Telephone: $('#fTel').value.trim() };\n  if (!v.Prenom && !v.Nom){ formMsg('Renseignez au moins un prénom ou un nom.'); return true; }\n  const key = norm(fullName(v));\n  const dup = [...S.contacts.values()].find(c => c.id !== f.id && norm(fullName(c)) === key);\n  if (dup && f.dupAck !== key){                                       // homonyme : 2e clic pour confirmer\n    f.dupAck = key;\n    formMsg('Un contact porte déjà ce nom (' + ([dup.Direction, dup.Service].filter(Boolean).join(', ') || 'sans service') + '). Cliquez à nouveau sur Enregistrer pour confirmer.');\n    return true;\n  }\n  if (f.mode === 'ctedit'){\n    const r = await apply([['UpdateRecord', 'Contacts', f.id, v]]);\n    if (r){ S.form = null; render(); }\n    return true;\n  }\n  const r = await apply([['AddRecord', 'Contacts', null, Object.assign({ Disponible: true }, v)]]);\n  if (r){\n    const cid = r.retValues && r.retValues[0];\n    if (cid && f.thId){\n      const mx = Math.max(0, ...S.orient.filter(o => o.Theme === f.thId).map(o => o.Priorite || 0));\n      await apply([['AddRecord', 'Orientations', null, { Theme: f.thId, Contact: cid, Priorite: mx + 1 }]]);\n    }\n    S.form = null; render();\n  }\n  return true;\n}\n\nfunction treeList(){ // tous les thèmes accessibles depuis l'accueil, dans l'ordre de l'arbre, avec leur chemin\n  const out = [];\n  const walk = (pid, d, names) => {\n    if (d > 12) return;\n    for (const k of S.kids.get(pid) || []){ const nm = names.concat(k.Nom); out.push({ t: k, label: nm.join(' › ') }); walk(k.id, d + 1, nm); }\n  };\n  walk(0, 0, []);\n  return out;\n}\n\nfunction descSet(id){ // le thème lui-même + tous ses descendants\n  const set = new Set([id]);\n  const walk = (pid, d) => {\n    if (d > 12) return;\n    for (const k of S.kids.get(pid) || []) if (!set.has(k.id)){ set.add(k.id); walk(k.id, d + 1); }\n  };\n  walk(id, 0);\n  return set;\n}\n\nfunction moveFormHTML(f){\n  const t = S.byId.get(f.id);\n  if (!t) return '';\n  const ex = descSet(f.id), cur = t.Parent || 0;\n  const opts = '<option value=\"0\"' + (cur === 0 ? ' selected' : '') + '>Accueil (niveau principal)<\/option>' +\n    treeList().filter(x => !ex.has(x.t.id)).map(x =>\n      '<option value=\"' + x.t.id + '\"' + (x.t.id === cur ? ' selected' : '') + '>' + esc(x.label + (effOff(x.t.id) ? ' (désactivé)' : '')) + '<\/option>').join('');\n  return '<div class=\"form\"><h3>Déplacer « ' + esc(t.Nom) + ' »<\/h3>' +\n    '<label for=\"fPar\">Nouveau thème parent<\/label><select id=\"fPar\">' + opts + '<\/select>' +\n    '<div class=\"sub\" style=\"margin-top:8px\">Ses sous-thèmes et ses contacts le suivent. Il est placé en dernier à sa nouvelle place.<\/div>' +\n    '<div class=\"fmsg\" id=\"fMsg\"><\/div>' +\n    '<div class=\"row2\"><button type=\"button\" class=\"mini main\" data-act=\"fsave\">Déplacer<\/button>' +\n    '<button type=\"button\" class=\"mini\" data-act=\"fcancel\">Annuler<\/button><\/div><\/div>';\n}\n\nfunction themeToolbar(th){\n  const sib = S.kids.get(th.Parent || 0) || [];\n  const i = sib.findIndex(t => t.id === th.id);\n  const off = th.Actif === false;\n  const nd = countDesc(th.id);\n  const mk = (kind, label, extra) => '<button type=\"button\" class=\"mini\" data-act=\"' + kind + '\" data-th=\"' + th.id + '\"' + (extra || '') + '>' + label + '<\/button>';\n  let lab;\n  if (off) lab = 'Réactiver ce thème';\n  else if (S.confirmOff === th.id) lab = nd ? 'Confirmer : masque aussi ' + nd + ' sous-thème' + (nd > 1 ? 's' : '') : 'Confirmer la désactivation';\n  else lab = 'Désactiver ce thème';\n  let h = '<div class=\"ctl thbar\">' + mk('edit', 'Modifier') + mk('move', 'Déplacer vers…') +\n    mk('before', 'Déplacer avant', i > 0 ? '' : ' disabled') +\n    mk('after', 'Déplacer après', i >= 0 && i < sib.length - 1 ? '' : ' disabled') +\n    mk('toggle', lab) + '<\/div>';\n  if (off) h += '<div class=\"note offnote\">Thème désactivé : les agents ne le voient pas, ni ses sous-thèmes.<\/div>';\n  else if (effOff(th.id)) h += '<div class=\"note offnote\">Thème masqué : un thème parent est désactivé.<\/div>';\n  return h;\n}\n\nfunction formMsg(m){ const e = $('#fMsg'); if (e) e.textContent = m; }\n\nasync function moveTheme(id, dir){\n  const th = S.byId.get(id);\n  if (!th) return;\n  const sib = S.kids.get(th.Parent || 0) || [];\n  const i = sib.findIndex(t => t.id === id), j = i + dir;\n  if (i < 0 || j < 0 || j >= sib.length) return;\n  const order = sib.map(t => t.id);\n  [order[i], order[j]] = [order[j], order[i]];\n  const changed = order.map((tid, k) => ({ tid, ord: k + 1 })).filter(x => S.byId.get(x.tid).Ordre !== x.ord);\n  if (!changed.length) return;\n  await apply([['BulkUpdateRecord', 'Themes', changed.map(x => x.tid), { Ordre: changed.map(x => x.ord) }]]);\n}\n\nasync function themeAction(kind, d, th){\n  if (kind === 'ctcreate' || kind === 'ctedit'){\n    S.form = kind === 'ctcreate' ? { mode: 'ctcreate', thId: th || 0 } : { mode: 'ctedit', id: Number(d.ct) };\n    renderNav(); renderResult();\n    $('#res').scrollTop = 0;\n    setTimeout(() => { const i = $('#fPre') || $('#fCnom'); if (i) i.focus(); }, 0);\n    return true;\n  }\n  if (kind === 'newth' || kind === 'edit' || kind === 'move'){\n    S.form = kind === 'newth' ? { mode: 'create', parent: Number(d.par) || 0 } : { mode: kind === 'move' ? 'move' : 'edit', id: th };\n    renderNav(); renderResult();\n    $('#nav').scrollTop = 0;\n    setTimeout(() => { const i = $('#fNom') || $('#fPar'); if (i) i.focus(); }, 0);\n    return true;\n  }\n  if (kind === 'fcancel'){ S.form = null; render(); return true; }\n  if (kind === 'fsave'){\n    const f = S.form;\n    if (!f) return true;\n    if (f.mode === 'ctcreate' || f.mode === 'ctedit') return await contactSave(f);\n    if (f.mode === 'move'){\n      const t = S.byId.get(f.id);\n      if (!t) return true;\n      const np = Number($('#fPar').value) || 0;\n      if ((t.Parent || 0) === np){ formMsg('Ce thème est déjà à cet endroit.'); return true; }\n      if (np && !S.byId.has(np)){ formMsg('Thème parent introuvable : actualisez la page.'); return true; }\n      if (descSet(f.id).has(np)){ formMsg('Impossible : un thème ne peut pas être placé sous lui-même ou sous l’un de ses sous-thèmes.'); return true; }\n      if ((S.kids.get(np) || []).some(x => x.id !== f.id && norm(x.Nom) === norm(t.Nom))){\n        formMsg('Un thème porte déjà ce nom à cet endroit. Renommez-le d’abord.'); return true;\n      }\n      const mx = Math.max(0, ...(S.kids.get(np) || []).map(x => x.Ordre || 0));\n      const r = await apply([['UpdateRecord', 'Themes', f.id, { Parent: np, Ordre: mx + 1 }]]);\n      if (r){ S.form = null; pick('theme', f.id); }\n      return true;\n    }\n    const nom = $('#fNom').value.trim(), emoji = $('#fEmoji').value.trim(), kw = $('#fKw').value.trim();\n    if (!nom){ formMsg('Le nom est obligatoire.'); return true; }\n    const parent = f.mode === 'edit' ? ((S.byId.get(f.id) || {}).Parent || 0) : f.parent;\n    if ((S.kids.get(parent) || []).some(t => t.id !== f.id && norm(t.Nom) === norm(nom))){\n      formMsg('Un thème porte déjà ce nom à ce niveau.'); return true;\n    }\n    if (f.mode === 'edit'){\n      const r = await apply([['UpdateRecord', 'Themes', f.id, { Nom: nom, Emoji: emoji, MotsCles: kw }]]);\n      if (r){ S.form = null; render(); }\n    } else {\n      const mx = Math.max(0, ...(S.kids.get(parent) || []).map(t => t.Ordre || 0));\n      const r = await apply([['AddRecord', 'Themes', null, { Nom: nom, Parent: parent, Emoji: emoji, MotsCles: kw, Ordre: mx + 1, Actif: true }]]);\n      if (r){\n        S.form = null;\n        const nid = r.retValues && r.retValues[0];\n        if (nid && S.byId.has(nid)) pick('theme', nid); else render();\n      }\n    }\n    return true;\n  }\n  if (kind === 'before' || kind === 'after'){ await moveTheme(th, kind === 'before' ? -1 : 1); return true; }\n  if (kind === 'toggle'){\n    const t = S.byId.get(th);\n    if (!t) return true;\n    if (t.Actif === false){ await apply([['UpdateRecord', 'Themes', th, { Actif: true }]]); return true; }\n    if (S.confirmOff !== th){                                         // 1er clic : demande confirmation\n      S.confirmOff = th; renderNav();\n      setTimeout(() => { if (S.confirmOff === th){ S.confirmOff = null; renderNav(); } }, 4000);\n      return true;\n    }\n    S.confirmOff = null;\n    await apply([['UpdateRecord', 'Themes', th, { Actif: false }]]);\n    return true;\n  }\n  return false;\n}\n\n/* ---------- Événements ---------- */\ndocument.addEventListener('click', async e => {\n  const ac = e.target.closest('[data-act]');\n  if (ac){ await adminAction(ac); return; }\n  const home = e.target.closest('[data-home]');\n  const th = e.target.closest('[data-theme]');\n  const ct = e.target.closest('[data-contact]');\n  const tel = e.target.closest('[data-tel]');\n  if (home){ S.form = null; S.path = []; S.view = null; render(); return; }\n  if (th){ pick('theme', Number(th.dataset.theme)); return; }\n  if (ct){ pick('contact', Number(ct.dataset.contact)); return; }\n  if (tel){\n    const ok = await copyText(tel.dataset.tel);\n    const cp = tel.querySelector('.cp');\n    if (cp){ cp.textContent = ok ? 'Copié' : 'Copie impossible'; setTimeout(() => { cp.textContent = 'Copier'; }, 1500); }\n    return;\n  }\n  if (!e.target.closest('.search')) closeSearch(false);\n});\n\n$('#q').addEventListener('input', runSearch);\n$('#q').addEventListener('focus', runSearch);\n$('#q').addEventListener('keydown', e => {\n  if (e.key === 'Enter' && S.firstHit) pick(S.firstHit.type, S.firstHit.id);\n  if (e.key === 'Escape') closeSearch(true);\n});\n$('#refresh').addEventListener('click', load);\ndocument.addEventListener('keydown', e => {\n  if (!(e.target.closest && e.target.closest('.form'))) return;\n  if (e.key === 'Enter' && e.target.tagName === 'INPUT'){ e.preventDefault(); adminAction({ dataset: { act: 'fsave' } }); }\n  if (e.key === 'Escape') adminAction({ dataset: { act: 'fcancel' } });\n});\n\n/* ---------- Démarrage ---------- */\nload();\nif (ADMIN){ $('#admtag').hidden = false; document.title += ' (édition)'; }\nelse setInterval(load, 120000);   // en édition : pas de rechargement auto, pour ne pas perdre une sélection en cours\ndocument.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });\n<\/script>\n<\/body>\n<\/html>";
+window.hddAdmin = !new URLSearchParams(location.search).get('vue');   // lu par l'iframe ; toute URL avec ?vue= => lecture seule
+const hdd = {
+  built: false,
+  show() {
+    const f = document.getElementById('hdd-frame');
+    if (!f) return;
+    if (!this.built) {
+      this.built = true;
+      const d = f.contentDocument;
+      d.open(); d.write(HDD_HTML); d.close();
+    } else if (f.contentWindow && typeof f.contentWindow.load === 'function') {
+      f.contentWindow.load();   // rafraîchit les données à chaque retour sur l'onglet
+    }
+  }
+};
+
+/* ═══════════════════════════════════════════════════════
+   RÉGLAGES WIDGET — roue crantée : onglets, ordre, vues partagées
+   (table Grist "Parametres", clé/valeur, valeur = JSON)
+═══════════════════════════════════════════════════════ */
+let pcfgHiddenTabs = [];   // clés des onglets masqués
+let pcfgTabLabels  = {};   // libellés personnalisés { key: 'Libellé' }
+let pcfgTabSubLabels = {}; // sous-titres personnalisés { key: 'Sous-titre' }
+let pcfgTabOrder   = [];   // ordre personnalisé des onglets
+let pcfgGuestProfiles = []; // vues partagées : [{ slug, label, tabs:[...] }]
+let pcfgBandeaux = []; // bandeaux d'information, chargés directement depuis la table Grist "Bandeau"
+const pcfgUrlParams = new URLSearchParams(location.search);
+const pcfgGuestSlug = pcfgUrlParams.get('vue');
+let pcfgGuestProfile = null;
+
+// Correspond aux data-panel de la nav (.rf-tab)
+const PCFG_TABS = [
+  { key: 'eureka',     label: 'Dispositifs', sub: 'du Département' },
+  { key: 'mdd',        label: 'Quelle MDD ?', sub: 'Maisons du Département' },
+  { key: 'annuaire',   label: 'Annuaire', sub: 'À la carte' },
+  { key: 'logigramme', label: 'Référentiels', sub: 'Logigrammes' },
+  { key: 'fichesMDD',  label: 'Fiches missions', sub: 'MDD' },
+  { key: 'aiot',       label: 'Planning AIOT', sub: 'AIO-Téléphone' },
+  { key: 'hdd',        label: 'Orientation', sub: 'des appels' },
+];
+const PCFG_DEFAULT_TAB_ORDER = PCFG_TABS.map(t => t.key);
+// Onglets contenant des actions de modification (bouton "Modifier", lien Grist, etc.)
+// repérables via [data-pcfg-edit="<clé>"] dans le HTML — liste à étendre si besoin.
+const PCFG_EDIT_CAPABLE_TABS = ['eureka', 'fichesMDD', 'aiot'];
+// Libellé de la case "masquer l'édition" dans les vues partagées : par défaut
+// on parle de boutons de modification, mais le planning AIOT s'édite en direct
+// dans la grille, donc on adapte le texte pour cet onglet.
+const PCFG_EDIT_LABELS = { aiot: 'Lecture seule (planning non modifiable)' };
+
+const PCFG_REQUIRED_TABLES = [
+  { id: 'Parametres', label: 'Paramètres', cols: [
+    { id: 'cle',    type: 'Text' },
+    { id: 'valeur', type: 'Text' },
+  ]},
+  { id: 'Bandeau', label: 'Bandeau', cols: [
+    { id: 'actif',           type: 'Bool' },
+    { id: 'message',         type: 'Text' },
+    { id: 'type',            type: 'Choice', widgetOptions: JSON.stringify({ choices: ['info','alerte','urgence'] }) },
+    { id: 'lien_url',        type: 'Text' },
+    { id: 'lien_texte',      type: 'Text' },
+    { id: 'date_expiration', type: 'Date' },
+  ]},
+];
+
+function pcfgEsc(str) { return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function pcfgToast(msg, type) {
+  let el = document.getElementById('pcfgToastEl');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'pcfgToastEl';
+    el.className = 'pcfg-toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.className = 'pcfg-toast show' + (type === 'error' ? ' error' : '');
+  clearTimeout(el._pcfgT);
+  el._pcfgT = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+async function openPcfgModal() {
+  document.getElementById('pcfgOv').classList.add('open');
+  document.getElementById('pcfgTablesStatus').innerHTML = '';
+  pcfgRenderTabsSection();
+  pcfgRenderGuests();
+  document.getElementById('pcfgBandeauxStatus').innerHTML = 'Chargement…';
+  await pcfgLoadBandeaux();
+  pcfgRenderBandeaux();
+}
+function closePcfgModal() { document.getElementById('pcfgOv').classList.remove('open'); }
+function handlePcfgOvClick(e) { if (e.target === document.getElementById('pcfgOv')) closePcfgModal(); }
+
+// ── Installateur : vérifie/crée uniquement la table Parametres ──
+function pcfgSetTablesStatus(html) {
+  const el = document.getElementById('pcfgTablesStatus');
+  if (el) el.innerHTML = html;
+}
+
+async function pcfgCheckTables() {
+  if (typeof grist === 'undefined') { pcfgSetTablesStatus('Indisponible hors de Grist (mode démo).'); return; }
+  pcfgSetTablesStatus('Vérification en cours…');
+  let existing;
+  try {
+    existing = await grist.docApi.listTables();
+  } catch (e) {
+    pcfgSetTablesStatus('Erreur lors de la lecture des tables : ' + e.message);
+    return;
+  }
+  const missing = PCFG_REQUIRED_TABLES.filter(t => !existing.includes(t.id));
+  if (!missing.length) {
+    pcfgSetTablesStatus('✓ Les tables nécessaires sont déjà présentes.');
+    return;
+  }
+  const names = missing.map(t => t.label || t.id).join(', ');
+  pcfgSetTablesStatus(
+    `Table(s) manquante(s) : ${names}.<br>` +
+    `<button class="btn-ghost" style="margin-top:6px" onclick="pcfgInstallTables()">Créer ${missing.length>1?'ces tables':'cette table'}</button>`
+  );
+}
+
+async function pcfgInstallTables() {
+  pcfgSetTablesStatus('Création en cours…');
+  let existing;
+  try {
+    existing = await grist.docApi.listTables();
+  } catch (e) {
+    pcfgSetTablesStatus('Erreur lors de la lecture des tables : ' + e.message);
+    return;
+  }
+  const missing = PCFG_REQUIRED_TABLES.filter(t => !existing.includes(t.id));
+  if (!missing.length) {
+    pcfgSetTablesStatus('✓ Les tables nécessaires sont déjà présentes.');
+    return;
+  }
+  const actions = missing.map(t => ['AddTable', t.id, t.cols]);
+  try {
+    await grist.docApi.applyUserActions(actions);
+    pcfgSetTablesStatus('✓ Table(s) créée(s) : ' + missing.map(t=>t.label||t.id).join(', ') + '.');
+    await fetchPcfgConfig();
+    applyHiddenTabs();
+    await pcfgLoadBandeaux();
+    pcfgRenderBandeaux();
+  } catch (e) {
+    pcfgSetTablesStatus('Erreur lors de la création : ' + e.message);
+  }
+}
+
+// ── Chargement / application de la config ──
+async function fetchPcfgConfig() {
+  pcfgHiddenTabs = [];
+  pcfgTabLabels = {};
+  pcfgTabSubLabels = {};
+  pcfgTabOrder = [];
+  pcfgGuestProfiles = [];
+  if (typeof grist === 'undefined') return;
+  try {
+    const t = await grist.docApi.fetchTable('Parametres');
+    if (t && t.cle) {
+      const get = (cle) => { const idx = t.cle.findIndex(c => c === cle); return idx !== -1 ? t.valeur?.[idx] : undefined; };
+      const raw1 = get('onglets_masques');
+      if (raw1) { try { pcfgHiddenTabs = JSON.parse(raw1) || []; } catch(e) { pcfgHiddenTabs = []; } }
+      const raw2 = get('libelles_onglets');
+      if (raw2) { try { pcfgTabLabels = JSON.parse(raw2) || {}; } catch(e) { pcfgTabLabels = {}; } }
+      const raw2b = get('sous_titres_onglets');
+      if (raw2b) { try { pcfgTabSubLabels = JSON.parse(raw2b) || {}; } catch(e) { pcfgTabSubLabels = {}; } }
+      const raw3 = get('ordre_onglets');
+      if (raw3) { try { pcfgTabOrder = JSON.parse(raw3) || []; } catch(e) { pcfgTabOrder = []; } }
+      const raw4 = get('vues_partagees');
+      if (raw4) { try { pcfgGuestProfiles = JSON.parse(raw4) || []; } catch(e) { pcfgGuestProfiles = []; } }
+    }
+  } catch(e) { /* table Parametres absente : réglages par défaut */ }
+}
+
+function getPcfgTabOrder() {
+  const order = pcfgTabOrder.filter(k => PCFG_DEFAULT_TAB_ORDER.includes(k));
+  PCFG_DEFAULT_TAB_ORDER.forEach(k => { if (!order.includes(k)) order.push(k); });
+  return order;
+}
+
+function pcfgApplyTabOrder() {
+  const container = document.querySelector('.rf-nav');
+  if (!container) return;
+  getPcfgTabOrder().forEach(key => {
+    const el = container.querySelector(`[data-panel="${key}"]`);
+    if (el) container.appendChild(el);
+  });
+}
+
+function pcfgApplyTabLabels() {
+  PCFG_TABS.forEach(t => {
+    const el = document.querySelector(`.rf-tab[data-panel="${t.key}"] .tab-label-main`);
+    if (el) el.textContent = pcfgTabLabels[t.key] || t.label;
+    const sb = document.querySelector(`.rf-tab[data-panel="${t.key}"] .tab-label-sub`);
+    if (sb) sb.textContent = pcfgTabSubLabels[t.key] || t.sub || '';
+  });
+}
+
+function pcfgResolveGuestProfile() {
+  pcfgGuestProfile = pcfgGuestSlug ? (pcfgGuestProfiles.find(p => p.slug === pcfgGuestSlug) || null) : null;
+}
+
+function applyHiddenTabs() {
+  pcfgResolveGuestProfile();
+  const gearBtn = document.getElementById('pcfgGearBtn');
+  if (gearBtn) gearBtn.style.display = pcfgGuestProfile ? 'none' : '';
+  let activeIsHidden = false;
+  document.querySelectorAll('.rf-tab').forEach(t => {
+    const key = t.dataset.panel;
+    const hide = pcfgHiddenTabs.includes(key) || (pcfgGuestProfile && !pcfgGuestProfile.tabs.includes(key));
+    t.style.display = hide ? 'none' : '';
+    if (hide && t.classList.contains('active')) activeIsHidden = true;
+  });
+  pcfgApplyTabLabels();
+  pcfgApplyTabOrder();
+  if (activeIsHidden) {
+    const firstVisible = getPcfgTabOrder().find(k => !pcfgHiddenTabs.includes(k) && (!pcfgGuestProfile || pcfgGuestProfile.tabs.includes(k)));
+    if (firstVisible) switchTab(firstVisible);
+  }
+  pcfgApplyGuestEditRestrictions();
+  // Le profil invité est connu seulement maintenant : re-filtrer le référentiel
+  if (typeof logiRenderFiltresTags === 'function' && typeof DEM !== 'undefined' && DEM.length) {
+    logiRenderFiltresTags();
+    logiRenderCartes((document.getElementById('s-input') || {}).value || '');
+  }
+}
+
+// Masque, pour une vue partagée, les actions de modification des onglets
+// listés dans son champ editHidden (indépendant de la visibilité des onglets
+// eux-mêmes) — via des classes sur <body>, actives quelle que soit la façon
+// dont le contenu du panneau est ensuite re-rendu par ses propres modules.
+function pcfgApplyGuestEditRestrictions() {
+  const hidden = pcfgGuestProfile ? (pcfgGuestProfile.editHidden || []) : [];
+  PCFG_EDIT_CAPABLE_TABS.forEach(key => {
+    document.body.classList.toggle('pcfg-hide-edit-' + key, hidden.includes(key));
+  });
+  if (typeof aiot !== 'undefined' && aiot.applyEditLock) aiot.applyEditLock();
+}
+
+// Vrai si la vue courante (vue partagée avec "Lecture seule" cochée pour aiot)
+// ne doit pas pouvoir modifier le contenu du planning AIOT.
+function pcfgIsAiotEditLocked() {
+  return !!(pcfgGuestProfile && (pcfgGuestProfile.editHidden || []).includes('aiot'));
+}
+
+async function pcfgSaveParam(cle, valeurObj) {
+  const valeur = JSON.stringify(valeurObj);
+  const t = await grist.docApi.fetchTable('Parametres');
+  const idx = t?.cle ? t.cle.findIndex(c => c === cle) : -1;
+  if (idx !== -1) {
+    await grist.docApi.applyUserActions([['UpdateRecord','Parametres',t.id[idx],{valeur}]]);
+  } else {
+    await grist.docApi.applyUserActions([['AddRecord','Parametres',null,{cle,valeur}]]);
+  }
+}
+
+async function pcfgSaveHiddenTabs(newHidden) {
+  pcfgHiddenTabs = newHidden;
+  try {
+    await pcfgSaveParam('onglets_masques', newHidden);
+    applyHiddenTabs();
+    pcfgToast('Onglets mis à jour');
+  } catch(e) { pcfgToast(e.message, 'error'); }
+}
+
+function pcfgRenderTabsSection() {
+  const el = document.getElementById('pcfgTabsSection');
+  if (!el) return;
+  const order = getPcfgTabOrder();
+  el.innerHTML = order.map((key, i) => {
+    const t = PCFG_TABS.find(x => x.key === key);
+    if (!t) return '';
+    return `
+    <div class="pcfg-tabrow" data-tab="${t.key}">
+      <div class="pcfg-tabrow-move">
+        <button onclick="pcfgMoveTab('${t.key}',-1)" ${i===0?'disabled':''}>▲</button>
+        <button onclick="pcfgMoveTab('${t.key}',1)" ${i===order.length-1?'disabled':''}>▼</button>
+      </div>
+      <input type="checkbox" data-tabkey="${t.key}" ${pcfgHiddenTabs.includes(t.key)?'':'checked'} onchange="pcfgHandleTabCheckbox(this)">
+      <input type="text" class="pcfg-tabrow-input" placeholder="${pcfgEsc(t.label)}" value="${pcfgEsc(pcfgTabLabels[t.key]||'')}" onchange="pcfgSetTabLabel('${t.key}', this.value)" title="Titre de l'onglet">
+      <input type="text" class="pcfg-tabrow-input" style="min-width:0" placeholder="${pcfgEsc(t.sub||'Sous-titre')}" value="${pcfgEsc(pcfgTabSubLabels[t.key]||'')}" onchange="pcfgSetTabSubLabel('${t.key}', this.value)" title="Sous-titre de l'onglet">
+    </div>`;
+  }).join('');
+}
+
+function pcfgHandleTabCheckbox(checkbox) {
+  const key = checkbox.dataset.tabkey;
+  let next = pcfgHiddenTabs.filter(k => k !== key);
+  if (!checkbox.checked) next.push(key);
+  // Toujours garder au moins un onglet visible
+  if (next.length >= PCFG_TABS.length) {
+    checkbox.checked = true;
+    pcfgToast('Il doit rester au moins un onglet visible', 'error');
+    return;
+  }
+  pcfgSaveHiddenTabs(next);
+}
+
+// ── Ordre et libellés des onglets ──
+function pcfgMoveTab(key, dir) {
+  const order = getPcfgTabOrder();
+  const i = order.indexOf(key);
+  const j = i + dir;
+  if (j < 0 || j >= order.length) return;
+  [order[i], order[j]] = [order[j], order[i]];
+  pcfgTabOrder = order;
+  pcfgSaveOrderAndLabels();
+}
+
+function pcfgSetTabLabel(key, value) {
+  const v = (value || '').trim();
+  if (v) pcfgTabLabels[key] = v; else delete pcfgTabLabels[key];
+  pcfgSaveOrderAndLabels();
+}
+
+function pcfgSetTabSubLabel(key, value) {
+  const v = (value || '').trim();
+  if (v) pcfgTabSubLabels[key] = v; else delete pcfgTabSubLabels[key];
+  pcfgSaveOrderAndLabels();
+}
+
+async function pcfgSaveOrderAndLabels() {
+  try {
+    await pcfgSaveParam('ordre_onglets', pcfgTabOrder);
+    await pcfgSaveParam('libelles_onglets', pcfgTabLabels);
+    await pcfgSaveParam('sous_titres_onglets', pcfgTabSubLabels);
+    applyHiddenTabs();
+    pcfgRenderTabsSection();
+    pcfgToast('Onglets mis à jour');
+  } catch(e) { pcfgToast(e.message, 'error'); }
+}
+
+// ── Vues partagées (liens invité / profils invités) ──
+function pcfgSlug(s) {
+  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'invite';
+}
+
+function pcfgAddGuest() {
+  let base = 'invite', slug = base, n = 1;
+  while (pcfgGuestProfiles.some(p => p.slug === slug)) { n++; slug = base + '-' + n; }
+  pcfgGuestProfiles.push({
+    slug,
+    label: 'Nouvelle vue',
+    tabs: getPcfgTabOrder().filter(k => !pcfgHiddenTabs.includes(k)),
+  });
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgRenameGuest(oldSlug, newLabel) {
+  const p = pcfgGuestProfiles.find(x => x.slug === oldSlug);
+  if (!p) return;
+  p.label = newLabel;
+  const newSlug = pcfgSlug(newLabel);
+  if (newSlug !== oldSlug && !pcfgGuestProfiles.some(x => x.slug === newSlug)) p.slug = newSlug;
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgToggleGuestTab(slug, key) {
+  const p = pcfgGuestProfiles.find(x => x.slug === slug);
+  if (!p) return;
+  const i = p.tabs.indexOf(key);
+  if (i === -1) p.tabs.push(key); else p.tabs.splice(i,1);
+  // Un onglet décoché n'a plus de raison de garder ses modifs masquées/affichées.
+  if (i !== -1 && p.editHidden) p.editHidden = p.editHidden.filter(k => k !== key);
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgToggleGuestEditHidden(slug, key) {
+  const p = pcfgGuestProfiles.find(x => x.slug === slug);
+  if (!p) return;
+  if (!p.editHidden) p.editHidden = [];
+  const i = p.editHidden.indexOf(key);
+  if (i === -1) p.editHidden.push(key); else p.editHidden.splice(i,1);
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgDeleteGuest(slug) {
+  if (!confirm('Supprimer cette vue partagée ?')) return;
+  pcfgGuestProfiles = pcfgGuestProfiles.filter(p => p.slug !== slug);
+  pcfgSaveGuestProfiles();
+}
+
+function pcfgCopyGuestLink(slug) {
+  const url = location.origin + location.pathname + '?vue=' + encodeURIComponent(slug);
+  navigator.clipboard.writeText(url).then(() => pcfgShowGuestCopied(slug)).catch(() => prompt('Copie manuelle :', url));
+}
+
+function pcfgShowGuestCopied(slug) {
+  const el = document.getElementById('pcfg-guest-copied-' + slug);
+  if (!el) return;
+  el.classList.add('vis');
+  setTimeout(() => el.classList.remove('vis'), 1400);
+}
+
+async function pcfgSaveGuestProfiles() {
+  try {
+    await pcfgSaveParam('vues_partagees', pcfgGuestProfiles);
+    pcfgRenderGuests();
+    pcfgToast('Vues partagées mises à jour');
+  } catch(e) { pcfgToast(e.message, 'error'); }
+}
+
+function pcfgRenderGuests() {
+  const box = document.getElementById('pcfgGuestsList');
+  if (!box) return;
+  if (!pcfgGuestProfiles.length) { box.innerHTML = '<div class="pcfg-hint" style="margin-bottom:8px">Aucune vue partagée pour l\'instant.</div>'; return; }
+  const visibleTabs = getPcfgTabOrder().filter(k => !pcfgHiddenTabs.includes(k));
+  box.innerHTML = pcfgGuestProfiles.map(p => {
+    const editHidden = p.editHidden || [];
+    const tabsH = visibleTabs.map(key => {
+      const t = PCFG_TABS.find(x => x.key === key);
+      const lbl = pcfgTabLabels[key] || (t ? t.label : key);
+      const on = p.tabs.includes(key);
+      const editRow = (on && PCFG_EDIT_CAPABLE_TABS.includes(key))
+        ? `<label class="pcfg-guest-editchk"><input type="checkbox" ${editHidden.includes(key)?'checked':''} onchange="pcfgToggleGuestEditHidden('${p.slug}','${key}')"> ${pcfgEsc(PCFG_EDIT_LABELS[key] || 'Masquer les boutons de modification')}</label>`
+        : '';
+      return `<div><label class="pcfg-guest-chk"><input type="checkbox" ${on?'checked':''} onchange="pcfgToggleGuestTab('${p.slug}','${key}')"> ${pcfgEsc(lbl)}</label>${editRow}</div>`;
+    }).join('');
+    return `<div class="pcfg-guest-card">
+      <div class="pcfg-guest-head">
+        <input type="text" class="pcfg-tabrow-input" value="${pcfgEsc(p.label)}" onchange="pcfgRenameGuest('${p.slug}', this.value)">
+        <button class="pcfg-guest-del" onclick="pcfgDeleteGuest('${p.slug}')" title="Supprimer">✕</button>
+      </div>
+      <div class="pcfg-guest-sub">Onglets visibles</div>
+      <div class="pcfg-guest-grid">${tabsH}</div>
+      <div class="pcfg-guest-link-row">
+        <button class="btn-ghost" onclick="pcfgCopyGuestLink('${p.slug}')">Copier le lien</button>
+        <span class="pcfg-guest-copied" id="pcfg-guest-copied-${p.slug}">Copié ✓</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Bandeaux d'information (table Grist "Bandeau") ──
+const PCFG_BANDEAU_TYPES = [
+  { value: 'info',    label: 'Information' },
+  { value: 'alerte',  label: 'Alerte' },
+  { value: 'urgence', label: 'Urgence' },
+];
+
+async function pcfgLoadBandeaux() {
+  pcfgBandeaux = [];
+  if (typeof grist === 'undefined') return;
+  try {
+    const t = await grist.docApi.fetchTable('Bandeau');
+    const ids = t.id || [];
+    pcfgBandeaux = ids.map((id, idx) => ({
+      id,
+      actif: !!(t.actif?.[idx]),
+      message: t.message?.[idx] || '',
+      type: t.type?.[idx] || 'info',
+      lien_url: t.lien_url?.[idx] || '',
+      lien_texte: t.lien_texte?.[idx] || '',
+      date_expiration: t.date_expiration?.[idx] || null, // epoch secondes ou null
+    })).sort((a, b) => a.id - b.id);
+    document.getElementById('pcfgBandeauxStatus').innerHTML = '';
+  } catch (e) {
+    document.getElementById('pcfgBandeauxStatus').innerHTML =
+      `Table « Bandeau » introuvable. Utilise « Vérifier la table » ci-dessus pour la créer.`;
+  }
+}
+
+function pcfgBandeauDateStr(epochSec) {
+  if (!epochSec) return '';
+  const d = new Date(epochSec * 1000);
+  return d.toISOString().slice(0, 10);
+}
+function pcfgBandeauDateToEpoch(dateStr) {
+  if (!dateStr) return null;
+  return Math.floor(new Date(dateStr + 'T00:00:00Z').getTime() / 1000);
+}
+
+async function pcfgUpdateBandeau(id, patch) {
+  try {
+    await grist.docApi.applyUserActions([['UpdateRecord', 'Bandeau', id, patch]]);
+    const rec = pcfgBandeaux.find(b => b.id === id);
+    if (rec) Object.assign(rec, patch);
+    loadBandeau();
+    pcfgToast('Bandeau mis à jour');
+  } catch (e) { pcfgToast(e.message, 'error'); }
+}
+
+async function pcfgAddBandeau() {
+  if (typeof grist === 'undefined') { pcfgToast('Indisponible hors de Grist (mode démo).', 'error'); return; }
+  try {
+    const result = await grist.docApi.applyUserActions([['AddRecord', 'Bandeau', null, {
+      actif: true, message: 'Nouveau message', type: 'info', lien_url: '', lien_texte: '', date_expiration: null,
+    }]]);
+    const newId = result.retValues[0];
+    pcfgBandeaux.push({ id: newId, actif: true, message: 'Nouveau message', type: 'info', lien_url: '', lien_texte: '', date_expiration: null });
+    pcfgRenderBandeaux();
+    loadBandeau();
+    pcfgToast('Bandeau ajouté');
+  } catch (e) { pcfgToast(e.message, 'error'); }
+}
+
+async function pcfgDeleteBandeau(id) {
+  if (!confirm('Supprimer ce bandeau ?')) return;
+  try {
+    await grist.docApi.applyUserActions([['RemoveRecord', 'Bandeau', id]]);
+    pcfgBandeaux = pcfgBandeaux.filter(b => b.id !== id);
+    pcfgRenderBandeaux();
+    loadBandeau();
+    pcfgToast('Bandeau supprimé');
+  } catch (e) { pcfgToast(e.message, 'error'); }
+}
+
+function pcfgRenderBandeaux() {
+  const box = document.getElementById('pcfgBandeauxList');
+  if (!box) return;
+  if (!pcfgBandeaux.length) { box.innerHTML = '<div class="pcfg-hint" style="margin-bottom:8px">Aucun bandeau pour l\'instant.</div>'; return; }
+  box.innerHTML = pcfgBandeaux.map(b => `
+    <div class="pcfg-bandeau-card" data-bandeau="${b.id}">
+      <div class="pcfg-bandeau-head">
+        <label style="display:flex;align-items:center;gap:5px;font-size:12.5px;cursor:pointer">
+          <input type="checkbox" ${b.actif?'checked':''} onchange="pcfgUpdateBandeau(${b.id},{actif:this.checked})"> Actif
+        </label>
+        <button class="pcfg-bandeau-del" onclick="pcfgDeleteBandeau(${b.id})" title="Supprimer">✕</button>
+      </div>
+      <textarea class="pcfg-bandeau-msg" placeholder="Message affiché dans le bandeau" onchange="pcfgUpdateBandeau(${b.id},{message:this.value})">${pcfgEsc(b.message)}</textarea>
+      <div class="pcfg-bandeau-row">
+        <span class="pcfg-bandeau-field-label">Type</span>
+        <select onchange="pcfgUpdateBandeau(${b.id},{type:this.value})">
+          ${PCFG_BANDEAU_TYPES.map(t => `<option value="${t.value}" ${b.type===t.value?'selected':''}>${t.label}</option>`).join('')}
+        </select>
+        <span class="pcfg-bandeau-field-label">Expire le</span>
+        <input type="date" value="${pcfgBandeauDateStr(b.date_expiration)}" onchange="pcfgUpdateBandeau(${b.id},{date_expiration:pcfgBandeauDateToEpoch(this.value)})">
+      </div>
+      <div class="pcfg-bandeau-row">
+        <span class="pcfg-bandeau-field-label">Lien (facultatif)</span>
+        <input type="text" placeholder="https://…" style="flex:1;min-width:140px" value="${pcfgEsc(b.lien_url)}" onchange="pcfgUpdateBandeau(${b.id},{lien_url:this.value})">
+        <input type="text" placeholder="Texte du lien" style="width:120px" value="${pcfgEsc(b.lien_texte)}" onchange="pcfgUpdateBandeau(${b.id},{lien_texte:this.value})">
+      </div>
+    </div>`).join('');
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -1344,12 +2155,36 @@ const ek = (() => {
   function renderDetail() {
     const panel = document.getElementById('ek-detail');
     if (!selectedRecord) {
-      panel.innerHTML = `<div class="ek-empty-state">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-        </svg>
-        <p>Sélectionnez un dispositif</p>
-        <small>Cliquez sur un élément de la liste pour voir les détails</small>
+      const total = allRecords.length;
+      const dirCount = new Set(allRecords.map(r => getVal(r.NOM_DE_LA_DIRECTION)).filter(Boolean)).size;
+      const serviceCount = new Set(allRecords.map(r => getVal(r.SERVICE_PORTEUR_DU_DISPOSITIF)).filter(Boolean)).size;
+      panel.innerHTML = `<div class="ek-welcome">
+        <div class="ek-welcome-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18h6M10 21h4M12 3a6 6 0 00-4 10.472V15a1 1 0 001 1h6a1 1 0 001-1v-1.528A6 6 0 0012 3z"/>
+          </svg>
+        </div>
+        <h2>Bienvenue sur Eurêka !</h2>
+        <p class="ek-welcome-tagline">L'outil de recherche des dispositifs et aides du Département de Maine-et-Loire, à destination des agents d'accueil et travailleurs sociaux.</p>
+        ${total ? `<div class="ek-welcome-stats">
+          <div class="ek-welcome-stat"><div class="ek-welcome-stat-num">${total}</div><div class="ek-welcome-stat-label">Dispositif${total>1?'s':''}</div></div>
+          ${dirCount ? `<div class="ek-welcome-stat"><div class="ek-welcome-stat-num">${dirCount}</div><div class="ek-welcome-stat-label">Direction${dirCount>1?'s':''}</div></div>` : ''}
+          ${serviceCount ? `<div class="ek-welcome-stat"><div class="ek-welcome-stat-num">${serviceCount}</div><div class="ek-welcome-stat-label">Services porteurs</div></div>` : ''}
+        </div>` : ''}
+        <div class="ek-welcome-tips">
+          <div class="ek-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span>Recherchez un dispositif par nom, mission ou public visé dans la barre de gauche.</span>
+          </div>
+          <div class="ek-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            <span>Sélectionnez un élément de la liste pour afficher sa fiche complète (contacts, horaires, service porteur…).</span>
+          </div>
+          <div class="ek-welcome-tip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
+            <span>Une fiche trouvée peut être imprimée ou envoyée par mail directement depuis sa page.</span>
+          </div>
+        </div>
       </div>`;
       return;
     }
@@ -1368,9 +2203,17 @@ const ek = (() => {
         </div>
         <h1 class="ek-card-title">${escH(getVal(r.DISPOSITIF) || 'Sans titre')}</h1>
         ${getVal(r.PUBLIC_CIBLE) ? `<p class="ek-card-subtitle">${escH(getVal(r.PUBLIC_CIBLE))}</p>` : ''}
-        <button class="ek-edit-btn" onclick="ek.openModal()">
+        <button class="ek-edit-btn" data-pcfg-edit="eureka" onclick="ek.openModal()">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           Modifier la fiche
+        </button>
+        <button class="ek-edit-btn" onclick="ek.printFiche()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-12 0h12v4H6v-4z"/></svg>
+          Imprimer
+        </button>
+        <button class="ek-edit-btn" onclick="ek.mailFiche()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Envoyer par mail
         </button>
       </div>
       <div class="ek-section">
@@ -1413,11 +2256,6 @@ const ek = (() => {
   function openModal() {
     
     if (!selectedRecord) return;
-    const pwd = prompt('Mot de passe requis pour modifier cette fiche :');
-    if (pwd !== EK_EDIT_PASSWORD) {
-      if (pwd !== null) alert('Mot de passe incorrect.');
-      return;
-    }
     const r = selectedRecord;
     const editableFields = [
       { name: 'DISPOSITIF', label: 'Dispositif', type: 'text' },
@@ -1473,6 +2311,128 @@ const ek = (() => {
   }
 
   function closeModal() { document.getElementById('ek-modal').classList.remove('active'); }
+
+  function pField(label, value) {
+    if (!value) return '';
+    return `<div class="pf-field"><div class="pf-label">${escH(label)}</div><div class="pf-value">${escH(value)}</div></div>`;
+  }
+
+  function buildPrintContent(r) {
+    const dir = getVal(r.NOM_DE_LA_DIRECTION);
+    const polRaw = r.POLITIQUE_DEPARTEMENTALE;
+    const pol = (typeof polRaw === 'number' && polRaw > 0) ? getPolitique(polRaw) : getVal(polRaw);
+    const hasComplement = getVal(r.COMPLEMENT_D_INFORMATIONS) || getVal(r.OBSERVATION);
+    // NB : la section "Contact assistante" (usage interne) est volontairement exclue de l'impression.
+    return `
+      <div class="pf-tags">
+        ${dir ? `<span class="pf-tag pf-tag-direction">${escH(dir)}</span>` : ''}
+        ${pol ? `<span class="pf-tag pf-tag-politique">${escH(pol)}</span>` : ''}
+      </div>
+      <h1 class="pf-title">${escH(getVal(r.DISPOSITIF) || 'Sans titre')}</h1>
+      ${getVal(r.PUBLIC_CIBLE) ? `<p class="pf-subtitle">${escH(getVal(r.PUBLIC_CIBLE))}</p>` : ''}
+      <div class="pf-section">
+        <div class="pf-section-title">Informations générales</div>
+        ${pField('Service porteur', getVal(r.SERVICE_PORTEUR_DU_DISPOSITIF))}
+        ${pField('Indexation', getVal(r.INDEXATION))}
+      </div>
+      <div class="pf-section">
+        <div class="pf-section-title">Contact public</div>
+        ${pField('Téléphone', getVal(r.TEL_PUBLIC))}
+        ${pField('Horaires', getVal(r.HORAIRES))}
+        ${pField('Email', getVal(r.MAIL_PUBLIC))}
+        ${pField('Page web', getVal(r.PAGE_WEB))}
+        ${getVal(r.PAGE_WEB2) ? pField('Page web 2', getVal(r.PAGE_WEB2)) : ''}
+      </div>
+      ${hasComplement ? `<div class="pf-section">
+        <div class="pf-section-title">Informations complémentaires</div>
+        ${pField("Complément d'informations", getVal(r.COMPLEMENT_D_INFORMATIONS))}
+        ${pField('Observation', getVal(r.OBSERVATION))}
+      </div>` : ''}
+    `;
+  }
+
+  function printFiche() {
+    if (!selectedRecord) return;
+    const r = selectedRecord;
+    const titre = getVal(r.DISPOSITIF) || 'Dispositif';
+    const contenu = buildPrintContent(r);
+    const css = [
+      "body{font-family:'Source Sans 3',Arial,sans-serif;color:#1e1e1e;padding:36px;max-width:800px;margin:0 auto;}",
+      ".pf-tags{display:flex;gap:6px;margin-bottom:10px;}",
+      ".pf-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:2px;text-transform:uppercase;letter-spacing:.04em;color:#fff;}",
+      ".pf-tag-direction{background:#003189;}",
+      ".pf-tag-politique{background:#c1373c;}",
+      ".pf-title{font-size:22px;font-weight:800;color:#003189;margin:0 0 6px;}",
+      ".pf-subtitle{font-size:14px;color:#666;margin:0 0 22px;}",
+      ".pf-section{margin-bottom:22px;page-break-inside:avoid;}",
+      ".pf-section-title{font-size:13px;font-weight:700;color:#003189;border-bottom:2px solid #e8edfa;padding-bottom:5px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.03em;}",
+      ".pf-field{margin-bottom:9px;}",
+      ".pf-label{font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.03em;}",
+      ".pf-value{font-size:13px;color:#1e1e1e;white-space:pre-wrap;}",
+      "@media print{ body{padding:0;} }"
+    ].join('');
+    const win = window.open('', '_blank', 'width=794,height=1123');
+    if (!win) { alert('Autorisez les popups pour imprimer.'); return; }
+    win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>' + escH(titre) + '</title><style>' + css + '</style></head><body>' + contenu + '<script>window.onload=function(){window.print();}<\/script></body></html>');
+    win.document.close();
+  }
+
+  function tField(label, value) {
+    return value ? (label + ' : ' + value + '\n') : '';
+  }
+
+  function buildMailBody(r) {
+    const dir = getVal(r.NOM_DE_LA_DIRECTION);
+    const polRaw = r.POLITIQUE_DEPARTEMENTALE;
+    const pol = (typeof polRaw === 'number' && polRaw > 0) ? getPolitique(polRaw) : getVal(polRaw);
+    const hasComplement = getVal(r.COMPLEMENT_D_INFORMATIONS) || getVal(r.OBSERVATION);
+    const titre = getVal(r.DISPOSITIF) || 'Sans titre';
+    // NB : comme pour l'impression, la section "Contact assistante" (usage interne) est exclue.
+    let t = titre + '\n' + '='.repeat(titre.length) + '\n\n';
+    if (dir) t += 'Direction : ' + dir + '\n';
+    if (pol) t += 'Politique départementale : ' + pol + '\n';
+    if (getVal(r.PUBLIC_CIBLE)) t += '\nPublic cible : ' + getVal(r.PUBLIC_CIBLE) + '\n';
+    t += '\n--- Informations générales ---\n';
+    t += tField('Service porteur', getVal(r.SERVICE_PORTEUR_DU_DISPOSITIF));
+    t += tField('Indexation', getVal(r.INDEXATION));
+    t += '\n--- Contact public ---\n';
+    t += tField('Téléphone', getVal(r.TEL_PUBLIC));
+    t += tField('Horaires', getVal(r.HORAIRES));
+    t += tField('Email', getVal(r.MAIL_PUBLIC));
+    t += tField('Page web', getVal(r.PAGE_WEB));
+    t += tField('Page web 2', getVal(r.PAGE_WEB2));
+    if (hasComplement) {
+      t += '\n--- Informations complémentaires ---\n';
+      t += tField("Complément d'informations", getVal(r.COMPLEMENT_D_INFORMATIONS));
+      t += tField('Observation', getVal(r.OBSERVATION));
+    }
+    return t;
+  }
+
+  function mailFiche() {
+    if (!selectedRecord) return;
+    document.getElementById('ek-mail-dest').value = '';
+    document.getElementById('ek-mail-modal').classList.add('active');
+    setTimeout(() => document.getElementById('ek-mail-dest').focus(), 50);
+  }
+
+  function closeMailModal() {
+    document.getElementById('ek-mail-modal').classList.remove('active');
+  }
+
+  function confirmMail() {
+    const r = selectedRecord;
+    if (!r) return;
+    const titre = getVal(r.DISPOSITIF) || 'Dispositif';
+    const dest = (document.getElementById('ek-mail-dest').value || '').trim();
+    const subject = 'Fiche dispositif : ' + titre;
+    const body = buildMailBody(r);
+    const url = 'mailto:' + encodeURIComponent(dest)
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+    closeMailModal();
+    window.location.href = url;
+  }
 
   async function fetchLacunes() {
     if (typeof grist === 'undefined') return;
@@ -1531,11 +2491,12 @@ const ek = (() => {
     allRecords = records; filteredRecords = records;
     if (mappings) gristTable = mappings.tableId || mappings.table || mappings.tableName;
     renderList();
+    if (!selectedRecord) renderDetail();
     if (!lacunesPolling) fetchLacunes();
     if (Object.keys(politiqueMap).length === 0) loadPolitiqueMap();
   }
 
-  return { init, select, search, openModal, saveChanges, closeModal };
+  return { init, select, search, openModal, saveChanges, closeModal, printFiche, mailFiche, closeMailModal, confirmMail };
 })();
 
 window.ekCloseModal = () => ek.closeModal();
@@ -1558,6 +2519,11 @@ if (document.getElementById('ek-clear')) {
   });
 }
 
+if (document.getElementById('ek-mail-modal')) {
+  document.getElementById('ek-mail-modal').addEventListener('click', function(e) {
+    if (e.target === this) ek.closeMailModal();
+  });
+}
 if (document.getElementById('ek-modal')) {
   document.getElementById('ek-modal').addEventListener('click', function(e) {
     if (e.target === this) ek.closeModal();
@@ -1572,10 +2538,12 @@ const API_BASE   = 'https://api-lannuaire.service-public.fr/api/explore/v2.1/cat
 const BAN_URL    = 'https://api-adresse.data.gouv.fr/search/';
 const FINESS_URL = 'https://data.paysdelaloire.fr/api/explore/v2.1/catalog/datasets/etablissements-du-domaine-sanitaire-et-social-2019/exports/geojson?lang=fr&refine=dep_code%3A%2249%22&timezone=Europe%2FBerlin';
 const GEOJSON_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/catalog/datasets/224900019_communes-de-maine-et-loire/exports/geojson?lang=fr&timezone=Europe%2FBerlin';
+const DEPARTEMENT_GEOJSON_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/shared/datasets/234400034_departements-des-pays-de-la-loire@paysdelaloire/exports/geojson?lang=fr&refine=depart%3A%22MAINE-ET-LOIRE%22&timezone=Europe%2FBerlin';
+const GEOJSON_DELEGUEES_URL = 'https://data.maine-et-loire.fr/api/explore/v2.1/catalog/datasets/224900019_communes-deleguees-de-maine-et-loire/exports/geojson?lang=fr&timezone=Europe%2FBerlin';
 const DEPT = '49';
 const PAGE_SIZE = 50;
+const MARKER_RENDER_CAP = 1500; // sécurité : au-delà, on affiche un message plutôt que de saturer la carte
 const GRIST_TABLE_AN = 'Organismes_locaux';
-const EK_EDIT_PASSWORD = 'grist';
 
 let anState = {
   apiRecords: [], localRecords: [], finessRecords: [], allRecords: [], filtered: [],
@@ -1587,17 +2555,36 @@ let anState = {
 
 let map, markersGroup, markerMap = {};
 let communesLayer = null, communesGeoData = null;
+let communesDelegueesGeoData = null, delegueesIndex = new Map();
 
 function initMap() {
-  map = L.map('map', { center: [47.47, -0.55], zoom: 9, zoomControl: true });
+  map = L.map('map', { center: [47.47, -0.55], zoom: 9, zoomControl: true, preferCanvas: true });
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19,
-    className: 'map-tiles-grey',
+    className: 'map-tiles-grey', updateWhenZooming: false, keepBuffer: 4,
   }).addTo(map);
-  markersGroup = L.layerGroup().addTo(map);
+  markersGroup = L.layerGroup();
+  map.addLayer(markersGroup);
   setTimeout(() => map.invalidateSize(), 300);
   loadCommunesGeoJSON();
+  loadDepartementContour();
+  loadCommunesDelegueesGeoJSON();
   loadFinessData();
+}
+
+let outsideMaskLayer = null;
+let departementLayer = null;
+
+async function loadDepartementContour() {
+  try {
+    const res = await fetch(DEPARTEMENT_GEOJSON_URL);
+    if (!res.ok) throw new Error();
+    const geojson = await res.json();
+    departementLayer = L.geoJSON(geojson, {
+      style: { color: '#003189', weight: 3, opacity: 1, fill: false, interactive: false }
+    }).addTo(map);
+    departementLayer.bringToFront();
+  } catch(e) {}
 }
 
 async function loadCommunesGeoJSON() {
@@ -1606,6 +2593,7 @@ async function loadCommunesGeoJSON() {
     if (!res.ok) throw new Error();
     communesGeoData = await res.json();
     communesLayer = L.geoJSON(communesGeoData, { style: communeStyleDefault, onEachFeature: onEachCommune });
+    buildOutsideMask(communesGeoData);
     markersGroup.remove();
     communesLayer.addTo(map);
     markersGroup.addTo(map);
@@ -1616,6 +2604,49 @@ async function loadCommunesGeoJSON() {
   } catch(e) {}
 }
 
+async function loadCommunesDelegueesGeoJSON() {
+  try {
+    const res = await fetch(GEOJSON_DELEGUEES_URL);
+    if (!res.ok) throw new Error();
+    communesDelegueesGeoData = await res.json();
+    delegueesIndex = new Map();
+    (communesDelegueesGeoData.features || []).forEach(f => {
+      const nom = f.properties?.com_del_nom || '';
+      if (!nom) return;
+      const k = normalize(nom);
+      if (!delegueesIndex.has(k)) delegueesIndex.set(k, []);
+      delegueesIndex.get(k).push(f);
+    });
+    if (anState.allRecords && anState.allRecords.length) buildCommunesIndex(anState.allRecords);
+  } catch(e) {}
+}
+
+// Masque le fond de carte (tuiles OSM) en dehors du département : un grand
+// rectangle couvrant le monde, avec un "trou" découpé pour chaque commune du
+// département (issues du même GeoJSON que le contour déjà affiché).
+function buildOutsideMask(geojson) {
+  if (!map) return;
+  if (outsideMaskLayer) { outsideMaskLayer.remove(); outsideMaskLayer = null; }
+  const outer = [[85,-179],[85,179],[-85,179],[-85,-179]];
+  const holes = [];
+  (geojson.features || []).forEach(f => {
+    const geom = f.geometry;
+    if (!geom) return;
+    const polys = geom.type === 'Polygon' ? [geom.coordinates]
+                : geom.type === 'MultiPolygon' ? geom.coordinates
+                : [];
+    polys.forEach(rings => {
+      if (!rings || !rings[0]) return;
+      holes.push(rings[0].map(([lng, lat]) => [lat, lng]));
+    });
+  });
+  if (!holes.length) return;
+  outsideMaskLayer = L.polygon([outer, ...holes], {
+    stroke: false, fillColor: '#f0f1f3', fillOpacity: 0.95, interactive: false,
+  }).addTo(map);
+  outsideMaskLayer.bringToBack();
+}
+
 function communeStyleDefault() {
   return { color: '#003189', weight: 1.5, opacity: 0.5, fillColor: '#dbeafe', fillOpacity: 0.08 };
 }
@@ -1624,19 +2655,48 @@ function communeStyleSelected() {
 }
 
 let selectedCommuneName = '';
+let delegueeHighlightLayer = null;
+let delegueeMarker = null;
+
+function findDelegueeFeature(nom) {
+  const feats = delegueesIndex.get(normalize(nom));
+  return feats && feats.length ? feats[0] : null;
+}
+
+function highlightDeleguee(nom, fallbackCenter) {
+  clearDelegueeHighlight();
+  const feature = findDelegueeFeature(nom);
+  if (feature) {
+    try {
+      delegueeHighlightLayer = L.geoJSON(feature, { style: communeStyleSelected() }).addTo(map);
+      delegueeHighlightLayer.bringToFront();
+      if (markersGroup) markersGroup.bringToFront();
+      try { map.fitBounds(delegueeHighlightLayer.getBounds(), { padding: [30, 30], maxZoom: 15 }); } catch(e) {}
+      return true;
+    } catch (e) {
+      delegueeHighlightLayer = null; // géométrie invalide : on bascule sur le repli ci-dessous
+    }
+  }
+  // repli : pas de géométrie trouvée pour cette déléguée, on affiche un simple repère au centre calculé
+  if (fallbackCenter) {
+    delegueeMarker = L.circleMarker([fallbackCenter.lat, fallbackCenter.lng], {
+      radius: 14, color: '#003189', weight: 2.5, opacity: 1,
+      fillColor: '#003189', fillOpacity: 0.18, interactive: false,
+    }).addTo(map);
+    delegueeMarker.bringToFront();
+    map.setView([fallbackCenter.lat, fallbackCenter.lng], 14);
+  }
+  return false;
+}
+function clearDelegueeHighlight() {
+  if (delegueeHighlightLayer) { delegueeHighlightLayer.remove(); delegueeHighlightLayer = null; }
+  if (delegueeMarker) { delegueeMarker.remove(); delegueeMarker = null; }
+}
 
 function onEachCommune(feature, layer) {
   const nom = feature.properties?.nom || feature.properties?.libelle || feature.properties?.NOM_COM || '';
   layer.on({ click() {
-    if (nom) {
-      const inp = document.getElementById('an-commune-input');
-      inp.value = nom;
-      anState.communeFilter = nom.toUpperCase();
-      anState.communeInput = nom;
-      highlightCommune(nom);
-      anApplyFilters();
-      map.fitBounds(layer.getBounds(), { padding: [30,30], maxZoom:14 });
-    }
+    if (nom) selectCommune({ nom, type: 'commune' });
   }});
 }
 
@@ -1714,7 +2774,7 @@ function getFinessCfg(r) {
   const code = (r.type_service||'').replace('finess_','');
   const g = FINESS_GROUPS[code];
   return g ? { color:g.color, label:g.label, emoji:'🏥' }
-           : { color:'#0d9488', label: r._groupLabel || 'Santé', emoji:'🏥' };
+           : { color:'#0d9488', label: r._groupLabel || 'FINESS', emoji:'🏥' };
 }
 
 function updateSourceToggles() {
@@ -1815,8 +2875,8 @@ const TYPE_CATEGORIES = [
     { cat:'finess_dialyse', label:'Dialyse', keys:['finess_1200','finess_1203'] },
     { cat:'finess_ssiad', label:'Maintien à domicile (SSIAD)', keys:['finess_4403','finess_460'] },
   ]},
-  { groupe:'Mes fiches personnelles', items:[
-    { cat:'_local', label:'Mes organismes (Grist)', keys:['_local'] },
+  { groupe:'Services du Département', items:[
+    { cat:'_local', label:'Services du Département', keys:['_local'] },
   ]},
 ];
 
@@ -1841,25 +2901,51 @@ function buildTypeSelect() {
   });
 }
 
+// NB perf : ces fonctions mémoïsent leur résultat sur l'enregistrement lui-même
+// (propriété __xxx) pour ne parser chaque champ JSON qu'une seule fois, même si
+// la fonction est appelée plusieurs fois par cycle de rendu (liste + marqueurs + popup).
 function getCfg(r) {
-  if (r._finess) return getFinessCfg(r);
-  try {
-    const key = JSON.parse(r.pivot||'[]')[0]?.type_service_local || '';
-    return TYPE_CFG[key] || { color: '#64748b', emoji: '🏢', label: key ? labelFromKey(key) : 'Autre' };
-  } catch { return { color:'#64748b', emoji:'🏢', label:'Autre' }; }
+  if ('__cfg' in r) return r.__cfg;
+  let cfg;
+  if (r._finess) { cfg = getFinessCfg(r); }
+  else {
+    try {
+      const key = JSON.parse(r.pivot||'[]')[0]?.type_service_local || '';
+      cfg = TYPE_CFG[key] || { color: '#64748b', emoji: '🏢', label: key ? labelFromKey(key) : 'Autre' };
+    } catch { cfg = { color:'#64748b', emoji:'🏢', label:'Autre' }; }
+  }
+  return r.__cfg = cfg;
 }
 
 function getTypeKey(r) {
-  if (r._local) return r.type_service || '';
-  try { return JSON.parse(r.pivot||'[]')[0]?.type_service_local || ''; } catch { return ''; }
+  if ('__typeKey' in r) return r.__typeKey;
+  let k;
+  if (r._local) { k = r.type_service || ''; }
+  else { try { k = JSON.parse(r.pivot||'[]')[0]?.type_service_local || ''; } catch { k = ''; } }
+  return r.__typeKey = k;
 }
 
 function parseAddr(r) {
-  try { const a = JSON.parse(r.adresse||'[]'); return a.find(x=>x.type_adresse==='Adresse')||a[0]||null; } catch { return null; }
+  if ('__addr' in r) return r.__addr;
+  try { const a = JSON.parse(r.adresse||'[]'); r.__addr = a.find(x=>x.type_adresse==='Adresse')||a[0]||null; }
+  catch { r.__addr = null; }
+  return r.__addr;
 }
-function parseTel(r) { try { return JSON.parse(r.telephone||'[]')[0]?.valeur||null; } catch { return null; } }
-function parseSite(r) { try { return JSON.parse(r.site_internet||'[]')[0]?.valeur||null; } catch { return null; } }
+function parseTel(r) {
+  if ('__tel' in r) return r.__tel;
+  try { r.__tel = JSON.parse(r.telephone||'[]')[0]?.valeur||null; } catch { r.__tel = null; }
+  return r.__tel;
+}
+function parseSite(r) {
+  if ('__site' in r) return r.__site;
+  try { r.__site = JSON.parse(r.site_internet||'[]')[0]?.valeur||null; } catch { r.__site = null; }
+  return r.__site;
+}
 function parseHoraires(r) {
+  if ('__horaires' in r) return r.__horaires;
+  return r.__horaires = parseHorairesUncached(r);
+}
+function parseHorairesUncached(r) {
   try {
     const h = JSON.parse(r.plage_ouverture||'[]');
     if (!h.length) return null;
@@ -1882,14 +2968,12 @@ function makeIcon(r, active=false) {
   const initiale = isLocal ? '★' : isFiness ? '+' : (cfg.label||'?').replace(/[^A-Za-zÀ-ÿ]/g,'').slice(0,1).toUpperCase();
   const ro = active ? 13 : 10, total = ro*2+4, cx = total/2, cy = ro+2, fs = active?9:7, qw=active?5:4, qh=active?6:5;
   const svg = `<svg width="${total}" height="${total+qh}" xmlns="http://www.w3.org/2000/svg">
-    <filter id="sh"><feDropShadow dx="0" dy="1" stdDeviation="${active?2:1.2}" flood-opacity="${active?.28:.18}"/></filter>
-    <g filter="url(#sh)">
       <circle cx="${cx}" cy="${cy}" r="${ro}" fill="${fillBg}" stroke="${stroke}" stroke-width="${active?2:1.5}"/>
       <polygon points="${cx},${cy+ro+qh} ${cx-qw},${cy+ro-1} ${cx+qw},${cy+ro-1}" fill="${fillBg}" stroke="${stroke}" stroke-width="${active?2:1.5}" stroke-linejoin="round"/>
       <circle cx="${cx}" cy="${cy}" r="${ro}" fill="${fillBg}"/>
       <text x="${cx}" y="${cy+fs*0.38}" text-anchor="middle" font-family="sans-serif" font-size="${isFiness?fs+2:fs}" font-weight="700" fill="${textC}">${initiale}</text>
-    </g></svg>`;
-  return L.divIcon({ html:svg, className:'', iconSize:[total,total+qh], iconAnchor:[total/2,total+qh], popupAnchor:[0,-(total+qh-2)] });
+    </svg>`;
+  return L.divIcon({ html:svg, className:'an-marker-ico'+(active?' active':''), iconSize:[total,total+qh], iconAnchor:[total/2,total+qh], popupAnchor:[0,-(total+qh-2)] });
 }
 
 function buildPopup(r) {
@@ -1914,7 +2998,7 @@ function buildPopup(r) {
   }
   const addr = [r.adresse_voie, r.code_postal, r.nom_commune].filter(Boolean).join(', ');
   const hasCoords = r.latitude && r.longitude;
-  return `<div class="popup-inner"><div class="popup-flag"><span class="popup-flag-dot" style="background:#ea580c"></span><span class="popup-local-badge">⭐ Perso</span><span class="popup-flag-type" style="color:#ea580c;margin-left:4px">${cfg.label}</span></div>
+  return `<div class="popup-inner"><div class="popup-flag"><span class="popup-flag-dot" style="background:#ea580c"></span><span class="popup-local-badge">⭐ Services du Département</span><span class="popup-flag-type" style="color:#ea580c;margin-left:4px">${cfg.label}</span></div>
   <div class="popup-nom">${r.nom}</div><div class="popup-divider"></div>
   <div class="popup-body">${addr?`<div class="popup-row">${svgPin}<span>${addr}</span></div>`:''}${r.telephone?`<div class="popup-row">${svgTel}<span>${r.telephone}</span></div>`:''}${r.mission?`<div class="popup-mission">${r.mission.slice(0,180)}</div>`:''}${!hasCoords?`<button class="popup-btn-geocode" onclick="anGeocodeRecord('${r.id}')">📍 Géolocaliser</button>`:''}</div>
   ${r.site_internet?`<div class="popup-links"><a class="popup-btn popup-btn-primary" href="${r.site_internet}" target="_blank">Site web →</a></div>`:''}</div>`;
@@ -1959,8 +3043,8 @@ function anRenderList() {
       </div>
       <div class="an-card-foot">
         <span class="an-badge" style="color:${isLocal?'#ea580c':cfg.color}">${cfg.label}</span>
-        ${isLocal?'<span class="an-badge-local">⭐ Perso</span>':''}
-        ${isFiness?'<span class="an-badge-finess">🏥 Santé</span>':''}
+        ${isLocal?'<span class="an-badge-local">⭐ Services du Département</span>':''}
+        ${isFiness?'<span class="an-badge-finess">🏥 FINESS</span>':''}
         ${isLocal && r.latitude && r.longitude ? '<span class="an-badge-coords">🗺️ Géolocalisé</span>' : ''}
         ${h?'<span class="an-badge-horaires">Ouvert</span>':''}
         ${excerpt?'<span class="an-badge-mission">Mission</span>':''}
@@ -1995,35 +3079,53 @@ function anRenderMarkers() {
   if (!map || !markersGroup) return;
   markersGroup.clearLayers();
   Object.keys(markerMap).forEach(k => delete markerMap[k]);
-  anState.filtered.forEach(r => {
+  const capped = anState.filtered.length > MARKER_RENDER_CAP;
+  const toShow = capped ? anState.filtered.slice(0, MARKER_RENDER_CAP) : anState.filtered;
+  const newMarkers = [];
+  toShow.forEach(r => {
     let lat, lng;
     if (r._local||r._finess){lat=parseFloat(r.latitude);lng=parseFloat(r.longitude);}
     else{const a=parseAddr(r);if(!a?.latitude||!a?.longitude)return;lat=parseFloat(a.latitude);lng=parseFloat(a.longitude);}
     if(isNaN(lat)||isNaN(lng)||lat===0||lng===0)return;
     if (!isFinite(lat) || !isFinite(lng)) return;
     const marker=L.marker([lat,lng],{icon:makeIcon(r)})
-      .bindPopup(buildPopup(r),{maxWidth:280,minWidth:260})
       .on('click',()=>anSelectCard(r.id,false));
-    markersGroup.addLayer(marker);
+    newMarkers.push(marker);
     markerMap[r.id]={marker,record:r};
   });
+  newMarkers.forEach(m => markersGroup.addLayer(m));
+  const capNotice = document.getElementById('an-cap-notice');
+  if (capNotice) capNotice.style.display = capped ? 'block' : 'none';
 }
+
+function anShowDetailPanel(record){
+  if(!record)return;
+  document.getElementById('an-detail-panel-body').innerHTML=buildPopup(record);
+  document.getElementById('an-detail-panel').classList.add('open');
+}
+function anCloseDetailPanel(){
+  document.getElementById('an-detail-panel').classList.remove('open');
+}
+document.getElementById('an-detail-panel-close').addEventListener('click',anCloseDetailPanel);
 
 function anSelectCard(id,pan=true){
   if(anState.activeId&&markerMap[anState.activeId])
     markerMap[anState.activeId].marker.setIcon(makeIcon(markerMap[anState.activeId].record,false));
   anState.activeId=id;
+  let record=null;
   if(markerMap[id]){
-    markerMap[id].marker.setIcon(makeIcon(markerMap[id].record,true));
-    markerMap[id].marker.openPopup();
+    record=markerMap[id].record;
+    markerMap[id].marker.setIcon(makeIcon(record,true));
     if(pan){
-      const r=markerMap[id].record;
-      const a=r._local||r._finess?null:parseAddr(r);
-      const lat=a?parseFloat(a.latitude):parseFloat(r.latitude);
-      const lng=a?parseFloat(a.longitude):parseFloat(r.longitude);
+      const a=record._local||record._finess?null:parseAddr(record);
+      const lat=a?parseFloat(a.latitude):parseFloat(record.latitude);
+      const lng=a?parseFloat(a.longitude):parseFloat(record.longitude);
       if(!isNaN(lat)&&!isNaN(lng))map.flyTo([lat,lng],14,{duration:0.8});
     }
+  } else {
+    record=anState.filtered.find(r=>r.id===id)||null;
   }
+  anShowDetailPanel(record);
   const idx=anState.filtered.findIndex(r=>r.id===id);
   if(idx>=0){const tp=Math.floor(idx/PAGE_SIZE);if(tp!==anState.page)anState.page=tp;}
   anRenderList();
@@ -2031,7 +3133,11 @@ function anSelectCard(id,pan=true){
 
 let communesIndex=[];
 function normalize(str){return str.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[-–—]/g,' ').replace(/\s+/g,' ').toLowerCase().trim();}
-function extractCommuneDeleguee(r){const m=(r.nom||'').match(/[Mm]airie\s+d[eé]l[eé]gu[eé]e?\s*[-–—de]+\s*(.+)/);return m?m[1].trim():null;}
+function extractCommuneDeleguee(r){
+  if ('__communeDeleguee' in r) return r.__communeDeleguee;
+  const m=(r.nom||'').match(/[Mm]airie\s+d[eé]l[eé]gu[eé]e?\s*[-–—de]+\s*(.+)/);
+  return r.__communeDeleguee = m?m[1].trim():null;
+}
 
 function buildCommunesIndex(records){
   const cMap=new Map(),dMap=new Map();
@@ -2046,6 +3152,9 @@ function buildCommunesIndex(records){
       cMap.get(k).count++;
     }
     if(!r._local){const nd=extractCommuneDeleguee(r);if(nd){const k=normalize(nd);if(!dMap.has(k))dMap.set(k,{nom:nd,cp,count:0,type:'deleguee'});dMap.get(k).count++;}}
+  });
+  delegueesIndex.forEach((feats,k)=>{
+    if(!dMap.has(k))dMap.set(k,{nom:feats[0].properties?.com_del_nom||'',cp:'',count:0,type:'deleguee'});
   });
   const all=[...cMap.values()];
   dMap.forEach((v,k)=>{if(!cMap.has(k))all.push(v);});
@@ -2089,6 +3198,7 @@ function selectCommune(commune){
   updateRadiusCircle();
   anApplyFilters();
   if(commune.type!=='deleguee'){
+    clearDelegueeHighlight();
     highlightCommune(commune.nom);
     setTimeout(()=>{anState.communeCenter=getCommuneCenter(commune.nom);},100);
     if(communesLayer){
@@ -2096,15 +3206,23 @@ function selectCommune(commune){
       communesLayer.eachLayer(l=>{const n=(l.feature?.properties?.nom||l.feature?.properties?.libelle||'').toUpperCase();if(n===commune.nom.toUpperCase())found=l;});
       if(found){map.fitBounds(found.getBounds(),{padding:[30,30],maxZoom:14});showRadiusRow(true);return;}
     }
-  }else{resetCommuneStyles();anState.communeCenter=getCommuneCenter(commune.nom);}
+  }else{
+    try{
+      const parentNom=getParentCommuneNom(commune.nom);
+      if(parentNom)highlightCommune(parentNom);else resetCommuneStyles();
+      anState.communeCenter=getCommuneCenter(commune.nom,'deleguee');
+      highlightDeleguee(commune.nom,anState.communeCenter);
+    }catch(e){ /* on n'empêche pas l'activation du rayon même si l'affichage carte échoue */ }
+  }
   showRadiusRow(true);
 }
 
+let communeTimer;
 communeInput.addEventListener('input',e=>{
   anState.communeFilter='';anState.communeInput=e.target.value;anState.communeType='';
   anState.communeCenter=null;anState.radiusKm=0;showRadiusRow(false);updateRadiusCircle();
-  if(communesIndex.length)showDropdown(e.target.value);
-  anApplyFilters();
+  if(communesIndex.length)showDropdown(e.target.value); // autocomplete : reste instantané
+  clearTimeout(communeTimer);communeTimer=setTimeout(anApplyFilters,300); // filtrage lourd : débounce
 });
 communeInput.addEventListener('keydown',e=>{
   const items=acDropdown.querySelectorAll('.an-ac-item');
@@ -2133,9 +3251,24 @@ function updateRadiusCircle(){
 }
 
 function showRadiusRow(show){document.getElementById('an-radius-row').style.display=show?'flex':'none';}
-function getCommuneCenter(nom){
-  if(communesLayer){let center=null;communesLayer.eachLayer(l=>{const n=(l.feature?.properties?.nom||l.feature?.properties?.libelle||'').toUpperCase();if(n===nom.toUpperCase()){const b=l.getBounds();center={lat:(b.getNorth()+b.getSouth())/2,lng:(b.getEast()+b.getWest())/2};}});if(center)return center;}
-  const pts=anState.allRecords.filter(r=>{const nc=r._local||r._finess?r.nom_commune:(parseAddr(r)?.nom_commune||'');return(nc||'').toUpperCase()===nom.toUpperCase();}).map(r=>r._local||r._finess?{lat:parseFloat(r.latitude),lng:parseFloat(r.longitude)}:(()=>{const a=parseAddr(r);return a?.latitude?{lat:parseFloat(a.latitude),lng:parseFloat(a.longitude)}:null;})()).filter(p=>p&&!isNaN(p.lat)&&!isNaN(p.lng));
+function getParentCommuneNom(deleguéeNom){
+  const feature=findDelegueeFeature(deleguéeNom);
+  if(feature?.properties?.com_del_nom_nvelle)return feature.properties.com_del_nom_nvelle;
+  const r=anState.allRecords.find(rec=>(extractCommuneDeleguee(rec)||'').toUpperCase()===deleguéeNom.toUpperCase());
+  if(!r)return null;
+  return r._local||r._finess?r.nom_commune||null:(parseAddr(r)?.nom_commune||null);
+}
+function getCommuneCenter(nom,type){
+  if(type==='deleguee'){
+    const feature=findDelegueeFeature(nom);
+    if(feature){try{const l=L.geoJSON(feature);const b=l.getBounds();if(b.isValid())return{lat:(b.getNorth()+b.getSouth())/2,lng:(b.getEast()+b.getWest())/2};}catch(e){}}
+  }
+  if(type!=='deleguee'&&communesLayer){let center=null;communesLayer.eachLayer(l=>{const n=(l.feature?.properties?.nom||l.feature?.properties?.libelle||'').toUpperCase();if(n===nom.toUpperCase()){const b=l.getBounds();center={lat:(b.getNorth()+b.getSouth())/2,lng:(b.getEast()+b.getWest())/2};}});if(center)return center;}
+  const pts=anState.allRecords.filter(r=>{
+    if(type==='deleguee')return(extractCommuneDeleguee(r)||'').toUpperCase()===nom.toUpperCase();
+    const nc=r._local||r._finess?r.nom_commune:(parseAddr(r)?.nom_commune||'');
+    return(nc||'').toUpperCase()===nom.toUpperCase();
+  }).map(r=>r._local||r._finess?{lat:parseFloat(r.latitude),lng:parseFloat(r.longitude)}:(()=>{const a=parseAddr(r);return a?.latitude?{lat:parseFloat(a.latitude),lng:parseFloat(a.longitude)}:null;})()).filter(p=>p&&!isNaN(p.lat)&&!isNaN(p.lng));
   if(!pts.length)return null;
   return{lat:pts.reduce((s,p)=>s+p.lat,0)/pts.length,lng:pts.reduce((s,p)=>s+p.lng,0)/pts.length};
 }
@@ -2202,9 +3335,33 @@ function anApplyFilters(){
 }
 
 let searchTimer;
-document.getElementById('an-search-input').addEventListener('input',e=>{
+const anSearchInput=document.getElementById('an-search-input');
+anSearchInput.addEventListener('input',e=>{
   anState.searchText=e.target.value;anState.missionText=e.target.value;
   clearTimeout(searchTimer);searchTimer=setTimeout(anApplyFilters,300);
+});
+
+const communeClearBtn=document.getElementById('an-commune-clear');
+const searchClearBtn=document.getElementById('an-search-clear');
+function updateCommuneClearBtn(){communeClearBtn.classList.toggle('visible',!!communeInput.value);}
+function updateSearchClearBtn(){searchClearBtn.classList.toggle('visible',!!anSearchInput.value);}
+communeInput.addEventListener('input',updateCommuneClearBtn);
+anSearchInput.addEventListener('input',updateSearchClearBtn);
+updateCommuneClearBtn();updateSearchClearBtn();
+
+communeClearBtn.addEventListener('click',()=>{
+  communeInput.value='';
+  Object.assign(anState,{communeFilter:'',communeInput:'',communeType:'',communeCenter:null,radiusKm:0});
+  document.querySelectorAll('.an-radius-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.an-radius-btn[data-km="0"]').classList.add('active');
+  showRadiusRow(false);updateRadiusCircle();closeDropdown();resetCommuneStyles();clearDelegueeHighlight();
+  updateCommuneClearBtn();anApplyFilters();communeInput.focus();
+});
+
+searchClearBtn.addEventListener('click',()=>{
+  anSearchInput.value='';
+  anState.searchText='';anState.missionText='';
+  updateSearchClearBtn();anApplyFilters();anSearchInput.focus();
 });
 
 document.getElementById('an-btn-src-dila').addEventListener('click',()=>{anState.dilaVisible=!anState.dilaVisible;updateSourceToggles();anMergeAndFilter();});
@@ -2231,7 +3388,9 @@ document.getElementById('an-btn-reset').addEventListener('click',()=>{
   Object.assign(anState,{searchText:'',missionText:'',typeFilter:'',communeFilter:'',communeInput:'',communeType:'',communeCenter:null,radiusKm:0,geoFilterActive:false,dilaVisible:true,finessVisible:true,localVisible:true});
   document.querySelectorAll('.an-radius-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.an-radius-btn[data-km="0"]').classList.add('active');
-  showRadiusRow(false);updateRadiusCircle();closeDropdown();resetCommuneStyles();
+  showRadiusRow(false);updateRadiusCircle();closeDropdown();resetCommuneStyles();clearDelegueeHighlight();
+  updateCommuneClearBtn();updateSearchClearBtn();
+  anCloseDetailPanel();anState.activeId=null;
   updateGeocodeBanner();updateSourceToggles();anMergeAndFilter();
   if(map&&communesLayer)map.fitBounds(communesLayer.getBounds(),{padding:[10,10]});
   else if(map)map.setView([47.47,-0.55],9);
@@ -2371,13 +3530,6 @@ const filtered=q?mddRecords.filter(r=>{const voie=normalize(r.voies||'');const p
    MODULE LOGIGRAMME (widget usager v5.1)
 ═══════════════════════════════════════════════════════ */
 var DEM=[], NDS={}, logiDemActive=null, logiHisto=[];
-// Masque les démarches taguées "Test" (passer à false pour les voir et tester de nouvelles procédures)
-var LOGI_MASQUER_TEST=true;
-function logiDemVisibles(){
-  return DEM.filter(function(d){
-    return !(LOGI_MASQUER_TEST && d.tags.some(function(t){return t.trim().toLowerCase()==='test';}));
-  });
-}
 var _dbgLines=[], logiTagActif=null;
 
 function log(msg){_dbgLines.push(msg);var p=document.getElementById('dbg');if(p)p.textContent=_dbgLines.join('\n');}
@@ -2461,6 +3613,13 @@ function logiAfficherMenu(){
 function logiFiltr(v){var sc=document.getElementById('s-clear');if(sc)sc.className=v?'visible':'';logiRenderCartes(v);}
 function logiViderRecherche(){var i=document.getElementById('s-input');if(i){i.value='';i.focus();}var s=document.getElementById('s-clear');if(s)s.className='';logiRenderCartes('');}
 window.logiFiltr=logiFiltr;window.logiViderRecherche=logiViderRecherche;
+
+function logiDemVisibles(){
+  return DEM.filter(function(d){
+    // Dans une vue partagée (profil invité), on masque les démarches taguées "Test"
+    return !(pcfgGuestProfile && d.tags.some(function(t){return t.trim().toLowerCase()==='test';}));
+  });
+}
 
 function logiRenderFiltresTags(){
   var zone=document.getElementById('tags-filtre');if(!zone)return;zone.innerHTML='';
@@ -2827,9 +3986,9 @@ if(typeof grist!=='undefined'){
 /* ═══════════════════════════════════════════════════════
    MODULE FICHES MISSIONS MDD
 ═══════════════════════════════════════════════════════ */
-const MDD2_CADRE_TYPES = ['RMDD','ARMDD','RAP','RAA','RATPE'];
+const MDD2_CADRE_TYPES = ['RMDD','ARMDD','RAP','RAA','RATPE','RPMI'];
 const MDD2_MISSIONS    = ['AIO','ASG','PMI','RSA','PRÉVENTION','PROTECTION','AUTRES'];
-const MDD2_BADGE_CLS   = { RMDD:'badge-rmdd', ARMDD:'badge-armdd', RAP:'badge-rap', RAA:'badge-raa', RATPE:'badge-ratpe' };
+const MDD2_BADGE_CLS   = { RMDD:'badge-rmdd', ARMDD:'badge-armdd', RAP:'badge-rap', RAA:'badge-raa', RATPE:'badge-ratpe', RPMI:'badge-rpmi' };
 
 let mdd2_sitesData    = [];
 let mdd2_cadresData   = [];
@@ -2930,10 +4089,10 @@ html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px
 + '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>'
 + 'Imprimer'
 + '</button>'
-+ '<a class="edit-grist-btn" href="https://grist.maine-et-loire.fr/o/sru/6bhrtFTAaUhL/EUREKA3/p/41?style=light" target="_blank">'
++ '<button type="button" class="edit-grist-btn" data-pcfg-edit="fichesMDD" onclick="maOpen()">'
 + '<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>'
 + 'Modifier'
-+ '</a>'
++ '</button>'
       + '</div>';
   html += '<div class="missions-nav">';
   html += '<button class="mission-tab' + (mdd2_currentMission === 'CADRES' ? ' active' : '') + '" data-mission="CADRES" onclick="mdd2_switchMission(\'CADRES\')">👥 Cadres</button>';
@@ -3185,6 +4344,67 @@ function mdd2_printFiche2() {
   win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>' + mdd2_esc(name) + '</title><style>' + css + '</style></head><body>' + contenu + '<script>window.onload=function(){window.print();}<\/script></body></html>');
   win.document.close();
 }
+
+function mdd2_updateWelcomeStats() {
+  const el = document.getElementById('mdd2-empty-state');
+  if (!el || el.querySelector('.fmdd-welcome-stats')) return;
+  const nbSites = mdd2_sitesData.length;
+  if (!nbSites) return;
+  const nbCadres = mdd2_cadresData.filter(c => mdd2_get(c,'nom_prenom','Nom_prenom')).length;
+  const nbMissions = MDD2_MISSIONS.length;
+  const statsHtml = '<div class="fmdd-welcome-stats">'
+    + '<div class="fmdd-welcome-stat"><div class="fmdd-welcome-stat-num">' + nbSites + '</div><div class="fmdd-welcome-stat-label">Site' + (nbSites > 1 ? 's' : '') + ' MDD</div></div>'
+    + (nbCadres ? '<div class="fmdd-welcome-stat"><div class="fmdd-welcome-stat-num">' + nbCadres + '</div><div class="fmdd-welcome-stat-label">Cadres référencés</div></div>' : '')
+    + (nbMissions ? '<div class="fmdd-welcome-stat"><div class="fmdd-welcome-stat-num">' + nbMissions + '</div><div class="fmdd-welcome-stat-label">Types de missions</div></div>' : '')
+    + '</div>';
+  const tagline = el.querySelector('.fmdd-welcome-tagline');
+  if (tagline) tagline.insertAdjacentHTML('afterend', statsHtml);
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODULE ÉDITION FICHES MISSIONS (ex-widget Mission Admin, embarqué en iframe)
+   - Accès contrôlé par la roue crantée : case "Masquer les boutons de modification"
+     de l'onglet "Fiches missions" dans chaque vue partagée.
+═══════════════════════════════════════════════════════ */
+const MISSION_ADMIN_HTML = "\n<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Annuaire — Widget Grist<\/title>\n<style>\n*{box-sizing:border-box;margin:0;padding:0}\nbody{font-family:system-ui,sans-serif;font-size:13px;color:var(--color-text-primary,#1a1a2e);background:var(--color-background-tertiary,#f7f8fc);padding:1rem}\n.topbar{display:flex;align-items:center;gap:10px;margin-bottom:1.2rem;flex-wrap:wrap}\nlabel{font-size:12px;color:var(--color-text-secondary,#555);white-space:nowrap}\nselect,input,textarea{font-family:inherit;font-size:13px;color:var(--color-text-primary,#1a1a2e);background:var(--color-background-primary,#fff);border:1px solid var(--color-border-secondary,#d0d5dd);border-radius:8px;padding:5px 9px;width:100%}\nselect{padding-right:26px;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center}\ntextarea{resize:vertical;line-height:1.6}\n.card{background:var(--color-background-primary,#fff);border:1px solid var(--color-border-tertiary,#e5e7eb);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.9rem}\n.card-title{font-size:12px;font-weight:600;color:var(--color-text-secondary,#444);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem}\n.obs-area{min-height:56px}\n.cadres-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:7px}\n.cadre-row{display:flex;flex-direction:column;gap:3px;padding:8px;border:1px solid var(--color-border-tertiary,#e5e7eb);border-radius:8px;background:var(--color-background-secondary,#f9fafb)}\n.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;margin-bottom:3px;align-self:flex-start}\n.badge-rmdd{background:#EEEDFE;color:#3C3489}\n.badge-armdd{background:#E1F5EE;color:#085041}\n.badge-rap{background:#FAEEDA;color:#633806}\n.badge-raa{background:#FAECE7;color:#712B13}\n.badge-ratpe{background:#FBEAF0;color:#72243E}\n.badge-rpmi{background:#E6F1FB;color:#0C447C}\n.missions-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:.9rem}\n.tab{padding:4px 12px;border:1px solid var(--color-border-secondary,#d0d5dd);border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;background:var(--color-background-primary,#fff);color:var(--color-text-secondary,#555)}\n.tab.active{background:#E6F1FB;color:#185FA5;border-color:transparent}\n.mission-panel{display:none}\n.mission-panel.active{display:block}\n.groupe-block{border:1px solid var(--color-border-tertiary,#e5e7eb);border-radius:10px;padding:9px 11px;margin-bottom:9px;background:var(--color-background-secondary,#f9fafb)}\n.groupe-header{display:flex;align-items:center;gap:7px;margin-bottom:7px}\n.groupe-header input{flex:1;font-size:12px}\n.del-btn{background:none;border:none;cursor:pointer;color:var(--color-text-secondary,#888);font-size:17px;padding:0;line-height:1;flex-shrink:0}\n.del-btn:hover{color:#E24B4A}\n.mission-cols{display:grid;grid-template-columns:1fr 1fr;gap:9px}\n.col-label{font-size:11px;font-weight:500;color:var(--color-text-secondary,#555);margin-bottom:3px}\n.mission-area{min-height:100px;font-size:12px}\n.add-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--color-text-secondary,#555);border:1px dashed var(--color-border-secondary,#d0d5dd);border-radius:8px;padding:6px 11px;background:none;cursor:pointer;width:100%;justify-content:center}\n.add-btn:hover{background:var(--color-background-secondary,#f0f4f8)}\n.ratpe-list{display:flex;flex-direction:column;gap:4px}\n.ratpe-item{border:1px solid var(--color-border-tertiary,#e5e7eb);border-radius:8px;padding:6px 9px;background:var(--color-background-primary,#fff);display:flex;flex-direction:column;gap:3px}\n.rm-btn{align-self:flex-end;background:none;border:none;cursor:pointer;color:var(--color-text-secondary,#888);font-size:15px;padding:0;line-height:1}\n.save-bar{display:flex;justify-content:flex-end;gap:8px;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--color-border-tertiary,#e5e7eb);align-items:center}\n.btn{padding:6px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--color-border-secondary,#d0d5dd);background:var(--color-background-primary,#fff);color:var(--color-text-primary,#1a1a2e)}\n.btn-primary{background:#185FA5;color:#fff;border-color:transparent}\n.status{font-size:11px;opacity:0;transition:opacity .3s;padding:3px 9px;border-radius:6px}\n.status.show{opacity:1}\n.status.ok{background:#e8f5e9;color:#2e7d32}\n.status.err{background:#fdecea;color:#c0392b}\n.empty{font-size:13px;color:var(--color-text-secondary,#888);padding:2.5rem;text-align:center}\n@media(max-width:480px){.mission-cols{grid-template-columns:1fr}}\n<\/style>\n<\/head>\n<body>\n\n<div class=\"topbar\">\n  <label for=\"site-sel\">🏢 Site<\/label>\n  <select id=\"site-sel\" style=\"min-width:200px;flex:1\">\n    <option value=\"\">— Choisir un site —<\/option>\n  <\/select>\n  <span id=\"status\" class=\"status\"><\/span>\n<\/div>\n\n<div id=\"content\" style=\"display:none\">\n  <div class=\"card\">\n    <div class=\"card-title\">📝 Observations<\/div>\n    <textarea id=\"obs\" class=\"obs-area\" placeholder=\"Observations générales…\"><\/textarea>\n  <\/div>\n  <div class=\"card\">\n    <div class=\"card-title\">👥 Cadres<\/div>\n    <div class=\"cadres-grid\" id=\"cadres-grid\"><\/div>\n  <\/div>\n  <div class=\"card\">\n    <div class=\"card-title\">🎯 Missions<\/div>\n    <div class=\"missions-tabs\" id=\"missions-tabs\"><\/div>\n    <div id=\"missions-panels\"><\/div>\n  <\/div>\n  <div class=\"save-bar\">\n    <button class=\"btn\" onclick=\"resetForm()\">Annuler<\/button>\n    <button class=\"btn btn-primary\" id=\"save-btn\" onclick=\"saveData()\">💾 Enregistrer<\/button>\n  <\/div>\n<\/div>\n\n<div id=\"empty-state\" class=\"empty\">↑ Sélectionnez un site pour commencer<\/div>\n\n<script>\nconst grist = window.parent.grist;   // API Grist déjà initialisée par Eureka\nconst CADRE_TYPES = ['RMDD','ARMDD','RAP','RAA','RATPE','RPMI'];\nconst MISSIONS    = ['AIO','ASG', 'PMI', 'RSA', 'PRÉVENTION','PROTECTION', 'AUTRES'];\nconst BADGE       = {RMDD:'badge-rmdd',ARMDD:'badge-armdd',RAP:'badge-rap',RAA:'badge-raa',RATPE:'badge-ratpe',RPMI:'badge-rpmi'};\n\nlet sitesData     = [];\nlet cadresData    = [];\nlet missionsData  = [];\nlet groupesData   = [];\nlet currentSiteId = null;\nlet tablesLoaded  = false;\n\nfunction esc(s){ return (String(s)||'').replace(/&/g,'&amp;').replace(/<\/g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;'); }\n\nfunction showStatus(msg, type){\n  var el = document.getElementById('status');\n  el.textContent = msg;\n  el.className = 'status show ' + (type||'ok');\n  setTimeout(function(){ el.className = 'status'; }, 3200);\n}\n\nfunction setEmptyState(msg){\n  document.getElementById('empty-state').textContent = msg;\n}\n\n/* ── Grist user actions ── */\nfunction tableToRows(data){\n  var cols = Object.keys(data);\n  if(!cols.length) return [];\n  var len  = data[cols[0]].length;\n  var rows = [];\n  for(var i=0; i<len; i++){\n    var row = {};\n    cols.forEach(function(c){ row[c] = data[c][i]; });\n    rows.push(row);\n  }\n  return rows;\n}\n\nasync function gristUpdateRecord(table, id, fields){\n  await grist.docApi.applyUserActions([['UpdateRecord', table, id, fields]]);\n}\n\nasync function gristAddRecords(table, records){\n  if(!records.length) return;\n  for(var i = 0; i < records.length; i++){\n    await grist.docApi.applyUserActions([['AddRecord', table, null, records[i]]]);\n  }\n}\n\nasync function gristDeleteRecords(table, ids){\n  if(!ids.length) return;\n  for(var i = 0; i < ids.length; i++){\n    await grist.docApi.applyUserActions([['RemoveRecord', table, ids[i]]]);\n  }\n}\n\n/* ── Select sites ── */\nfunction rebuildSiteSelect(){\n  var sel  = document.getElementById('site-sel');\n  var prev = sel.value;\n  sel.innerHTML = '<option value=\"\">— Choisir un site —<\/option>';\n  sitesData.forEach(function(s){\n    var opt = document.createElement('option');\n    opt.value = s.id;\n    opt.textContent = s.nom_site || s.Nom_site || ('Site ' + s.id);\n    sel.appendChild(opt);\n  });\n  if(prev && sitesData.find(function(s){ return String(s.id) === String(prev); })){\n    sel.value = prev;\n  }\n}\n\n/* ── UI builders ── */\nfunction buildCadresGrid(){\n  var grid = document.getElementById('cadres-grid');\n  grid.innerHTML = '';\n  CADRE_TYPES.forEach(function(t){\n    var div = document.createElement('div');\n    div.className = 'cadre-row';\n    if(t === 'RATPE'){\n      div.innerHTML = '<span class=\"badge ' + BADGE[t] + '\">' + t + '<\/span>'\n        + '<div id=\"ratpe-list\" class=\"ratpe-list\"><\/div>'\n        + '<button class=\"add-btn\" onclick=\"addRatpe()\">＋ Ajouter un RATPE<\/button>';\n    } else {\n      div.innerHTML = '<span class=\"badge ' + BADGE[t] + '\">' + t + '<\/span>'\n        + '<input type=\"text\" id=\"cadre-nom-' + t + '\" placeholder=\"NOM Prénom\">'\n        + '<input type=\"text\" id=\"cadre-portable-' + t + '\" placeholder=\"Portable\">'\n        + '<input type=\"text\" id=\"cadre-ligne-' + t + '\" placeholder=\"Ligne directe\">';\n    }\n    grid.appendChild(div);\n  });\n}\n\nfunction addRatpe(nom, portable, ligne){\n  nom = nom || ''; portable = portable || ''; ligne = ligne || '';\n  var list = document.getElementById('ratpe-list');\n  if(!list) return;\n  var item = document.createElement('div');\n  item.className = 'ratpe-item';\n  item.innerHTML = '<button class=\"rm-btn\" onclick=\"this.parentElement.remove()\">✕<\/button>'\n    + '<input type=\"text\" placeholder=\"NOM Prénom\" value=\"' + esc(nom) + '\">'\n    + '<input type=\"text\" placeholder=\"Portable\" value=\"' + esc(portable) + '\">'\n    + '<input type=\"text\" placeholder=\"Ligne directe\" value=\"' + esc(ligne) + '\">';\n  list.appendChild(item);\n}\n\nfunction buildMissions(){\n  var tabs   = document.getElementById('missions-tabs');\n  var panels = document.getElementById('missions-panels');\n  tabs.innerHTML = '';\n  panels.innerHTML = '';\n  MISSIONS.forEach(function(m, i){\n    var tab = document.createElement('button');\n    tab.className = 'tab' + (i===0 ? ' active' : '');\n    tab.textContent = m;\n    tab.id = 'tab-' + m;\n    tab.onclick = function(){ switchTab(m); };\n    tabs.appendChild(tab);\n\n    var panel = document.createElement('div');\n    panel.className = 'mission-panel' + (i===0 ? ' active' : '');\n    panel.id = 'panel-' + m;\n    panel.innerHTML = '<div id=\"groupes-' + m + '\"><\/div>'\n      + '<button class=\"add-btn\" onclick=\"addGroupe(\\'' + m + '\\')\">＋ Ajouter un groupe<\/button>';\n    panels.appendChild(panel);\n  });\n}\n\nfunction switchTab(m){\n  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });\n  document.querySelectorAll('.mission-panel').forEach(function(p){ p.classList.remove('active'); });\n  document.getElementById('tab-' + m).classList.add('active');\n  document.getElementById('panel-' + m).classList.add('active');\n}\n\nfunction addGroupe(mission, label, assistantes, tms, pave, observation, gid){\n  label = label || ''; assistantes = assistantes || ''; tms = tms || ''; pave = pave || ''; observation = observation || ''; gid = gid || '';\n  var container = document.getElementById('groupes-' + mission);\n  if(!container) return;\n  var block = document.createElement('div');\n  block.className = 'groupe-block';\n  block.dataset.gid     = gid;\n  block.dataset.mission = mission;\n  block.innerHTML = '<div class=\"groupe-header\">'\n    + '<input type=\"text\" placeholder=\"Nom du groupe (optionnel)\" value=\"' + esc(label) + '\" class=\"groupe-label\">'\n    + '<button class=\"del-btn\" onclick=\"this.closest(\\'.groupe-block\\').remove()\">🗑<\/button>'\n    + '<\/div>'\n    + '<div class=\"mission-cols\">'\n    + '<div><div class=\"col-label\">👤 Assistantes administratives<\/div>'\n    + '<textarea class=\"mission-area ass-field\" placeholder=\"NOM Prénom | Fonction | Portable | Ligne directe\">' + esc(assistantes) + '<\/textarea><\/div>'\n    + '<div><div class=\"col-label\">🤝 Travailleurs médico-sociaux<\/div>'\n    + '<textarea class=\"mission-area tms-field\" placeholder=\"NOM Prénom | Fonction | Portable | Ligne directe\">' + esc(tms) + '<\/textarea><\/div>'\n    + '<\/div>'\n    + '<div class=\"mission-cols\">'\n    + '<div><div class=\"col-label\">📍 Pavé<\/div>'\n    + '<input type=\"text\" class=\"pave-field\" placeholder=\"Pavé\" value=\"' + esc(pave) + '\"><\/div>'\n    + '<div><div class=\"col-label\">📝 Observation<\/div>'\n    + '<textarea class=\"mission-area obs-field\" placeholder=\"Observation\">' + esc(observation) + '<\/textarea><\/div>'\n    + '<\/div>';\n  container.appendChild(block);\n}\n\n/* ── Chargement site ── */\nfunction loadSiteData(siteId){\n  currentSiteId = siteId;\n  loadedSig = siteSignature(sitesData, cadresData, missionsData, groupesData, siteId);\n  buildCadresGrid();\n  buildMissions();\n\n  var site = sitesData.find(function(s){ return String(s.id) === String(siteId); });\n  document.getElementById('obs').value = (site && (site.observations || site.Observations)) || '';\n\n  var siteCadres = cadresData.filter(function(c){ return String(c.site) === String(siteId); });\n  CADRE_TYPES.forEach(function(t){\n    if(t === 'RATPE'){\n      siteCadres.filter(function(c){ return (c.type_cadre || c.Type_cadre) === 'RATPE'; })\n        .forEach(function(r){\n          addRatpe(\n            r.nom_prenom || r.Nom_prenom || '',\n            r.telephone_portable || r.Telephone_portable || '',\n            r.ligne_directe || r.Ligne_directe || ''\n          );\n        });\n    } else {\n      var c = siteCadres.find(function(x){ return (x.type_cadre || x.Type_cadre) === t; });\n      if(c){\n        var n = document.getElementById('cadre-nom-' + t);\n        var p = document.getElementById('cadre-portable-' + t);\n        var l = document.getElementById('cadre-ligne-' + t);\n        if(n) n.value = c.nom_prenom || c.Nom_prenom || '';\n        if(p) p.value = c.telephone_portable || c.Telephone_portable || '';\n        if(l) l.value = c.ligne_directe || c.Ligne_directe || '';\n      }\n    }\n  });\n\n  var siteMissions = missionsData.filter(function(m){ return String(m.site) === String(siteId); });\n  MISSIONS.forEach(function(mType){\n    var mRow = siteMissions.find(function(m){\n  var types = (m.type_mission || m.Type_mission || '').split('+').map(function(s){ return s.trim(); });\n  return types.indexOf(mType) !== -1;\n});\n    if(mRow){\n      var mGroups = groupesData.filter(function(g){ return String(g.mission) === String(mRow.id); });\n      if(mGroups.length === 0){\n        addGroupe(mType);\n      } else {\n        mGroups.forEach(function(g){\n          addGroupe(mType, g.label || g.Label || '', g.assistantes || g.Assistantes || '', g.tms || g.Tms || '', g.pave || g.Pave || '', g.observation || g.Observation || '', g.id);\n        });\n      }\n    } else {\n      addGroupe(mType);\n    }\n  });\n}\n\n/* ── Sauvegarde sécurisée ──\n   1. verrou anti double-clic\n   2. contrôle de conflit : si les données du site ont changé dans Grist depuis le chargement, on refuse\n   3. création des missions manquantes (additif, sans risque) ; arrêt si un id n'est pas obtenu\n   4. toutes les modifications (observations, cadres, groupes) dans UN SEUL lot applyUserActions\n      => atomique : tout est appliqué ou rien\n   5. mise à jour / ajout / suppression ciblés (plus de \"tout supprimer puis recréer\"),\n      et uniquement sur les enregistrements gérés par ce formulaire */\nvar saving = false;\nvar loadedSig = '';\n\nfunction siteSignature(sites, cadres, missions, groupes, siteId){\n  var sid = String(siteId);\n  var site = sites.find(function(s){ return String(s.id) === sid; }) || {};\n  var cs = cadres.filter(function(c){ return String(c.site) === sid; })\n    .map(function(c){ return [c.id, c.type_cadre||c.Type_cadre||'', c.nom_prenom||c.Nom_prenom||'', c.telephone_portable||c.Telephone_portable||'', c.ligne_directe||c.Ligne_directe||'']; })\n    .sort(function(a,b){ return a[0]-b[0]; });\n  var mIds = missions.filter(function(m){ return String(m.site) === sid; }).map(function(m){ return m.id; });\n  var gs = groupes.filter(function(g){ return mIds.indexOf(g.mission) !== -1; })\n    .map(function(g){ return [g.id, g.mission, g.label||g.Label||'', g.assistantes||g.Assistantes||'', g.tms||g.Tms||'', g.pave||g.Pave||'', g.observation||g.Observation||'']; })\n    .sort(function(a,b){ return a[0]-b[0]; });\n  return JSON.stringify([site.observations||site.Observations||'', mIds.length, cs, gs]);\n}\n\nfunction findMission(mType){\n  return missionsData.find(function(m){\n    var types = (m.type_mission||m.Type_mission||'').split('+').map(function(s){ return s.trim(); });\n    return String(m.site) === String(currentSiteId) && types.indexOf(mType) !== -1;\n  });\n}\n\nasync function saveData(){\n  if(saving) return;\n  if(!currentSiteId){ showStatus('Aucun site sélectionné', 'err'); return; }\n  saving = true;\n  var btn = document.getElementById('save-btn');\n  if(btn) btn.disabled = true;\n  showStatus('Enregistrement…', 'ok');\n  try {\n    var siteNum = Number(currentSiteId);\n\n    /* 0. Contrôle de conflit sur des données fraîches */\n    var fresh = await Promise.all([\n      grist.docApi.fetchTable('Sites'), grist.docApi.fetchTable('Cadres'),\n      grist.docApi.fetchTable('Missions5'), grist.docApi.fetchTable('Groupes')\n    ]);\n    var freshSig = siteSignature(tableToRows(fresh[0]), tableToRows(fresh[1]), tableToRows(fresh[2]), tableToRows(fresh[3]), currentSiteId);\n    if(freshSig !== loadedSig){\n      await loadAllTables();\n      throw new Error('Ce site a été modifié ailleurs depuis son chargement. Rien n\\'a été enregistré : vérifiez les données rechargées et recommencez.');\n    }\n\n    /* 1. Missions manquantes (additif) */\n    var needed = [];\n    document.querySelectorAll('.groupe-block').forEach(function(b){\n      if(needed.indexOf(b.dataset.mission) === -1) needed.push(b.dataset.mission);\n    });\n    for(var mi=0; mi<needed.length; mi++){\n      var mType = needed[mi];\n      if(findMission(mType)) continue;\n      /* on ne crée la mission que si un groupe contient quelque chose */\n      var hasContent = false;\n      document.querySelectorAll('#groupes-' + mType + ' .groupe-block').forEach(function(b){\n        ['.groupe-label','.ass-field','.tms-field','.pave-field','.obs-field'].forEach(function(sel){\n          if(b.querySelector(sel).value.trim()) hasContent = true;\n        });\n      });\n      if(!hasContent) continue;\n      var res = await grist.docApi.applyUserActions([['AddRecord', 'Missions5', null, { site:siteNum, type_mission:mType }]]);\n      var newId = Array.isArray(res) && res.length > 0 ? res[0] : (res && res.retValues ? res.retValues[0] : null);\n      if(!newId) throw new Error('Création de la mission ' + mType + ' impossible : aucun identifiant reçu. Rien n\\'a été modifié.');\n      missionsData.push({ id:newId, site:siteNum, type_mission:mType });\n    }\n\n    /* 2. Construction du lot d'actions */\n    var actions = [];\n\n    /* 2a. Observations */\n    actions.push(['UpdateRecord', 'Sites', siteNum, { observations: document.getElementById('obs').value }]);\n\n    /* 2b. Cadres : appariement par type (RATPE : par ordre) */\n    var siteCadres = cadresData.filter(function(c){ return String(c.site) === String(currentSiteId); });\n    function syncCadres(type, wanted){\n      var existing = siteCadres.filter(function(c){ return (c.type_cadre||c.Type_cadre) === type; });\n      wanted.forEach(function(w, i){\n        if(existing[i]){\n          actions.push(['UpdateRecord', 'Cadres', existing[i].id, w]);\n        } else if(w.nom_prenom.trim() || w.telephone_portable.trim() || w.ligne_directe.trim()){\n          actions.push(['AddRecord', 'Cadres', null, Object.assign({ site:siteNum, type_cadre:type }, w)]);\n        }\n      });\n      existing.slice(wanted.length).forEach(function(c){ actions.push(['RemoveRecord', 'Cadres', c.id]); });\n    }\n    CADRE_TYPES.forEach(function(t){\n      var wanted = [];\n      if(t === 'RATPE'){\n        document.querySelectorAll('#ratpe-list .ratpe-item').forEach(function(item){\n          var inp = item.querySelectorAll('input');\n          wanted.push({ nom_prenom:inp[0].value, telephone_portable:inp[1].value, ligne_directe:inp[2].value });\n        });\n      } else {\n        wanted.push({\n          nom_prenom:         (document.getElementById('cadre-nom-' + t)||{}).value||'',\n          telephone_portable: (document.getElementById('cadre-portable-' + t)||{}).value||'',\n          ligne_directe:      (document.getElementById('cadre-ligne-' + t)||{}).value||'' });\n      }\n      syncCadres(t, wanted);\n    });\n\n    /* 2c. Groupes : par id (data-gid) ; suppression limitée aux missions affichées */\n    var handled = {};   /* missionId -> true */\n    var keepIds = {};   /* ids de groupes conservés */\n    MISSIONS.forEach(function(mT){\n      var mRow = findMission(mT);\n      if(!mRow || handled[mRow.id]) return;\n      handled[mRow.id] = true;\n      document.querySelectorAll('#groupes-' + mT + ' .groupe-block').forEach(function(block){\n        var f = {\n          mission:     Number(mRow.id),\n          label:       block.querySelector('.groupe-label').value,\n          assistantes: block.querySelector('.ass-field').value,\n          tms:         block.querySelector('.tms-field').value,\n          pave:        block.querySelector('.pave-field').value,\n          observation: block.querySelector('.obs-field').value\n        };\n        var gid = block.dataset.gid ? Number(block.dataset.gid) : null;\n        var isEmpty = !(f.label.trim() || f.assistantes.trim() || f.tms.trim() || f.pave.trim() || f.observation.trim());\n        var known = gid && groupesData.some(function(g){ return g.id === gid && g.mission === mRow.id; });\n        if(known && !isEmpty){\n          keepIds[gid] = true;\n          actions.push(['UpdateRecord', 'Groupes', gid, f]);\n        } else if(!known && !isEmpty){\n          actions.push(['AddRecord', 'Groupes', null, f]);\n        } /* groupe vide : non conservé (supprimé s'il existait) */\n      });\n    });\n    groupesData.forEach(function(g){\n      if(handled[g.mission] && !keepIds[g.id]) actions.push(['RemoveRecord', 'Groupes', g.id]);\n    });\n\n    /* 3. Application atomique */\n    await grist.docApi.applyUserActions(actions);\n\n    await loadAllTables();\n    showStatus('✓ Enregistré', 'ok');\n    var P = window.parent;\n    if (P.mdd2_reload) P.mdd2_reload();                       // rafraîchit la fiche en lecture\n    P.setTimeout(function(){                                  // timer côté parent : survit à la fermeture de l'iframe\n      if (P.maClose) P.maClose();\n      if (P.pcfgToast) P.pcfgToast('✓ Fiche enregistrée');\n    }, 500);\n  } catch(e){\n    console.error('Erreur sauvegarde:', e);\n    showStatus('⚠️ ' + (e.message||e), 'err');\n  } finally {\n    saving = false;\n    if(btn) btn.disabled = false;\n  }\n}\n\nfunction resetForm(){\n  if(currentSiteId) loadSiteData(currentSiteId);\n}\n\ndocument.getElementById('site-sel').addEventListener('change', function(){\n  var val = this.value;\n  document.getElementById('content').style.display     = val ? 'block' : 'none';\n  document.getElementById('empty-state').style.display = val ? 'none'  : 'block';\n  currentSiteId = null;\n  if(val) loadSiteData(parseInt(val, 10) || val);\n});\n\n/* ── Initialisation Grist ──\n   On utilise le callback onReady de grist.ready() qui se déclenche\n   une fois que le widget est correctement attaché au document.\n   C'est la seule façon fiable de savoir que fetchTable est disponible. */\nasync function loadAllTables(){\n  try {\n    var results = await Promise.all([\n  grist.docApi.fetchTable('Sites'),\n  grist.docApi.fetchTable('Cadres'),\n  grist.docApi.fetchTable('Missions5'),\n  grist.docApi.fetchTable('Groupes'),\n]);\n    sitesData    = tableToRows(results[0]);\n    cadresData   = tableToRows(results[1]);\n    missionsData = tableToRows(results[2]);\n    groupesData  = tableToRows(results[3]);\n    tablesLoaded = true;\n    rebuildSiteSelect();\n    if(currentSiteId) loadSiteData(currentSiteId);\n    setEmptyState('↑ Sélectionnez un site pour commencer');\n  } catch(e){\n    console.error('fetchTable error:', e);\n    setEmptyState('⚠️ Erreur de chargement : ' + (e.message||e));\n  }\n}\n\nvar __siteInit = window.parent.__maSiteId;\nloadAllTables().then(function(){\n  if(__siteInit){\n    var sel = document.getElementById('site-sel');\n    sel.value = String(__siteInit);\n    sel.dispatchEvent(new Event('change'));\n  }\n});\n<\/script>\n<\/body>\n<\/html>\n";
+
+function maCanEdit() {
+  return !(pcfgGuestProfile && (pcfgGuestProfile.editHidden || []).includes('fichesMDD'));
+}
+
+// Une iframe neuve à chaque ouverture : document.open() réutilise la même fenêtre,
+// donc les const/let du script embarqué seraient redéclarés (erreur) à la 2e ouverture.
+function maFreshFrame() {
+  const old = document.getElementById('ma-frame');
+  const f = document.createElement('iframe');
+  f.id = 'ma-frame';
+  f.title = 'Mission Admin';
+  f.style.cssText = 'flex:1;width:100%;border:0;background:#fff';
+  if (old) old.replaceWith(f);
+  return f;
+}
+
+function maOpen() {
+  if (!maCanEdit()) return;   // garde-fou en plus du masquage CSS
+  window.__maSiteId = mdd2_currentSiteId;   // lu par l'iframe pour présélectionner le site
+  document.getElementById('ma-modal').classList.add('active');
+  const f = maFreshFrame();
+  const d = f.contentDocument;
+  d.open(); d.write(MISSION_ADMIN_HTML); d.close();
+}
+
+function maClose() {
+  document.getElementById('ma-modal').classList.remove('active');
+  maFreshFrame();   // détruit l'iframe et son script
+}
+
+// Appelée par l'iframe après un enregistrement
+async function mdd2_reload() {
+  mdd2_tablesLoaded = false;
+  await mdd2_loadAllTables();
+  if (mdd2_currentSiteId) mdd2_renderSite(mdd2_currentSiteId);
+}
+
 async function mdd2_loadAllTables() {
   if (mdd2_tablesLoaded) return;
   try {
@@ -3205,6 +4425,7 @@ async function mdd2_loadAllTables() {
     mdd2_tablesLoaded = true;
     document.getElementById('mdd2-site-loading')?.remove();
     mdd2_buildSidebar();
+    mdd2_updateWelcomeStats();
   } catch(e) {
     console.error('mdd2 fetchTable error:', e);
     const el = document.getElementById('mdd2-site-loading');
@@ -3323,6 +4544,10 @@ const aiot = (() => {
           ta.dataset.siteId = siteId;
           ta.dataset.col = col;
           if (rec) ta.dataset.rowId = rec.id;
+          if (typeof pcfgIsAiotEditLocked === 'function' && pcfgIsAiotEditLocked()) {
+            ta.readOnly = true;
+            ta.tabIndex = -1;
+          }
 
           ta.addEventListener('keydown', e => {
             if (e.key === 'Tab') {
@@ -3597,15 +4822,65 @@ const aiot = (() => {
     await loadWeek();
   }
 
-  return { init, exportPdf };
+  function applyEditLock() {
+    const locked = typeof pcfgIsAiotEditLocked === 'function' && pcfgIsAiotEditLocked();
+    document.querySelectorAll('#aiot-planning-body textarea').forEach(ta => {
+      ta.readOnly = locked;
+      ta.tabIndex = locked ? -1 : 0;
+    });
+  }
+
+  return { init, exportPdf, applyEditLock };
 })();
+
+async function loadBandeau(){
+  if(typeof grist==='undefined')return;
+  try{
+    const t = await grist.docApi.fetchTable('Bandeau');
+    const container = document.getElementById('rf-bandeau-container');
+    container.innerHTML = '';
+    const escHtml = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const now = Date.now();
+    (t.actif||[]).forEach((v, idx) => {
+      if(!v) return;
+      const exp = t.date_expiration?.[idx];
+      if(exp && exp*1000 < now) return; // dates Grist en secondes epoch
+
+      const msg = escHtml(t.message?.[idx] || '');
+      const url = t.lien_url?.[idx];
+      const label = escHtml(t.lien_texte?.[idx] || 'En savoir plus');
+      let html = msg;
+      if(url){
+        html += ` <a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer" class="rf-bandeau-link">${label}</a>`;
+      }
+
+      const el = document.createElement('div');
+      el.className = 'rf-bandeau ' + (t.type?.[idx] || 'info');
+      const msgSpan = document.createElement('span');
+      msgSpan.className = 'rf-bandeau-msg';
+      msgSpan.innerHTML = html;
+      const closeSpan = document.createElement('span');
+      closeSpan.className = 'rf-bandeau-close';
+      closeSpan.textContent = '✕';
+      closeSpan.onclick = () => el.remove();
+      el.appendChild(msgSpan);
+      el.appendChild(closeSpan);
+      container.appendChild(el);
+    });
+  }catch(e){ console.warn('[bandeau] table introuvable', e); }
+}
+
+async function pcfgInit() {
+  await fetchPcfgConfig();
+  applyHiddenTabs();
+}
 
 function start(){
   if(typeof L!=='undefined'){initMap();anLoadData();}
   else setTimeout(start,100);
   mdd.loadMdsVoies();
   mdd.loadInfos();
-  if(typeof grist!=='undefined') mdd2_loadAllTables();
+  if(typeof grist!=='undefined'){ mdd2_loadAllTables(); loadBandeau(); pcfgInit(); }
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);
