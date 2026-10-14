@@ -564,6 +564,27 @@
   border-left-color: var(--rf-blue); font-weight: 500;
 }
 #panel-fichesMDD .main { overflow-y: auto; }
+#panel-fichesMDD { flex-direction: column; }
+#panel-fichesMDD .fmdd-searchbar { flex-shrink: 0; padding: 12px 24px; border-bottom: 1px solid var(--rf-grey-200); background: var(--rf-grey-100); }
+#panel-fichesMDD .fmdd-search-wrap { position: relative; max-width: 560px; }
+#panel-fichesMDD .fmdd-search-ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--rf-grey-400); pointer-events: none; }
+#panel-fichesMDD .fmdd-search-input { width: 100%; padding: 10px 38px 10px 36px; border: 1.5px solid var(--rf-grey-300); border-radius: 8px; font-family: var(--font-main); font-size: 13px; background: #fff; color: var(--rf-grey-900); outline: none; }
+#panel-fichesMDD .fmdd-search-input:focus { border-color: var(--rf-blue); box-shadow: 0 0 0 3px rgba(0,49,137,.12); }
+#panel-fichesMDD .fmdd-search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: none; border-radius: 50%; background: transparent; color: var(--rf-grey-600); font-size: 18px; line-height: 1; cursor: pointer; display: none; align-items: center; justify-content: center; }
+#panel-fichesMDD .fmdd-search-clear.visible { display: flex; }
+#panel-fichesMDD .fmdd-search-clear:hover { background: var(--rf-grey-200); color: var(--rf-grey-900); }
+#panel-fichesMDD .fmdd-sr { padding: 18px 24px; }
+#panel-fichesMDD .fmdd-sr-count { font-size: 12px; color: var(--rf-grey-600); margin-bottom: 12px; }
+#panel-fichesMDD .fmdd-sr-person { border: 1px solid var(--rf-grey-200); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+#panel-fichesMDD .fmdd-sr-name { padding: 10px 16px; background: var(--rf-grey-100); border-bottom: 1px solid var(--rf-grey-200); font-size: 14px; font-weight: 700; }
+#panel-fichesMDD .fmdd-sr-entry { display: flex; align-items: flex-start; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--rf-grey-200); font-size: 12.5px; line-height: 1.5; }
+#panel-fichesMDD .fmdd-sr-entry:last-child { border-bottom: none; }
+#panel-fichesMDD .fmdd-sr-info { flex: 1; min-width: 0; }
+#panel-fichesMDD .fmdd-sr-site { font-weight: 600; }
+#panel-fichesMDD .fmdd-sr-role { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 5px; background: var(--rf-blue-light); color: var(--rf-blue); margin-left: 6px; }
+#panel-fichesMDD .fmdd-sr-mission { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: var(--rf-grey-900); color: #fff; margin-right: 4px; }
+#panel-fichesMDD .fmdd-sr-open { flex-shrink: 0; align-self: center; font-family: var(--font-main); font-size: 11.5px; padding: 5px 10px; border: 1px solid var(--rf-grey-300); border-radius: 5px; background: #fff; color: var(--rf-blue); cursor: pointer; }
+#panel-fichesMDD .fmdd-sr-open:hover { background: var(--rf-blue-light); }
 #panel-fichesMDD .empty {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; height: 100%; min-height: 280px;
@@ -1288,7 +1309,14 @@
     </div>
 <!-- ═══ PANNEAU FICHES MISSIONS MDD ═══ -->
 <div id="panel-fichesMDD" class="rf-panel">
-  <div class="mdd2-layout" style="width:100%;height:100%">
+  <div class="fmdd-searchbar">
+    <div class="fmdd-search-wrap">
+      <svg class="fmdd-search-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="mdd2-search-input" class="fmdd-search-input" placeholder="Rechercher un contact (nom ou prénom)…" autocomplete="off" oninput="mdd2_onSearchInput()" onkeydown="if(event.key==='Escape')mdd2_clearSearch()">
+      <button type="button" id="mdd2-search-clear" class="fmdd-search-clear" title="Réinitialiser la recherche" onclick="mdd2_clearSearch()">&times;</button>
+    </div>
+  </div>
+  <div class="mdd2-layout" style="width:100%;flex:1;min-height:0">
     <div class="sidebar" id="mdd2-sidebar">
       <div class="sidebar-label">Sites</div>
       <div id="mdd2-site-loading" class="loading">
@@ -1316,6 +1344,7 @@
         </div>
       </div>
       <div id="mdd2-site-content" style="display:none"></div>
+      <div id="mdd2-search-results" style="display:none"></div>
     </div>
   </div>
 </div>
@@ -4059,6 +4088,7 @@ function mdd2_buildSidebar() {
 }
 
 function mdd2_selectSite(siteId) {
+  mdd2_clearSearch(true);
   mdd2_currentSiteId = siteId;
   mdd2_currentMission = 'CADRES';
   document.querySelectorAll('#mdd2-sidebar .site-btn').forEach(b => b.classList.remove('active'));
@@ -4345,6 +4375,132 @@ function mdd2_printFiche2() {
   win.document.close();
 }
 
+/* ── Recherche d'un contact (cadres + assistantes + TMS) ── */
+function mdd2_norm(s) {
+  return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+function mdd2_siteName(siteId) {
+  const s = mdd2_sitesData.find(x => String(x.id) === String(siteId));
+  return s ? (mdd2_get(s, 'nom_site', 'Nom_site') || ('Site ' + s.id)) : '—';
+}
+
+function mdd2_phonesHtml(portable, ligne) {
+  const portStr = portable ? (mdd2_isInterne(portable) ? '📞 ' : '📱 ') + mdd2_numSpan(portable) : '';
+  const ligStr  = ligne    ? (mdd2_isInterne(ligne)    ? '📞 ' : '☎️ ') + mdd2_numSpan(ligne)    : '';
+  return [portStr, ligStr].filter(Boolean).join(' · ');
+}
+
+function mdd2_onSearchInput() {
+  const input = document.getElementById('mdd2-search-input');
+  if (!input) return;
+  const raw = input.value;
+  document.getElementById('mdd2-search-clear').classList.toggle('visible', raw.length > 0);
+  const tokens = mdd2_norm(raw).split(/\s+/).filter(Boolean);
+  if (mdd2_norm(raw).length < 2) { mdd2_restoreView(); return; }
+  if (!mdd2_tablesLoaded) return;
+
+  const match = txt => { const n = mdd2_norm(txt); return tokens.every(t => n.includes(t)); };
+  const people = new Map();
+  const add = (name, entry) => {
+    const k = mdd2_norm(name);
+    if (!people.has(k)) people.set(k, { name: name, entries: [] });
+    people.get(k).entries.push(entry);
+  };
+
+  mdd2_cadresData.forEach(c => {
+    const nom = mdd2_get(c, 'nom_prenom', 'Nom_prenom');
+    if (!nom || !match(nom)) return;
+    add(nom, {
+      siteId: mdd2_get(c, 'site', 'Site') || c.site,
+      role: mdd2_get(c, 'type_cadre', 'Type_cadre'),
+      missions: [], label: '', pave: '',
+      phones: mdd2_phonesHtml(mdd2_get(c, 'telephone_portable', 'Telephone_portable'), mdd2_get(c, 'ligne_directe', 'Ligne_directe')),
+      fn: '', raw: ''
+    });
+  });
+
+  mdd2_groupesData.forEach(g => {
+    const mRow = mdd2_missionsData.find(m => String(m.id) === String(mdd2_get(g, 'mission', 'Mission') || g.mission));
+    if (!mRow) return;
+    const siteId = mdd2_get(mRow, 'site', 'Site') || mRow.site;
+    const missions = (mdd2_get(mRow, 'type_mission', 'Type_mission') || '').split('+').map(x => x.trim()).filter(Boolean);
+    const label = mdd2_get(g, 'label', 'Label');
+    const pave  = mdd2_get(g, 'pave', 'Pave');
+    [['Assistante administrative', mdd2_get(g, 'assistantes', 'Assistantes')],
+     ['TMS', mdd2_get(g, 'tms', 'Tms')]].forEach(([role, txt]) => {
+      if (!txt) return;
+      txt.split('\n').filter(l => l.trim()).forEach(line => {
+        const hors = line.indexOf('|') === -1;
+        const p = hors ? { name: line.trim(), fn: '', portable: '', ligne: '' } : mdd2_parsePerson(line);
+        if (!match(p.name)) return;
+        add(p.name, { siteId, role, missions, label, pave,
+          phones: mdd2_phonesHtml(p.portable, p.ligne), fn: p.fn, raw: hors ? line.trim() : '' });
+      });
+    });
+  });
+
+  const list = Array.from(people.values()).sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
+  let html = '<div class="fmdd-sr"><div class="fmdd-sr-count">'
+    + list.length + ' contact' + (list.length > 1 ? 's' : '') + ' trouvé' + (list.length > 1 ? 's' : '')
+    + ' pour « ' + mdd2_esc(raw.trim()) + ' »</div>';
+  if (!list.length) html += '<div class="no-data">Aucun contact ne correspond à cette recherche.</div>';
+  list.forEach(pe => {
+    html += '<div class="fmdd-sr-person"><div class="fmdd-sr-name">' + mdd2_esc(pe.name) + '</div>';
+    pe.entries.forEach(e => {
+      const firstMission = e.missions[0] || '';
+      html += '<div class="fmdd-sr-entry"><div class="fmdd-sr-info">'
+        + '<div><span class="fmdd-sr-site">🏢 ' + mdd2_esc(mdd2_siteName(e.siteId)) + '</span>'
+        + '<span class="fmdd-sr-role">' + mdd2_esc(e.role) + '</span></div>';
+      if (e.missions.length || e.label || e.pave) {
+        html += '<div style="margin-top:4px">'
+          + e.missions.map(m => '<span class="fmdd-sr-mission">' + mdd2_esc(m) + '</span>').join('')
+          + (e.label ? '<span>' + mdd2_esc(e.label) + '</span>' : '')
+          + (e.pave ? ' <span class="groupe-pave">📍 ' + mdd2_esc(e.pave) + '</span>' : '')
+          + '</div>';
+      }
+      if (e.fn) html += '<div class="person-meta">— ' + mdd2_numSpan(e.fn) + '</div>';
+      if (e.phones) html += '<div class="person-meta">' + e.phones + '</div>';
+      html += '</div>'
+        + '<button type="button" class="fmdd-sr-open" onclick="mdd2_openFromSearch(\'' + mdd2_esc(String(e.siteId)) + '\',\'' + mdd2_esc(firstMission) + '\')">Voir la fiche →</button>'
+        + '</div>';
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+
+  document.getElementById('mdd2-empty-state').style.display = 'none';
+  document.getElementById('mdd2-site-content').style.display = 'none';
+  const box = document.getElementById('mdd2-search-results');
+  box.innerHTML = html;
+  box.style.display = 'block';
+}
+
+function mdd2_restoreView() {
+  const box = document.getElementById('mdd2-search-results');
+  if (box) { box.style.display = 'none'; box.innerHTML = ''; }
+  const empty = document.getElementById('mdd2-empty-state');
+  const content = document.getElementById('mdd2-site-content');
+  if (mdd2_currentSiteId) { empty.style.display = 'none'; content.style.display = 'block'; }
+  else { empty.style.display = ''; content.style.display = 'none'; }
+}
+
+function mdd2_clearSearch(silent) {
+  const input = document.getElementById('mdd2-search-input');
+  if (input) input.value = '';
+  const btn = document.getElementById('mdd2-search-clear');
+  if (btn) btn.classList.remove('visible');
+  const box = document.getElementById('mdd2-search-results');
+  if (silent === true) { if (box) { box.style.display = 'none'; box.innerHTML = ''; } return; }
+  mdd2_restoreView();
+  if (input) input.focus();
+}
+
+function mdd2_openFromSearch(siteId, mission) {
+  mdd2_selectSite(siteId);
+  if (mission && MDD2_MISSIONS.includes(mission)) mdd2_switchMission(mission);
+}
+
 function mdd2_updateWelcomeStats() {
   const el = document.getElementById('mdd2-empty-state');
   if (!el || el.querySelector('.fmdd-welcome-stats')) return;
@@ -4403,6 +4559,7 @@ async function mdd2_reload() {
   mdd2_tablesLoaded = false;
   await mdd2_loadAllTables();
   if (mdd2_currentSiteId) mdd2_renderSite(mdd2_currentSiteId);
+  mdd2_onSearchInput();
 }
 
 async function mdd2_loadAllTables() {
