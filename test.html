@@ -829,6 +829,11 @@
 #panel-aiot .rec-list td, #panel-aiot .rec-list th { padding: 5px 6px; border-bottom: 1px solid var(--aiot-gray-50); text-align: left; }
 #panel-aiot .rec-msg { font-size: 12px; color: #A32D2D; min-height: 16px; margin-top: 6px; }
 #panel-aiot .rec-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+#panel-aiot .rec-sites { grid-column: 1 / -1; }
+#panel-aiot .rec-sites-title { font-size: 11px; color: var(--aiot-gray-600); display: block; margin-bottom: 3px; }
+#panel-aiot .rec-sites-box { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 4px 12px; max-height: 140px; overflow-y: auto; border: 1px solid var(--aiot-gray-100); border-radius: 6px; padding: 8px; }
+#panel-aiot .rec-sites-box label { flex-direction: row; align-items: center; gap: 6px; font-size: 12px; color: var(--aiot-gray-800); cursor: pointer; }
+#panel-aiot .rec-sites-box input { padding: 0; border: none; width: auto; }
 
 @media print {
   @page { size: A4 landscape; margin: 10mm; }
@@ -1424,9 +1429,10 @@
       <div class="rec-modal">
         <h2>🔁 Entrées récurrentes</h2>
         <div class="rec-form">
-          <label>Site
-            <select id="aiot-rec-site"></select>
-          </label>
+          <div class="rec-sites">
+            <span class="rec-sites-title">Sites</span>
+            <div class="rec-sites-box" id="aiot-rec-sites"></div>
+          </div>
           <label>Jour
             <select id="aiot-rec-jour">
               <option value="lun">Lundi</option><option value="mar">Mardi</option><option value="mer">Mercredi</option>
@@ -5094,10 +5100,17 @@ const aiot = (() => {
 
   async function openRecurrences() {
     if (isLocked()) return;
-    const sel = document.getElementById('aiot-rec-site');
-    sel.innerHTML = '';
-    const all = document.createElement('option'); all.value = '0'; all.textContent = 'Tous les sites'; sel.appendChild(all);
-    siteList.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); });
+    const box = document.getElementById('aiot-rec-sites');
+    box.innerHTML = '';
+    const mkCb = (val, label, id) => {
+      const l = document.createElement('label');
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = val; if (id) cb.id = id;
+      l.appendChild(cb); l.appendChild(document.createTextNode(label)); box.appendChild(l);
+      return cb;
+    };
+    const allCb = mkCb('0', 'Tous les sites', 'aiot-rec-all');
+    const siteCbs = siteList.map(s => mkCb(String(s.id), s.name));
+    allCb.onchange = () => siteCbs.forEach(cb => { cb.disabled = allCb.checked; if (allCb.checked) cb.checked = false; });
     document.getElementById('aiot-rec-msg').textContent = '';
     try { await loadRecs(); renderRecs(); }
     catch (err) { document.getElementById('aiot-rec-msg').textContent = 'Erreur : ' + (err.message || err); }
@@ -5112,12 +5125,16 @@ const aiot = (() => {
     const d1 = g('aiot-rec-debut').value, d2 = g('aiot-rec-fin').value;
     if (!texte) { msg.textContent = 'Le texte est obligatoire.'; return; }
     if (d1 && d2 && d2 < d1) { msg.textContent = 'La date de fin est antérieure à la date de début.'; return; }
+    const allCb = g('aiot-rec-all');
+    const ids = allCb && allCb.checked ? [0]
+      : Array.from(document.querySelectorAll('#aiot-rec-sites input:checked')).map(cb => Number(cb.value));
+    if (!ids.length) { msg.textContent = 'Coche au moins un site.'; return; }
     try {
-      await grist.docApi.applyUserActions([['AddRecord', REC_TABLE, null, {
-        site: Number(g('aiot-rec-site').value) || 0,
+      await grist.docApi.applyUserActions(ids.map(sid => ['AddRecord', REC_TABLE, null, {
+        site: sid,
         jour: g('aiot-rec-jour').value, creneau: g('aiot-rec-creneau').value,
         texte, date_debut: d1, date_fin: d2
-      }]]);
+      }]));
       g('aiot-rec-texte').value = ''; msg.textContent = '';
       await loadRecs(); renderRecs();
     } catch (err) { msg.textContent = 'Erreur : ' + (err.message || err); }
