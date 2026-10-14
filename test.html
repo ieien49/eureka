@@ -379,6 +379,13 @@
     .mdd-card mark { background: #fde68a; color: var(--rf-grey-900); border-radius: 2px; padding: 0 1px; }
     .mdd-empty { text-align: center; padding: 48px 20px; color: var(--rf-grey-600); }
     .mdd-empty p { font-size: 13px; }
+    .mdd-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
+    .mdd-toolbar .mdd-counter { margin-bottom: 0; }
+    .mdd-print-btn { font-family: var(--font-main); font-size: 12px; font-weight: 600; padding: 7px 14px; border: 1.5px solid var(--rf-blue); border-radius: var(--radius-sm); background: var(--rf-white); color: var(--rf-blue); cursor: pointer; transition: var(--transition); white-space: nowrap; }
+    .mdd-print-btn:hover { background: var(--rf-blue); color: var(--rf-white); }
+    .mdd-kind { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 1px 7px; border-radius: 3px; margin-right: 6px; }
+    .mdd-kind-c { background: var(--rf-blue-light); color: var(--rf-blue); }
+    .mdd-kind-r { background: #fdf3e1; color: #8a5a00; }
 
     /* ═══ LOGIGRAMME ═══ */
     #panel-logigramme {
@@ -1280,7 +1287,10 @@
             </svg>
           </button>
         </div>
-        <div class="mdd-counter" id="mdd-counter"></div>
+        <div class="mdd-toolbar">
+          <div class="mdd-counter" id="mdd-counter"></div>
+          <button type="button" id="mdd-print" class="mdd-print-btn">🖨 Imprimer</button>
+        </div>
         <div id="mdd-results">
           <div class="mdd-empty"><p>Chargement des données…</p></div>
         </div>
@@ -3569,6 +3579,62 @@ const mdd = (() => {
     return `<div class="mdd-card-right">${fiche.nom?`<span class="mdd-contact-name">${esc(fiche.nom)}</span>`:''}${adresse?`<span class="mdd-contact-line">${svgPin}${esc(adresse)}</span>`:''}${fiche.mail?`<span class="mdd-contact-line">${svgMail}${esc(fiche.mail)}</span>`:''}</div>`;
   }
 
+  const TYPES_VOIE='rue|avenue|av|boulevard|bd|bld|impasse|all[ée]e|place|chemin|quai|square|route|cours|passage|ruelle|cit[ée]|r[ée]sidence|mail|promenade|esplanade|parvis|venelle|mont[ée]e|rond[- ]point|clos|domaine|hameau|lieu[- ]dit|villa|sentier|traverse|port|faubourg|c[ôo]te|rampe|voie|parc|zone|za|zac|lotissement|carrefour|rocade|cale|petite rue|grande rue|ancien chemin|vieux chemin';
+  const RE_VOIE=new RegExp('^(?:'+TYPES_VOIE+")(?=\\s|'|’|$)",'i');
+  function splitVoies(str){
+    const communes=[],rues=[];
+    String(str||'').split(/\s*,\s*/).filter(Boolean).forEach(v=>(RE_VOIE.test(v.trim())?rues:communes).push(v.trim()));
+    return{communes,rues};
+  }
+  function voiesHtml(str,q){
+    const{communes,rues}=splitVoies(str);
+    const row=(lbl,arr,cls)=>arr.length?`<div class="mdd-field-value"><span class="mdd-kind ${cls}">${lbl}</span>${arr.map(v=>highlight(v,q)).join(', ')}</div>`:'';
+    return row('Communes',communes,'mdd-kind-c')+row('Rues',rues,'mdd-kind-r');
+  }
+
+  function printPdf(){
+    if(!mddLoaded)return;
+    const q=normalize(mddQuery);
+    const list=q?mddRecords.filter(r=>normalize(r.voies||'').includes(q)||normalize(r.particularites||'').includes(q)):mddRecords;
+    if(!list.length){alert('Aucun résultat à imprimer.');return;}
+    const blocs=list.map(r=>{
+      const annexe=String(r.annexe||'').trim();
+      const pmi=String(r.PMI||'').trim();
+      const fiche=infosMap[annexe]||infosMap[String(r.mds||'').trim()]||null;
+      const{communes,rues}=splitVoies(r.voies);
+      const adr=fiche?[fiche.adresse,fiche.code_postal,fiche.ville].filter(Boolean).join(', '):'';
+      const contact=fiche?[fiche.nom,adr,fiche.mail].filter(Boolean).map(esc).join(' · '):'';
+      return '<section class="b">'
+        +'<h2>'+esc(r.mds||'—')+(annexe?' <small>Annexe '+esc(annexe)+'</small>':'')+(pmi?' <small>PMI '+esc(pmi)+'</small>':'')+'</h2>'
+        +(contact?'<p class="ct">'+contact+'</p>':'')
+        +(communes.length?'<h3>Communes</h3><p class="c">'+communes.map(esc).join(' · ')+'</p>':'')
+        +(rues.length?'<h3>Rues</h3><ul class="r">'+rues.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul>':'')
+        +(r.particularites?'<p class="p">'+esc(r.particularites)+'</p>':'')
+        +'</section>';
+    }).join('');
+    const css='@page{size:A4 portrait;margin:14mm 12mm}'
+      +'body{font-family:Arial,Helvetica,sans-serif;color:#1a1e2a;font-size:10px;line-height:1.4;margin:0}'
+      +'.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #003189;padding-bottom:6px;margin-bottom:12px}'
+      +'.top h1{font-family:Georgia,serif;font-size:18px;color:#003189;margin:0}'
+      +'.top span{font-size:8.5px;color:#8a8f9c}'
+      +'.b{break-inside:avoid;page-break-inside:avoid;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid #e2e5ec}'
+      +'.b h2{font-size:12px;color:#003189;margin:0 0 2px}'
+      +'.b h2 small{font-size:9px;font-weight:600;color:#555;background:#f1f3f8;border:1px solid #d5d9e4;border-radius:3px;padding:1px 6px;margin-left:4px}'
+      +'.ct{font-size:9px;color:#555;margin:0 0 6px}'
+      +'.b h3{font-size:8.5px;text-transform:uppercase;letter-spacing:.05em;color:#003189;margin:7px 0 2px}'
+      +'.c{font-weight:700;margin:0}'
+      +'.r{list-style:none;padding:0;margin:0;column-count:3;column-gap:14px;font-style:italic;color:#333}'
+      +'.r li{break-inside:avoid;margin-bottom:1px}'
+      +'.p{font-size:9px;color:#666;font-style:italic;margin:6px 0 0}';
+    const titre='Quelle MDD ?'+(mddQuery?' — « '+esc(mddQuery)+' »':'');
+    const win=window.open('','_blank','width=900,height=1100');
+    if(!win){alert('Autorisez les popups pour imprimer.');return;}
+    win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>'+titre+'</title><style>'+css+'</style></head><body>'
+      +'<div class="top"><h1>'+titre+'</h1><span>MAJ le '+new Date().toLocaleDateString('fr-FR')+' · '+list.length+' entrée'+(list.length>1?'s':'')+'</span></div>'
+      +blocs+'<script>window.onload=function(){window.print();}<\/script></body></html>');
+    win.document.close();
+  }
+
   function render(){
     if(!mddLoaded){resultsEl.innerHTML='<div class="mdd-empty"><p>Chargement des données…</p></div>';counterEl.textContent='';return;}
     const q=normalize(mddQuery);
@@ -3576,13 +3642,12 @@ const filtered=q?mddRecords.filter(r=>{const voie=normalize(r.voies||'');const p
     counterEl.innerHTML=q?`<strong>${filtered.length}</strong> résultat${filtered.length!==1?'s':''} pour « ${esc(mddQuery)} »`:`<strong>${filtered.length}</strong> entrée${filtered.length!==1?'s':''}`;
     if(!filtered.length){resultsEl.innerHTML=`<div class="mdd-empty"><p>Aucun résultat pour cette recherche.</p></div>`;return;}
     resultsEl.innerHTML=filtered.map(r=>{
-      const voieH=highlight(r.voies,mddQuery);
       const partH=highlight(r.particularites,mddQuery);
       const mdsVal=esc(String(r.mds||'—'));
       const annexe=String(r.annexe||'').trim();
       const pmi=esc(String(r.PMI||'').trim());
       const fiche=infosMap[annexe]||infosMap[String(r.mds||'').trim()]||null;
-      return `<div class="mdd-card"><div class="mdd-card-left"><div class="mdd-card-header"><span class="mdd-badge">${mdsVal}</span>${annexe?`<span class="mdd-annexe-tag">Annexe ${esc(annexe)}</span>`:''}${pmi?`<span class="mdd-pmi-tag">PMI ${pmi}</span>`:''}</div><div class="mdd-field-value">${voieH}</div>${r.particularites?`<div class="mdd-field-value mdd-sub">${partH}</div>`:''}</div>${contactBlock(fiche)}</div>`;
+      return `<div class="mdd-card"><div class="mdd-card-left"><div class="mdd-card-header"><span class="mdd-badge">${mdsVal}</span>${annexe?`<span class="mdd-annexe-tag">Annexe ${esc(annexe)}</span>`:''}${pmi?`<span class="mdd-pmi-tag">PMI ${pmi}</span>`:''}</div>${voiesHtml(r.voies,mddQuery)}${r.particularites?`<div class="mdd-field-value mdd-sub">${partH}</div>`:''}</div>${contactBlock(fiche)}</div>`;
     }).join('');
   }
 
@@ -3617,6 +3682,7 @@ const filtered=q?mddRecords.filter(r=>{const voie=normalize(r.voies||'');const p
 
   searchEl.addEventListener('input',()=>{mddQuery=searchEl.value.trim();clearEl.classList.toggle('visible',mddQuery.length>0);render();});
   clearEl.addEventListener('click',()=>{searchEl.value='';mddQuery='';clearEl.classList.remove('visible');searchEl.focus();render();});
+  document.getElementById('mdd-print').addEventListener('click',printPdf);
   return{setRecords,loadMdsVoies,loadInfos};
 })();
 
