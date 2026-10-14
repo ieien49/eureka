@@ -816,6 +816,20 @@
 }
 #panel-aiot .update-banner .btn-refresh:hover { background: #fdf1d9; }
 
+#panel-aiot .rec-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; align-items: center; justify-content: center; }
+#panel-aiot .rec-overlay.visible { display: flex; }
+#panel-aiot .rec-modal { background: #fff; border-radius: 10px; padding: 18px; width: min(760px, 94vw); max-height: 88vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,.25); }
+#panel-aiot .rec-modal h2 { font-size: 15px; color: var(--aiot-blue-800); margin-bottom: 12px; }
+#panel-aiot .rec-modal h3 { font-size: 12px; color: var(--aiot-gray-600); margin: 14px 0 6px; text-transform: uppercase; letter-spacing: .04em; }
+#panel-aiot .rec-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: end; }
+#panel-aiot .rec-form label { font-size: 11px; color: var(--aiot-gray-600); display: flex; flex-direction: column; gap: 3px; }
+#panel-aiot .rec-form input, #panel-aiot .rec-form select { font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--aiot-gray-100); border-radius: 6px; }
+#panel-aiot .rec-form .rec-wide { grid-column: span 2; }
+#panel-aiot .rec-list { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 0; }
+#panel-aiot .rec-list td, #panel-aiot .rec-list th { padding: 5px 6px; border-bottom: 1px solid var(--aiot-gray-50); text-align: left; }
+#panel-aiot .rec-msg { font-size: 12px; color: #A32D2D; min-height: 16px; margin-top: 6px; }
+#panel-aiot .rec-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+
 @media print {
   @page { size: A4 landscape; margin: 10mm; }
   #panel-aiot .statusbar, #panel-aiot .legend, #panel-aiot .btn-print { display: none !important; }
@@ -1361,6 +1375,7 @@
     <div class="header">
       <h1>📞 Planning AIOT</h1>
       <button class="btn-print" onclick="aiot.exportPdf()" title="Télécharger le planning en PDF (A4 paysage)">🖨️ Imprimer</button>
+      <button class="btn-print" id="aiot-btn-rec" onclick="aiot.openRecurrences()" title="Gérer les entrées récurrentes">🔁 Récurrences</button>
       <div class="week-nav">
         <button class="btn-nav" id="aiot-btn-prev" title="Semaine précédente">&#8249;</button>
         <div class="week-label" id="aiot-week-label">—</div>
@@ -1403,6 +1418,50 @@
           <tr><td colspan="11" class="empty-state">Chargement…</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="rec-overlay" id="aiot-rec-overlay">
+      <div class="rec-modal">
+        <h2>🔁 Entrées récurrentes</h2>
+        <div class="rec-form">
+          <label>Site
+            <select id="aiot-rec-site"></select>
+          </label>
+          <label>Jour
+            <select id="aiot-rec-jour">
+              <option value="lun">Lundi</option><option value="mar">Mardi</option><option value="mer">Mercredi</option>
+              <option value="jeu">Jeudi</option><option value="ven">Vendredi</option>
+            </select>
+          </label>
+          <label>Créneau
+            <select id="aiot-rec-creneau">
+              <option value="matin">Matin</option><option value="aprem">Après-midi</option><option value="journee">Journée</option>
+            </select>
+          </label>
+          <label>Texte
+            <input type="text" id="aiot-rec-texte" placeholder="REGUL ou !REGUL (rouge)">
+          </label>
+          <label>À partir du (facultatif)
+            <input type="date" id="aiot-rec-debut">
+          </label>
+          <label>Jusqu'au (facultatif)
+            <input type="date" id="aiot-rec-fin">
+          </label>
+          <div class="rec-wide"><button class="btn-print" onclick="aiot.addRec()">+ Ajouter la récurrence</button></div>
+        </div>
+        <div class="rec-msg" id="aiot-rec-msg"></div>
+
+        <h3>Récurrences enregistrées</h3>
+        <table class="rec-list">
+          <thead><tr><th>Site</th><th>Jour</th><th>Créneau</th><th>Texte</th><th>Période</th><th></th></tr></thead>
+          <tbody id="aiot-rec-body"></tbody>
+        </table>
+
+        <div class="rec-actions">
+          <button class="btn-print" onclick="aiot.applyRecurrences()">⤓ Appliquer à la semaine affichée</button>
+          <button class="btn-print" onclick="aiot.closeRecurrences()">Fermer</button>
+        </div>
+      </div>
     </div>
 
     <div class="legend">
@@ -4977,23 +5036,179 @@ const aiot = (() => {
   }
 
 
+  /* ───── Récurrences ───── */
+  const REC_TABLE = 'Recurrences';
+  const JOUR_LBL = { lun: 'Lundi', mar: 'Mardi', mer: 'Mercredi', jeu: 'Jeudi', ven: 'Vendredi' };
+  const SLOT_LBL = { matin: 'Matin', aprem: 'Après-midi', journee: 'Journée' };
+  let recs = [];
+
+  const pad2 = n => String(n).padStart(2, '0');
+  const isoOf = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  const isLocked = () => typeof pcfgIsAiotEditLocked === 'function' && pcfgIsAiotEditLocked();
+
+  async function ensureRecTable() {
+    const tables = await grist.docApi.listTables();
+    if (tables.includes(REC_TABLE)) return;
+    const sitesName = tables.find(t => t.toLowerCase() === 'sites') || 'Sites';
+    await grist.docApi.applyUserActions([['AddTable', REC_TABLE, [
+      { id: 'site',       type: 'Ref:' + sitesName },
+      { id: 'jour',       type: 'Text' },
+      { id: 'creneau',    type: 'Text' },
+      { id: 'texte',      type: 'Text' },
+      { id: 'date_debut', type: 'Text' },
+      { id: 'date_fin',   type: 'Text' }
+    ]]]);
+  }
+
+  async function loadRecs() {
+    await ensureRecTable();
+    const t = await grist.docApi.fetchTable(REC_TABLE);
+    recs = t.id.map((id, i) => ({
+      id, site: t.site[i] || 0, jour: t.jour[i], creneau: t.creneau[i],
+      texte: t.texte[i] || '', date_debut: t.date_debut[i] || '', date_fin: t.date_fin[i] || ''
+    }));
+  }
+
+  function renderRecs() {
+    const body = document.getElementById('aiot-rec-body');
+    body.innerHTML = '';
+    if (!recs.length) {
+      body.innerHTML = '<tr><td colspan="6" style="color:#888780">Aucune récurrence.</td></tr>';
+      return;
+    }
+    recs.forEach(r => {
+      const site = r.site ? ((siteList.find(s => s.id === r.site) || {}).name || '?') : 'Tous les sites';
+      const periode = (r.date_debut || r.date_fin) ? `${r.date_debut || '…'} → ${r.date_fin || '…'}` : 'Toujours';
+      const tr = document.createElement('tr');
+      [site, JOUR_LBL[r.jour] || r.jour, SLOT_LBL[r.creneau] || r.creneau, r.texte, periode].forEach(v => {
+        const td = document.createElement('td'); td.textContent = v; tr.appendChild(td);
+      });
+      const tdDel = document.createElement('td');
+      const btn = document.createElement('button');
+      btn.className = 'btn-nav'; btn.textContent = '✕'; btn.title = 'Supprimer cette récurrence';
+      btn.onclick = () => delRec(r.id);
+      tdDel.appendChild(btn); tr.appendChild(tdDel);
+      body.appendChild(tr);
+    });
+  }
+
+  async function openRecurrences() {
+    if (isLocked()) return;
+    const sel = document.getElementById('aiot-rec-site');
+    sel.innerHTML = '';
+    const all = document.createElement('option'); all.value = '0'; all.textContent = 'Tous les sites'; sel.appendChild(all);
+    siteList.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); });
+    document.getElementById('aiot-rec-msg').textContent = '';
+    try { await loadRecs(); renderRecs(); }
+    catch (err) { document.getElementById('aiot-rec-msg').textContent = 'Erreur : ' + (err.message || err); }
+    document.getElementById('aiot-rec-overlay').classList.add('visible');
+  }
+  function closeRecurrences() { document.getElementById('aiot-rec-overlay').classList.remove('visible'); }
+
+  async function addRec() {
+    const g = id => document.getElementById(id);
+    const msg = g('aiot-rec-msg');
+    const texte = g('aiot-rec-texte').value.trim();
+    const d1 = g('aiot-rec-debut').value, d2 = g('aiot-rec-fin').value;
+    if (!texte) { msg.textContent = 'Le texte est obligatoire.'; return; }
+    if (d1 && d2 && d2 < d1) { msg.textContent = 'La date de fin est antérieure à la date de début.'; return; }
+    try {
+      await grist.docApi.applyUserActions([['AddRecord', REC_TABLE, null, {
+        site: Number(g('aiot-rec-site').value) || 0,
+        jour: g('aiot-rec-jour').value, creneau: g('aiot-rec-creneau').value,
+        texte, date_debut: d1, date_fin: d2
+      }]]);
+      g('aiot-rec-texte').value = ''; msg.textContent = '';
+      await loadRecs(); renderRecs();
+    } catch (err) { msg.textContent = 'Erreur : ' + (err.message || err); }
+  }
+
+  async function delRec(id) {
+    if (!confirm('Supprimer cette récurrence ? Les semaines déjà remplies ne sont pas modifiées.')) return;
+    try {
+      await grist.docApi.applyUserActions([['RemoveRecord', REC_TABLE, id]]);
+      await loadRecs(); renderRecs();
+    } catch (err) { document.getElementById('aiot-rec-msg').textContent = 'Erreur : ' + (err.message || err); }
+  }
+
+  async function applyRecurrences() {
+    if (isLocked()) return;
+    const msg = document.getElementById('aiot-rec-msg');
+    if (document.querySelector('#aiot-planning-body textarea.dirty')) {
+      msg.textContent = "Des modifications ne sont pas encore enregistrées : attends la fin de l'enregistrement puis réessaie.";
+      return;
+    }
+    try {
+      setStatus('saving', 'Application des récurrences…');
+      await loadRecs();
+      // Relecture fraîche de Planning pour ne rien écraser
+      const all = await grist.docApi.fetchTable(TABLE_ID);
+      const semVal = mondayToGristDate(currentMonday);
+      const existing = {};
+      for (let i = 0; i < all.id.length; i++) {
+        if (all.semaine[i] !== semVal) continue;
+        const vals = {};
+        JOURS.forEach(j => SLOTS.forEach(s => { const c = `${j}_${s}`; vals[c] = all[c] ? (all[c][i] || '') : ''; }));
+        existing[all.site[i]] = { id: all.id[i], vals };
+      }
+
+      const actions = [];
+      let nbCells = 0;
+      for (const { id: sid } of siteList) {
+        const fill = {};
+        JOURS.forEach((j, ji) => {
+          const d = new Date(currentMonday); d.setDate(d.getDate() + ji);
+          const iso = isoOf(d);
+          recs.filter(r => r.jour === j && (!r.site || r.site === sid)
+                        && (!r.date_debut || iso >= r.date_debut) && (!r.date_fin || iso <= r.date_fin))
+              .forEach(r => {
+                (r.creneau === 'journee' ? ['matin', 'aprem'] : [r.creneau]).forEach(s => {
+                  const col = `${j}_${s}`;
+                  fill[col] = fill[col] ? fill[col] + '\n' + r.texte : r.texte;
+                });
+              });
+        });
+        const ex = existing[sid];
+        const toWrite = {};
+        Object.keys(fill).forEach(col => { if (!ex || !String(ex.vals[col] || '').trim()) toWrite[col] = fill[col]; });
+        const n = Object.keys(toWrite).length;
+        if (!n) continue;
+        nbCells += n;
+        actions.push(ex
+          ? ['UpdateRecord', TABLE_ID, ex.id, toWrite]
+          : ['AddRecord', TABLE_ID, null, { semaine: semVal, site: sid, ...toWrite }]);
+      }
+
+      if (actions.length) await grist.docApi.applyUserActions(actions);
+      await loadWeek();
+      closeRecurrences();
+      setStatus('saved', nbCells ? `${nbCells} cellule(s) remplie(s) par les récurrences ✓` : 'Rien à appliquer : cellules déjà remplies ou aucune récurrence pour cette semaine');
+    } catch (err) {
+      setStatus('error', 'Erreur : ' + (err.message || err));
+      msg.textContent = 'Erreur : ' + (err.message || err);
+    }
+  }
+
   async function init() {
     if (initialized) return;
     initialized = true;
     bindNav();
     await loadSites();
     await loadWeek();
+    applyEditLock();
   }
 
   function applyEditLock() {
-    const locked = typeof pcfgIsAiotEditLocked === 'function' && pcfgIsAiotEditLocked();
+    const locked = isLocked();
     document.querySelectorAll('#aiot-planning-body textarea').forEach(ta => {
       ta.readOnly = locked;
       ta.tabIndex = locked ? -1 : 0;
     });
+    const b = document.getElementById('aiot-btn-rec');
+    if (b) b.style.display = locked ? 'none' : '';
   }
 
-  return { init, exportPdf, applyEditLock };
+  return { init, exportPdf, applyEditLock, openRecurrences, closeRecurrences, addRec, applyRecurrences };
 })();
 
 async function loadBandeau(){
