@@ -1289,7 +1289,10 @@
         </div>
         <div class="mdd-toolbar">
           <div class="mdd-counter" id="mdd-counter"></div>
-          <button type="button" id="mdd-print" class="mdd-print-btn">🖨 Imprimer</button>
+          <div style="display:flex;gap:8px">
+            <button type="button" id="mdd-print-communes" class="mdd-print-btn">🖨 Communes</button>
+            <button type="button" id="mdd-print-rues" class="mdd-print-btn">🖨 Rues</button>
+          </div>
         </div>
         <div id="mdd-results">
           <div class="mdd-empty"><p>Chargement des données…</p></div>
@@ -3581,64 +3584,50 @@ const mdd = (() => {
 
   const TYPES_VOIE='rue|avenue|av|boulevard|bd|bld|impasse|all[ée]e|place|chemin|quai|square|route|cours|passage|ruelle|cit[ée]|r[ée]sidence|mail|promenade|esplanade|parvis|venelle|mont[ée]e|rond[- ]point|clos|domaine|hameau|lieu[- ]dit|villa|sentier|traverse|port|faubourg|c[ôo]te|rampe|voie|parc|zone|za|zac|lotissement|carrefour|rocade|cale|petite rue|grande rue|ancien chemin|vieux chemin';
   const RE_VOIE=new RegExp('^(?:'+TYPES_VOIE+")(?=\\s|'|’|$)",'i');
-  function splitVoies(str){
-    const communes=[],rues=[];
-    String(str||'').split(/\s*,\s*/).filter(Boolean).forEach(v=>(RE_VOIE.test(v.trim())?rues:communes).push(v.trim()));
-    return{communes,rues};
-  }
-  function voiesHtml(str,q){
-    const{communes,rues}=splitVoies(str);
-    const row=(lbl,arr,cls)=>arr.length?`<div class="mdd-field-value"><span class="mdd-kind ${cls}">${lbl}</span>${arr.map(v=>highlight(v,q)).join(', ')}</div>`:'';
-    return row('Communes',communes,'mdd-kind-c')+row('Rues',rues,'mdd-kind-r');
+  function typeVoie(r){
+    let t=r.Type!==undefined?r.Type:(r.type!==undefined?r.type:(r.TYPE!==undefined?r.TYPE:''));
+    if(Array.isArray(t))t=t[0]==='L'?t.slice(1).join(''):t.join('');
+    t=normalize(String(t||''));
+    if(t.indexOf('commune')===0)return'commune';
+    if(t.indexOf('rue')===0)return'rue';
+    return RE_VOIE.test(String(r.voies||'').trim())?'rue':'commune';
   }
 
-  function printPdf(){
+  function printPdf(type){
     if(!mddLoaded)return;
     const q=normalize(mddQuery);
-    const list=q?mddRecords.filter(r=>normalize(r.voies||'').includes(q)||normalize(r.particularites||'').includes(q)):mddRecords;
-    if(!list.length){alert('Aucun résultat à imprimer.');return;}
-    const vus={};
-    const lignes=list.map(r=>{
-      const mds=String(r.mds||'—');
-      const annexe=String(r.annexe||'').trim();
-      const pmi=String(r.PMI||'').trim();
-      const fiche=infosMap[annexe]||infosMap[String(r.mds||'').trim()]||null;
-      const{communes,rues}=splitVoies(r.voies);
-      const cle=annexe||mds;
-      let contact='';
-      if(fiche&&!vus[cle]){
-        vus[cle]=1;
-        const adr=[fiche.adresse,fiche.code_postal,fiche.ville].filter(Boolean).join(', ');
-        contact='<div class="ct">'+[fiche.nom,adr,fiche.mail].filter(Boolean).map(esc).join(' · ')+'</div>';
-      }
-      return '<tr>'
-        +'<td class="m"><b>'+esc(mds)+'</b>'+(annexe?'<br><span class="t">Annexe '+esc(annexe)+'</span>':'')+(pmi?'<br><span class="t">PMI '+esc(pmi)+'</span>':'')+contact+'</td>'
-        +'<td class="c">'+communes.map(esc).join(', ')+'</td>'
-        +'<td class="r">'+rues.map(esc).join(' · ')+(r.particularites?'<div class="p">'+esc(r.particularites)+'</div>':'')+'</td>'
-        +'</tr>';
-    }).join('');
+    const nom=type==='rue'?'Rues':'Communes';
+    const list=mddRecords
+      .filter(r=>typeVoie(r)===type&&(!q||normalize(r.voies||'').includes(q)||normalize(r.particularites||'').includes(q)))
+      .sort((a,b)=>String(a.voies||'').localeCompare(String(b.voies||''),'fr',{sensitivity:'base'}));
+    if(!list.length){alert('Aucune ligne de type « '+type+' » à imprimer.');return;}
+    const lignes=list.map(r=>'<tr>'
+      +'<td class="v">'+esc(r.voies)+'</td>'
+      +'<td>'+esc(r.particularites)+'</td>'
+      +'<td class="m">'+esc(r.mds)+'</td>'
+      +'<td>'+esc(r.annexe)+'</td>'
+      +'<td>'+esc(r.PMI)+'</td>'
+      +'</tr>').join('');
     const css='@page{size:A4 portrait;margin:10mm 9mm}'
-      +'body{font-family:Arial,Helvetica,sans-serif;color:#1a1e2a;margin:0}'
+      +'body{font-family:Arial,Helvetica,sans-serif;color:#1a1e2a;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
       +'.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #003189;padding-bottom:4px;margin-bottom:6px}'
       +'.top h1{font-family:Georgia,serif;font-size:15px;color:#003189;margin:0}'
       +'.top span{font-size:8px;color:#8a8f9c}'
       +'table{width:100%;border-collapse:collapse;table-layout:fixed}'
       +'thead{display:table-header-group}'
       +'th{background:#003189;color:#fff;font-size:8px;text-align:left;padding:3px 5px;text-transform:uppercase;letter-spacing:.04em}'
-      +'td{vertical-align:top;border-bottom:1px solid #d5d9e4;padding:3px 5px;font-size:7.5px;line-height:1.3;word-wrap:break-word;overflow-wrap:anywhere}'
-      +'tr{break-inside:auto;page-break-inside:auto}'
-      +'.m b{color:#003189;font-size:9px}'
-      +'.t{color:#555}'
-      +'.ct{margin-top:3px;font-size:6.5px;color:#666}'
-      +'.c{font-weight:700}'
-      +'.p{margin-top:2px;font-style:italic;color:#666}';
-    const titre='Quelle MDD ?'+(mddQuery?' — « '+esc(mddQuery)+' »':'');
+      +'td{vertical-align:top;border-bottom:1px solid #d5d9e4;padding:2px 5px;font-size:8px;line-height:1.3;overflow-wrap:anywhere}'
+      +'tr{break-inside:avoid;page-break-inside:avoid}'
+      +'tbody tr:nth-child(even){background:#f5f7fb}'
+      +'td.v{font-weight:700}'
+      +'td.m{font-weight:700;color:#003189}';
+    const titre=nom+' — Quelle MDD ?'+(mddQuery?' — « '+esc(mddQuery)+' »':'');
     const win=window.open('','_blank','width=900,height=1100');
     if(!win){alert('Autorisez les popups pour imprimer.');return;}
     win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>'+titre+'</title><style>'+css+'</style></head><body>'
-      +'<div class="top"><h1>'+titre+'</h1><span>MAJ le '+new Date().toLocaleDateString('fr-FR')+' · '+list.length+' entrée'+(list.length>1?'s':'')+'</span></div>'
-      +'<table><colgroup><col style="width:17%"><col style="width:25%"><col style="width:58%"></colgroup>'
-      +'<thead><tr><th>MDD</th><th>Communes</th><th>Rues</th></tr></thead><tbody>'+lignes+'</tbody></table>'
+      +'<div class="top"><h1>'+titre+'</h1><span>MAJ le '+new Date().toLocaleDateString('fr-FR')+' · '+list.length+' ligne'+(list.length>1?'s':'')+'</span></div>'
+      +'<table><colgroup><col style="width:30%"><col style="width:34%"><col style="width:12%"><col style="width:13%"><col style="width:11%"></colgroup>'
+      +'<thead><tr><th>Voies</th><th>Particularités</th><th>MDS</th><th>Annexe</th><th>PMI</th></tr></thead><tbody>'+lignes+'</tbody></table>'
       +'<script>window.onload=function(){window.print();}<\/script></body></html>');
     win.document.close();
   }
@@ -3650,12 +3639,14 @@ const filtered=q?mddRecords.filter(r=>{const voie=normalize(r.voies||'');const p
     counterEl.innerHTML=q?`<strong>${filtered.length}</strong> résultat${filtered.length!==1?'s':''} pour « ${esc(mddQuery)} »`:`<strong>${filtered.length}</strong> entrée${filtered.length!==1?'s':''}`;
     if(!filtered.length){resultsEl.innerHTML=`<div class="mdd-empty"><p>Aucun résultat pour cette recherche.</p></div>`;return;}
     resultsEl.innerHTML=filtered.map(r=>{
+      const voieH=highlight(r.voies,mddQuery);
+      const kind=typeVoie(r);
       const partH=highlight(r.particularites,mddQuery);
       const mdsVal=esc(String(r.mds||'—'));
       const annexe=String(r.annexe||'').trim();
       const pmi=esc(String(r.PMI||'').trim());
       const fiche=infosMap[annexe]||infosMap[String(r.mds||'').trim()]||null;
-      return `<div class="mdd-card"><div class="mdd-card-left"><div class="mdd-card-header"><span class="mdd-badge">${mdsVal}</span>${annexe?`<span class="mdd-annexe-tag">Annexe ${esc(annexe)}</span>`:''}${pmi?`<span class="mdd-pmi-tag">PMI ${pmi}</span>`:''}</div>${voiesHtml(r.voies,mddQuery)}${r.particularites?`<div class="mdd-field-value mdd-sub">${partH}</div>`:''}</div>${contactBlock(fiche)}</div>`;
+      return `<div class="mdd-card"><div class="mdd-card-left"><div class="mdd-card-header"><span class="mdd-badge">${mdsVal}</span>${annexe?`<span class="mdd-annexe-tag">Annexe ${esc(annexe)}</span>`:''}${pmi?`<span class="mdd-pmi-tag">PMI ${pmi}</span>`:''}<span class="mdd-kind ${kind==='rue'?'mdd-kind-r':'mdd-kind-c'}">${kind==='rue'?'Rue':'Commune'}</span></div><div class="mdd-field-value">${voieH}</div>${r.particularites?`<div class="mdd-field-value mdd-sub">${partH}</div>`:''}</div>${contactBlock(fiche)}</div>`;
     }).join('');
   }
 
@@ -3690,7 +3681,8 @@ const filtered=q?mddRecords.filter(r=>{const voie=normalize(r.voies||'');const p
 
   searchEl.addEventListener('input',()=>{mddQuery=searchEl.value.trim();clearEl.classList.toggle('visible',mddQuery.length>0);render();});
   clearEl.addEventListener('click',()=>{searchEl.value='';mddQuery='';clearEl.classList.remove('visible');searchEl.focus();render();});
-  document.getElementById('mdd-print').addEventListener('click',printPdf);
+  document.getElementById('mdd-print-communes').addEventListener('click',()=>printPdf('commune'));
+  document.getElementById('mdd-print-rues').addEventListener('click',()=>printPdf('rue'));
   return{setRecords,loadMdsVoies,loadInfos};
 })();
 
