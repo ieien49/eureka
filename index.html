@@ -379,6 +379,13 @@
     .mdd-card mark { background: #fde68a; color: var(--rf-grey-900); border-radius: 2px; padding: 0 1px; }
     .mdd-empty { text-align: center; padding: 48px 20px; color: var(--rf-grey-600); }
     .mdd-empty p { font-size: 13px; }
+    .mdd-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
+    .mdd-toolbar .mdd-counter { margin-bottom: 0; }
+    .mdd-print-btn { font-family: var(--font-main); font-size: 12px; font-weight: 600; padding: 7px 14px; border: 1.5px solid var(--rf-blue); border-radius: var(--radius-sm); background: var(--rf-white); color: var(--rf-blue); cursor: pointer; transition: var(--transition); white-space: nowrap; }
+    .mdd-print-btn:hover { background: var(--rf-blue); color: var(--rf-white); }
+    .mdd-kind { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 1px 7px; border-radius: 3px; margin-right: 6px; }
+    .mdd-kind-c { background: var(--rf-blue-light); color: var(--rf-blue); }
+    .mdd-kind-r { background: #fdf3e1; color: #8a5a00; }
 
     /* ═══ LOGIGRAMME ═══ */
     #panel-logigramme {
@@ -564,6 +571,27 @@
   border-left-color: var(--rf-blue); font-weight: 500;
 }
 #panel-fichesMDD .main { overflow-y: auto; }
+#panel-fichesMDD { flex-direction: column; }
+#panel-fichesMDD .fmdd-searchbar { flex-shrink: 0; padding: 12px 24px; border-bottom: 1px solid var(--rf-grey-200); background: var(--rf-grey-100); }
+#panel-fichesMDD .fmdd-search-wrap { position: relative; max-width: 560px; }
+#panel-fichesMDD .fmdd-search-ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--rf-grey-400); pointer-events: none; }
+#panel-fichesMDD .fmdd-search-input { width: 100%; padding: 10px 38px 10px 36px; border: 1.5px solid var(--rf-grey-300); border-radius: 8px; font-family: var(--font-main); font-size: 13px; background: #fff; color: var(--rf-grey-900); outline: none; }
+#panel-fichesMDD .fmdd-search-input:focus { border-color: var(--rf-blue); box-shadow: 0 0 0 3px rgba(0,49,137,.12); }
+#panel-fichesMDD .fmdd-search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: none; border-radius: 50%; background: transparent; color: var(--rf-grey-600); font-size: 18px; line-height: 1; cursor: pointer; display: none; align-items: center; justify-content: center; }
+#panel-fichesMDD .fmdd-search-clear.visible { display: flex; }
+#panel-fichesMDD .fmdd-search-clear:hover { background: var(--rf-grey-200); color: var(--rf-grey-900); }
+#panel-fichesMDD .fmdd-sr { padding: 18px 24px; }
+#panel-fichesMDD .fmdd-sr-count { font-size: 12px; color: var(--rf-grey-600); margin-bottom: 12px; }
+#panel-fichesMDD .fmdd-sr-person { border: 1px solid var(--rf-grey-200); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+#panel-fichesMDD .fmdd-sr-name { padding: 10px 16px; background: var(--rf-grey-100); border-bottom: 1px solid var(--rf-grey-200); font-size: 14px; font-weight: 700; }
+#panel-fichesMDD .fmdd-sr-entry { display: flex; align-items: flex-start; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--rf-grey-200); font-size: 12.5px; line-height: 1.5; }
+#panel-fichesMDD .fmdd-sr-entry:last-child { border-bottom: none; }
+#panel-fichesMDD .fmdd-sr-info { flex: 1; min-width: 0; }
+#panel-fichesMDD .fmdd-sr-site { font-weight: 600; }
+#panel-fichesMDD .fmdd-sr-role { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 5px; background: var(--rf-blue-light); color: var(--rf-blue); margin-left: 6px; }
+#panel-fichesMDD .fmdd-sr-mission { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: var(--rf-grey-900); color: #fff; margin-right: 4px; }
+#panel-fichesMDD .fmdd-sr-open { flex-shrink: 0; align-self: center; font-family: var(--font-main); font-size: 11.5px; padding: 5px 10px; border: 1px solid var(--rf-grey-300); border-radius: 5px; background: #fff; color: var(--rf-blue); cursor: pointer; }
+#panel-fichesMDD .fmdd-sr-open:hover { background: var(--rf-blue-light); }
 #panel-fichesMDD .empty {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; height: 100%; min-height: 280px;
@@ -794,6 +822,25 @@
   color: #8a5a05; transition: background .15s;
 }
 #panel-aiot .update-banner .btn-refresh:hover { background: #fdf1d9; }
+
+#panel-aiot .rec-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; align-items: center; justify-content: center; }
+#panel-aiot .rec-overlay.visible { display: flex; }
+#panel-aiot .rec-modal { background: #fff; border-radius: 10px; padding: 18px; width: min(760px, 94vw); max-height: 88vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,.25); }
+#panel-aiot .rec-modal h2 { font-size: 15px; color: var(--aiot-blue-800); margin-bottom: 12px; }
+#panel-aiot .rec-modal h3 { font-size: 12px; color: var(--aiot-gray-600); margin: 14px 0 6px; text-transform: uppercase; letter-spacing: .04em; }
+#panel-aiot .rec-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: end; }
+#panel-aiot .rec-form label { font-size: 11px; color: var(--aiot-gray-600); display: flex; flex-direction: column; gap: 3px; }
+#panel-aiot .rec-form input, #panel-aiot .rec-form select { font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--aiot-gray-100); border-radius: 6px; }
+#panel-aiot .rec-form .rec-wide { grid-column: span 2; }
+#panel-aiot .rec-list { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 0; }
+#panel-aiot .rec-list td, #panel-aiot .rec-list th { padding: 5px 6px; border-bottom: 1px solid var(--aiot-gray-50); text-align: left; }
+#panel-aiot .rec-msg { font-size: 12px; color: #A32D2D; min-height: 16px; margin-top: 6px; }
+#panel-aiot .rec-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+#panel-aiot .rec-sites { grid-column: 1 / -1; }
+#panel-aiot .rec-sites-title { font-size: 11px; color: var(--aiot-gray-600); display: block; margin-bottom: 3px; }
+#panel-aiot .rec-sites-box { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 4px 12px; max-height: 140px; overflow-y: auto; border: 1px solid var(--aiot-gray-100); border-radius: 6px; padding: 8px; }
+#panel-aiot .rec-sites-box label { flex-direction: row; align-items: center; gap: 6px; font-size: 12px; color: var(--aiot-gray-800); cursor: pointer; }
+#panel-aiot .rec-sites-box input { padding: 0; border: none; width: auto; }
 
 @media print {
   @page { size: A4 landscape; margin: 10mm; }
@@ -1240,7 +1287,13 @@
             </svg>
           </button>
         </div>
-        <div class="mdd-counter" id="mdd-counter"></div>
+        <div class="mdd-toolbar">
+          <div class="mdd-counter" id="mdd-counter"></div>
+          <div style="display:flex;gap:8px">
+            <button type="button" id="mdd-print-communes" class="mdd-print-btn">🖨 Communes</button>
+            <button type="button" id="mdd-print-rues" class="mdd-print-btn">🖨 Rues</button>
+          </div>
+        </div>
         <div id="mdd-results">
           <div class="mdd-empty"><p>Chargement des données…</p></div>
         </div>
@@ -1288,7 +1341,14 @@
     </div>
 <!-- ═══ PANNEAU FICHES MISSIONS MDD ═══ -->
 <div id="panel-fichesMDD" class="rf-panel">
-  <div class="mdd2-layout" style="width:100%;height:100%">
+  <div class="fmdd-searchbar">
+    <div class="fmdd-search-wrap">
+      <svg class="fmdd-search-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="mdd2-search-input" class="fmdd-search-input" placeholder="Rechercher un contact (nom ou prénom)…" autocomplete="off" oninput="mdd2_onSearchInput()" onkeydown="if(event.key==='Escape')mdd2_clearSearch()">
+      <button type="button" id="mdd2-search-clear" class="fmdd-search-clear" title="Réinitialiser la recherche" onclick="mdd2_clearSearch()">&times;</button>
+    </div>
+  </div>
+  <div class="mdd2-layout" style="width:100%;flex:1;min-height:0">
     <div class="sidebar" id="mdd2-sidebar">
       <div class="sidebar-label">Sites</div>
       <div id="mdd2-site-loading" class="loading">
@@ -1316,6 +1376,7 @@
         </div>
       </div>
       <div id="mdd2-site-content" style="display:none"></div>
+      <div id="mdd2-search-results" style="display:none"></div>
     </div>
   </div>
 </div>
@@ -1332,6 +1393,7 @@
     <div class="header">
       <h1>📞 Planning AIOT</h1>
       <button class="btn-print" onclick="aiot.exportPdf()" title="Télécharger le planning en PDF (A4 paysage)">🖨️ Imprimer</button>
+      <button class="btn-print" id="aiot-btn-rec" onclick="aiot.openRecurrences()" title="Gérer les entrées récurrentes">🔁 Récurrences</button>
       <div class="week-nav">
         <button class="btn-nav" id="aiot-btn-prev" title="Semaine précédente">&#8249;</button>
         <div class="week-label" id="aiot-week-label">—</div>
@@ -1374,6 +1436,51 @@
           <tr><td colspan="11" class="empty-state">Chargement…</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="rec-overlay" id="aiot-rec-overlay">
+      <div class="rec-modal">
+        <h2>🔁 Entrées récurrentes</h2>
+        <div class="rec-form">
+          <div class="rec-sites">
+            <span class="rec-sites-title">Sites</span>
+            <div class="rec-sites-box" id="aiot-rec-sites"></div>
+          </div>
+          <label>Jour
+            <select id="aiot-rec-jour">
+              <option value="lun">Lundi</option><option value="mar">Mardi</option><option value="mer">Mercredi</option>
+              <option value="jeu">Jeudi</option><option value="ven">Vendredi</option>
+            </select>
+          </label>
+          <label>Créneau
+            <select id="aiot-rec-creneau">
+              <option value="matin">Matin</option><option value="aprem">Après-midi</option><option value="journee">Journée</option>
+            </select>
+          </label>
+          <label>Texte
+            <input type="text" id="aiot-rec-texte" placeholder="REGUL ou !REGUL (rouge)">
+          </label>
+          <label>À partir du (facultatif)
+            <input type="date" id="aiot-rec-debut">
+          </label>
+          <label>Jusqu'au (facultatif)
+            <input type="date" id="aiot-rec-fin">
+          </label>
+          <div class="rec-wide"><button class="btn-print" onclick="aiot.addRec()">+ Ajouter la récurrence</button></div>
+        </div>
+        <div class="rec-msg" id="aiot-rec-msg"></div>
+
+        <h3>Récurrences enregistrées</h3>
+        <table class="rec-list">
+          <thead><tr><th>Site</th><th>Jour</th><th>Créneau</th><th>Texte</th><th>Période</th><th></th></tr></thead>
+          <tbody id="aiot-rec-body"></tbody>
+        </table>
+
+        <div class="rec-actions">
+          <button class="btn-print" onclick="aiot.applyRecurrences()">⤓ Appliquer à la semaine affichée</button>
+          <button class="btn-print" onclick="aiot.closeRecurrences()">Fermer</button>
+        </div>
+      </div>
     </div>
 
     <div class="legend">
@@ -3475,6 +3582,61 @@ const mdd = (() => {
     return `<div class="mdd-card-right">${fiche.nom?`<span class="mdd-contact-name">${esc(fiche.nom)}</span>`:''}${adresse?`<span class="mdd-contact-line">${svgPin}${esc(adresse)}</span>`:''}${fiche.mail?`<span class="mdd-contact-line">${svgMail}${esc(fiche.mail)}</span>`:''}</div>`;
   }
 
+  const TYPES_VOIE='rue|avenue|av|boulevard|bd|bld|impasse|all[ée]e|place|chemin|quai|square|route|cours|passage|ruelle|cit[ée]|r[ée]sidence|mail|promenade|esplanade|parvis|venelle|mont[ée]e|rond[- ]point|clos|domaine|hameau|lieu[- ]dit|villa|sentier|traverse|port|faubourg|c[ôo]te|rampe|voie|parc|zone|za|zac|lotissement|carrefour|rocade|cale|petite rue|grande rue|ancien chemin|vieux chemin';
+  const RE_VOIE=new RegExp('^(?:'+TYPES_VOIE+")(?=\\s|'|’|$)",'i');
+  function typeVoie(r){
+    let t=r.Type!==undefined?r.Type:(r.type!==undefined?r.type:(r.TYPE!==undefined?r.TYPE:''));
+    if(Array.isArray(t))t=t[0]==='L'?t.slice(1).join(''):t.join('');
+    t=normalize(String(t||''));
+    if(t.indexOf('commune')===0)return'commune';
+    if(t.indexOf('rue')===0)return'rue';
+    return RE_VOIE.test(String(r.voies||'').trim())?'rue':'commune';
+  }
+
+  function printPdf(type){
+    if(!mddLoaded)return;
+    const NB_COL=2;      /* colonnes par page : 2 = plus lisible, 3 = ~35 % de papier en moins */
+    const FONT_PX=8;     /* taille du texte (6.5 à 7.5 selon lisibilité voulue) */
+    const q=normalize(mddQuery);
+    const nom=type==='rue'?'Rues':'Communes';
+    const list=mddRecords
+      .filter(r=>typeVoie(r)===type&&(!q||normalize(r.voies||'').includes(q)||normalize(r.particularites||'').includes(q)))
+      .sort((a,b)=>String(a.voies||'').localeCompare(String(b.voies||''),'fr',{sensitivity:'base'}));
+    if(!list.length){alert('Aucune ligne de type « '+type+' » à imprimer.');return;}
+    /* 1 entrée = 1 bloc compact : "Voie — particularités" au fil de l'eau (pas de cellules à largeur fixe),
+       et MDS / annexe / PMI regroupés dans une seule colonne étroite à droite */
+    const rows=list.map(r=>{
+      const ann=String(r.annexe||'').trim(), pmi=String(r.PMI||'').trim();
+      const sub=[ann?'A.'+esc(ann):'',pmi?'PMI '+esc(pmi):''].filter(Boolean).join(' · ');
+      return '<div class="r">'
+        +'<div class="l"><b>'+esc(r.voies)+'</b>'+(r.particularites?' <i>— '+esc(r.particularites)+'</i>':'')+'</div>'
+        +'<div class="m"><b>'+esc(r.mds)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>'
+        +'</div>';
+    });
+    const css='@page{size:A4 portrait;margin:7mm 6mm}'
+      +'body{font-family:Arial,Helvetica,sans-serif;color:#1a1e2a;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+      +'.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #003189;padding-bottom:2px;margin-bottom:2mm}'
+      +'.top h1{font-family:Georgia,serif;font-size:12px;color:#003189;margin:0}'
+      +'.top span{font-size:7px;color:#8a8f9c}'
+      +'.leg{font-size:6.5px;color:#8a8f9c;margin-bottom:2mm}'
+      +'.cols{column-count:'+NB_COL+';column-gap:4mm;column-rule:1px solid #d5d9e4}'
+      +'.r{display:flex;justify-content:space-between;gap:2mm;border-bottom:1px solid #e3e6ee;padding:1px 2px;font-size:'+FONT_PX+'px;line-height:1.2;break-inside:avoid;page-break-inside:avoid}'
+      +'.r:nth-child(even){background:#f5f7fb}'
+      +'.l{flex:1;min-width:0;overflow-wrap:anywhere}'
+      +'.l i{font-style:normal;color:#4a5060}'
+      +'.m{flex:none;text-align:right;color:#003189;white-space:nowrap}'
+      +'.m small{display:block;font-size:'+(FONT_PX-1.5)+'px;color:#8a8f9c}';
+    const titre=nom+' — Quelle MDD ?'+(mddQuery?' — « '+esc(mddQuery)+' »':'');
+    const win=window.open('','_blank','width=900,height=1100');
+    if(!win){alert('Autorisez les popups pour imprimer.');return;}
+    win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>'+titre+'</title><style>'+css+'</style></head><body>'
+      +'<div class="top"><h1>'+titre+'</h1><span>MAJ le '+new Date().toLocaleDateString('fr-FR')+' · '+list.length+' ligne'+(list.length>1?'s':'')+'</span></div>'
+      +'<div class="leg"><b>Voie</b> — particularités &nbsp;|&nbsp; à droite : <b>MDS</b>, A. = annexe, PMI</div>'
+      +'<div class="cols">'+rows.join('')+'</div>'
+      +'<script>window.onload=function(){window.print();}<\/script></body></html>');
+    win.document.close();
+  }
+
   function render(){
     if(!mddLoaded){resultsEl.innerHTML='<div class="mdd-empty"><p>Chargement des données…</p></div>';counterEl.textContent='';return;}
     const q=normalize(mddQuery);
@@ -3483,12 +3645,13 @@ const filtered=q?mddRecords.filter(r=>{const voie=normalize(r.voies||'');const p
     if(!filtered.length){resultsEl.innerHTML=`<div class="mdd-empty"><p>Aucun résultat pour cette recherche.</p></div>`;return;}
     resultsEl.innerHTML=filtered.map(r=>{
       const voieH=highlight(r.voies,mddQuery);
+      const kind=typeVoie(r);
       const partH=highlight(r.particularites,mddQuery);
       const mdsVal=esc(String(r.mds||'—'));
       const annexe=String(r.annexe||'').trim();
       const pmi=esc(String(r.PMI||'').trim());
       const fiche=infosMap[annexe]||infosMap[String(r.mds||'').trim()]||null;
-      return `<div class="mdd-card"><div class="mdd-card-left"><div class="mdd-card-header"><span class="mdd-badge">${mdsVal}</span>${annexe?`<span class="mdd-annexe-tag">Annexe ${esc(annexe)}</span>`:''}${pmi?`<span class="mdd-pmi-tag">PMI ${pmi}</span>`:''}</div><div class="mdd-field-value">${voieH}</div>${r.particularites?`<div class="mdd-field-value mdd-sub">${partH}</div>`:''}</div>${contactBlock(fiche)}</div>`;
+      return `<div class="mdd-card"><div class="mdd-card-left"><div class="mdd-card-header"><span class="mdd-badge">${mdsVal}</span>${annexe?`<span class="mdd-annexe-tag">Annexe ${esc(annexe)}</span>`:''}${pmi?`<span class="mdd-pmi-tag">PMI ${pmi}</span>`:''}<span class="mdd-kind ${kind==='rue'?'mdd-kind-r':'mdd-kind-c'}">${kind==='rue'?'Rue':'Commune'}</span></div><div class="mdd-field-value">${voieH}</div>${r.particularites?`<div class="mdd-field-value mdd-sub">${partH}</div>`:''}</div>${contactBlock(fiche)}</div>`;
     }).join('');
   }
 
@@ -3523,6 +3686,8 @@ const filtered=q?mddRecords.filter(r=>{const voie=normalize(r.voies||'');const p
 
   searchEl.addEventListener('input',()=>{mddQuery=searchEl.value.trim();clearEl.classList.toggle('visible',mddQuery.length>0);render();});
   clearEl.addEventListener('click',()=>{searchEl.value='';mddQuery='';clearEl.classList.remove('visible');searchEl.focus();render();});
+  document.getElementById('mdd-print-communes').addEventListener('click',()=>printPdf('commune'));
+  document.getElementById('mdd-print-rues').addEventListener('click',()=>printPdf('rue'));
   return{setRecords,loadMdsVoies,loadInfos};
 })();
 
@@ -4059,6 +4224,7 @@ function mdd2_buildSidebar() {
 }
 
 function mdd2_selectSite(siteId) {
+  mdd2_clearSearch(true);
   mdd2_currentSiteId = siteId;
   mdd2_currentMission = 'CADRES';
   document.querySelectorAll('#mdd2-sidebar .site-btn').forEach(b => b.classList.remove('active'));
@@ -4345,6 +4511,132 @@ function mdd2_printFiche2() {
   win.document.close();
 }
 
+/* ── Recherche d'un contact (cadres + assistantes + TMS) ── */
+function mdd2_norm(s) {
+  return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+function mdd2_siteName(siteId) {
+  const s = mdd2_sitesData.find(x => String(x.id) === String(siteId));
+  return s ? (mdd2_get(s, 'nom_site', 'Nom_site') || ('Site ' + s.id)) : '—';
+}
+
+function mdd2_phonesHtml(portable, ligne) {
+  const portStr = portable ? (mdd2_isInterne(portable) ? '📞 ' : '📱 ') + mdd2_numSpan(portable) : '';
+  const ligStr  = ligne    ? (mdd2_isInterne(ligne)    ? '📞 ' : '☎️ ') + mdd2_numSpan(ligne)    : '';
+  return [portStr, ligStr].filter(Boolean).join(' · ');
+}
+
+function mdd2_onSearchInput() {
+  const input = document.getElementById('mdd2-search-input');
+  if (!input) return;
+  const raw = input.value;
+  document.getElementById('mdd2-search-clear').classList.toggle('visible', raw.length > 0);
+  const tokens = mdd2_norm(raw).split(/\s+/).filter(Boolean);
+  if (mdd2_norm(raw).length < 2) { mdd2_restoreView(); return; }
+  if (!mdd2_tablesLoaded) return;
+
+  const match = txt => { const n = mdd2_norm(txt); return tokens.every(t => n.includes(t)); };
+  const people = new Map();
+  const add = (name, entry) => {
+    const k = mdd2_norm(name);
+    if (!people.has(k)) people.set(k, { name: name, entries: [] });
+    people.get(k).entries.push(entry);
+  };
+
+  mdd2_cadresData.forEach(c => {
+    const nom = mdd2_get(c, 'nom_prenom', 'Nom_prenom');
+    if (!nom || !match(nom)) return;
+    add(nom, {
+      siteId: mdd2_get(c, 'site', 'Site') || c.site,
+      role: mdd2_get(c, 'type_cadre', 'Type_cadre'),
+      missions: [], label: '', pave: '',
+      phones: mdd2_phonesHtml(mdd2_get(c, 'telephone_portable', 'Telephone_portable'), mdd2_get(c, 'ligne_directe', 'Ligne_directe')),
+      fn: '', raw: ''
+    });
+  });
+
+  mdd2_groupesData.forEach(g => {
+    const mRow = mdd2_missionsData.find(m => String(m.id) === String(mdd2_get(g, 'mission', 'Mission') || g.mission));
+    if (!mRow) return;
+    const siteId = mdd2_get(mRow, 'site', 'Site') || mRow.site;
+    const missions = (mdd2_get(mRow, 'type_mission', 'Type_mission') || '').split('+').map(x => x.trim()).filter(Boolean);
+    const label = mdd2_get(g, 'label', 'Label');
+    const pave  = mdd2_get(g, 'pave', 'Pave');
+    [['Assistante administrative', mdd2_get(g, 'assistantes', 'Assistantes')],
+     ['TMS', mdd2_get(g, 'tms', 'Tms')]].forEach(([role, txt]) => {
+      if (!txt) return;
+      txt.split('\n').filter(l => l.trim()).forEach(line => {
+        const hors = line.indexOf('|') === -1;
+        const p = hors ? { name: line.trim(), fn: '', portable: '', ligne: '' } : mdd2_parsePerson(line);
+        if (!match(p.name)) return;
+        add(p.name, { siteId, role, missions, label, pave,
+          phones: mdd2_phonesHtml(p.portable, p.ligne), fn: p.fn, raw: hors ? line.trim() : '' });
+      });
+    });
+  });
+
+  const list = Array.from(people.values()).sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
+  let html = '<div class="fmdd-sr"><div class="fmdd-sr-count">'
+    + list.length + ' contact' + (list.length > 1 ? 's' : '') + ' trouvé' + (list.length > 1 ? 's' : '')
+    + ' pour « ' + mdd2_esc(raw.trim()) + ' »</div>';
+  if (!list.length) html += '<div class="no-data">Aucun contact ne correspond à cette recherche.</div>';
+  list.forEach(pe => {
+    html += '<div class="fmdd-sr-person"><div class="fmdd-sr-name">' + mdd2_esc(pe.name) + '</div>';
+    pe.entries.forEach(e => {
+      const firstMission = e.missions[0] || '';
+      html += '<div class="fmdd-sr-entry"><div class="fmdd-sr-info">'
+        + '<div><span class="fmdd-sr-site">🏢 ' + mdd2_esc(mdd2_siteName(e.siteId)) + '</span>'
+        + '<span class="fmdd-sr-role">' + mdd2_esc(e.role) + '</span></div>';
+      if (e.missions.length || e.label || e.pave) {
+        html += '<div style="margin-top:4px">'
+          + e.missions.map(m => '<span class="fmdd-sr-mission">' + mdd2_esc(m) + '</span>').join('')
+          + (e.label ? '<span>' + mdd2_esc(e.label) + '</span>' : '')
+          + (e.pave ? ' <span class="groupe-pave">📍 ' + mdd2_esc(e.pave) + '</span>' : '')
+          + '</div>';
+      }
+      if (e.fn) html += '<div class="person-meta">— ' + mdd2_numSpan(e.fn) + '</div>';
+      if (e.phones) html += '<div class="person-meta">' + e.phones + '</div>';
+      html += '</div>'
+        + '<button type="button" class="fmdd-sr-open" onclick="mdd2_openFromSearch(\'' + mdd2_esc(String(e.siteId)) + '\',\'' + mdd2_esc(firstMission) + '\')">Voir la fiche →</button>'
+        + '</div>';
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+
+  document.getElementById('mdd2-empty-state').style.display = 'none';
+  document.getElementById('mdd2-site-content').style.display = 'none';
+  const box = document.getElementById('mdd2-search-results');
+  box.innerHTML = html;
+  box.style.display = 'block';
+}
+
+function mdd2_restoreView() {
+  const box = document.getElementById('mdd2-search-results');
+  if (box) { box.style.display = 'none'; box.innerHTML = ''; }
+  const empty = document.getElementById('mdd2-empty-state');
+  const content = document.getElementById('mdd2-site-content');
+  if (mdd2_currentSiteId) { empty.style.display = 'none'; content.style.display = 'block'; }
+  else { empty.style.display = ''; content.style.display = 'none'; }
+}
+
+function mdd2_clearSearch(silent) {
+  const input = document.getElementById('mdd2-search-input');
+  if (input) input.value = '';
+  const btn = document.getElementById('mdd2-search-clear');
+  if (btn) btn.classList.remove('visible');
+  const box = document.getElementById('mdd2-search-results');
+  if (silent === true) { if (box) { box.style.display = 'none'; box.innerHTML = ''; } return; }
+  mdd2_restoreView();
+  if (input) input.focus();
+}
+
+function mdd2_openFromSearch(siteId, mission) {
+  mdd2_selectSite(siteId);
+  if (mission && MDD2_MISSIONS.includes(mission)) mdd2_switchMission(mission);
+}
+
 function mdd2_updateWelcomeStats() {
   const el = document.getElementById('mdd2-empty-state');
   if (!el || el.querySelector('.fmdd-welcome-stats')) return;
@@ -4403,6 +4695,7 @@ async function mdd2_reload() {
   mdd2_tablesLoaded = false;
   await mdd2_loadAllTables();
   if (mdd2_currentSiteId) mdd2_renderSite(mdd2_currentSiteId);
+  mdd2_onSearchInput();
 }
 
 async function mdd2_loadAllTables() {
@@ -4684,7 +4977,7 @@ const aiot = (() => {
   }
 
   function bindNav() {
-        document.getElementById('aiot-btn-prev').addEventListener('click', () => {
+    document.getElementById('aiot-btn-prev').addEventListener('click', () => {
       const d = new Date(currentMonday);
       d.setDate(d.getDate() - 7);
       d.setHours(0, 0, 0, 0);
@@ -4820,23 +5113,190 @@ const aiot = (() => {
   }
 
 
+  /* ───── Récurrences ───── */
+  const REC_TABLE = 'Recurrences';
+  const JOUR_LBL = { lun: 'Lundi', mar: 'Mardi', mer: 'Mercredi', jeu: 'Jeudi', ven: 'Vendredi' };
+  const SLOT_LBL = { matin: 'Matin', aprem: 'Après-midi', journee: 'Journée' };
+  let recs = [];
+
+  const pad2 = n => String(n).padStart(2, '0');
+  const isoOf = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  const isLocked = () => typeof pcfgIsAiotEditLocked === 'function' && pcfgIsAiotEditLocked();
+
+  async function ensureRecTable() {
+    const tables = await grist.docApi.listTables();
+    if (tables.includes(REC_TABLE)) return;
+    const sitesName = tables.find(t => t.toLowerCase() === 'sites') || 'Sites';
+    await grist.docApi.applyUserActions([['AddTable', REC_TABLE, [
+      { id: 'site',       type: 'Ref:' + sitesName },
+      { id: 'jour',       type: 'Text' },
+      { id: 'creneau',    type: 'Text' },
+      { id: 'texte',      type: 'Text' },
+      { id: 'date_debut', type: 'Text' },
+      { id: 'date_fin',   type: 'Text' }
+    ]]]);
+  }
+
+  async function loadRecs() {
+    await ensureRecTable();
+    const t = await grist.docApi.fetchTable(REC_TABLE);
+    recs = t.id.map((id, i) => ({
+      id, site: t.site[i] || 0, jour: t.jour[i], creneau: t.creneau[i],
+      texte: t.texte[i] || '', date_debut: t.date_debut[i] || '', date_fin: t.date_fin[i] || ''
+    }));
+  }
+
+  function renderRecs() {
+    const body = document.getElementById('aiot-rec-body');
+    body.innerHTML = '';
+    if (!recs.length) {
+      body.innerHTML = '<tr><td colspan="6" style="color:#888780">Aucune récurrence.</td></tr>';
+      return;
+    }
+    recs.forEach(r => {
+      const site = r.site ? ((siteList.find(s => s.id === r.site) || {}).name || '?') : 'Tous les sites';
+      const periode = (r.date_debut || r.date_fin) ? `${r.date_debut || '…'} → ${r.date_fin || '…'}` : 'Toujours';
+      const tr = document.createElement('tr');
+      [site, JOUR_LBL[r.jour] || r.jour, SLOT_LBL[r.creneau] || r.creneau, r.texte, periode].forEach(v => {
+        const td = document.createElement('td'); td.textContent = v; tr.appendChild(td);
+      });
+      const tdDel = document.createElement('td');
+      const btn = document.createElement('button');
+      btn.className = 'btn-nav'; btn.textContent = '✕'; btn.title = 'Supprimer cette récurrence';
+      btn.onclick = () => delRec(r.id);
+      tdDel.appendChild(btn); tr.appendChild(tdDel);
+      body.appendChild(tr);
+    });
+  }
+
+  async function openRecurrences() {
+    if (isLocked()) return;
+    const box = document.getElementById('aiot-rec-sites');
+    box.innerHTML = '';
+    const mkCb = (val, label, id) => {
+      const l = document.createElement('label');
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = val; if (id) cb.id = id;
+      l.appendChild(cb); l.appendChild(document.createTextNode(label)); box.appendChild(l);
+      return cb;
+    };
+    const allCb = mkCb('0', 'Tous les sites', 'aiot-rec-all');
+    const siteCbs = siteList.map(s => mkCb(String(s.id), s.name));
+    allCb.onchange = () => siteCbs.forEach(cb => { cb.disabled = allCb.checked; if (allCb.checked) cb.checked = false; });
+    document.getElementById('aiot-rec-msg').textContent = '';
+    try { await loadRecs(); renderRecs(); }
+    catch (err) { document.getElementById('aiot-rec-msg').textContent = 'Erreur : ' + (err.message || err); }
+    document.getElementById('aiot-rec-overlay').classList.add('visible');
+  }
+  function closeRecurrences() { document.getElementById('aiot-rec-overlay').classList.remove('visible'); }
+
+  async function addRec() {
+    const g = id => document.getElementById(id);
+    const msg = g('aiot-rec-msg');
+    const texte = g('aiot-rec-texte').value.trim();
+    const d1 = g('aiot-rec-debut').value, d2 = g('aiot-rec-fin').value;
+    if (!texte) { msg.textContent = 'Le texte est obligatoire.'; return; }
+    if (d1 && d2 && d2 < d1) { msg.textContent = 'La date de fin est antérieure à la date de début.'; return; }
+    const allCb = g('aiot-rec-all');
+    const ids = allCb && allCb.checked ? [0]
+      : Array.from(document.querySelectorAll('#aiot-rec-sites input:checked')).map(cb => Number(cb.value));
+    if (!ids.length) { msg.textContent = 'Coche au moins un site.'; return; }
+    try {
+      await grist.docApi.applyUserActions(ids.map(sid => ['AddRecord', REC_TABLE, null, {
+        site: sid,
+        jour: g('aiot-rec-jour').value, creneau: g('aiot-rec-creneau').value,
+        texte, date_debut: d1, date_fin: d2
+      }]));
+      g('aiot-rec-texte').value = ''; msg.textContent = '';
+      await loadRecs(); renderRecs();
+    } catch (err) { msg.textContent = 'Erreur : ' + (err.message || err); }
+  }
+
+  async function delRec(id) {
+    if (!confirm('Supprimer cette récurrence ? Les semaines déjà remplies ne sont pas modifiées.')) return;
+    try {
+      await grist.docApi.applyUserActions([['RemoveRecord', REC_TABLE, id]]);
+      await loadRecs(); renderRecs();
+    } catch (err) { document.getElementById('aiot-rec-msg').textContent = 'Erreur : ' + (err.message || err); }
+  }
+
+  async function applyRecurrences() {
+    if (isLocked()) return;
+    const msg = document.getElementById('aiot-rec-msg');
+    if (document.querySelector('#aiot-planning-body textarea.dirty')) {
+      msg.textContent = "Des modifications ne sont pas encore enregistrées : attends la fin de l'enregistrement puis réessaie.";
+      return;
+    }
+    try {
+      setStatus('saving', 'Application des récurrences…');
+      await loadRecs();
+      // Relecture fraîche de Planning pour ne rien écraser
+      const all = await grist.docApi.fetchTable(TABLE_ID);
+      const semVal = mondayToGristDate(currentMonday);
+      const existing = {};
+      for (let i = 0; i < all.id.length; i++) {
+        if (all.semaine[i] !== semVal) continue;
+        const vals = {};
+        JOURS.forEach(j => SLOTS.forEach(s => { const c = `${j}_${s}`; vals[c] = all[c] ? (all[c][i] || '') : ''; }));
+        existing[all.site[i]] = { id: all.id[i], vals };
+      }
+
+      const actions = [];
+      let nbCells = 0;
+      for (const { id: sid } of siteList) {
+        const fill = {};
+        JOURS.forEach((j, ji) => {
+          const d = new Date(currentMonday); d.setDate(d.getDate() + ji);
+          const iso = isoOf(d);
+          recs.filter(r => r.jour === j && (!r.site || r.site === sid)
+                        && (!r.date_debut || iso >= r.date_debut) && (!r.date_fin || iso <= r.date_fin))
+              .forEach(r => {
+                (r.creneau === 'journee' ? ['matin', 'aprem'] : [r.creneau]).forEach(s => {
+                  const col = `${j}_${s}`;
+                  fill[col] = fill[col] ? fill[col] + '\n' + r.texte : r.texte;
+                });
+              });
+        });
+        const ex = existing[sid];
+        const toWrite = {};
+        Object.keys(fill).forEach(col => { if (!ex || !String(ex.vals[col] || '').trim()) toWrite[col] = fill[col]; });
+        const n = Object.keys(toWrite).length;
+        if (!n) continue;
+        nbCells += n;
+        actions.push(ex
+          ? ['UpdateRecord', TABLE_ID, ex.id, toWrite]
+          : ['AddRecord', TABLE_ID, null, { semaine: semVal, site: sid, ...toWrite }]);
+      }
+
+      if (actions.length) await grist.docApi.applyUserActions(actions);
+      await loadWeek();
+      closeRecurrences();
+      setStatus('saved', nbCells ? `${nbCells} cellule(s) remplie(s) par les récurrences ✓` : 'Rien à appliquer : cellules déjà remplies ou aucune récurrence pour cette semaine');
+    } catch (err) {
+      setStatus('error', 'Erreur : ' + (err.message || err));
+      msg.textContent = 'Erreur : ' + (err.message || err);
+    }
+  }
+
   async function init() {
     if (initialized) return;
     initialized = true;
     bindNav();
     await loadSites();
     await loadWeek();
+    applyEditLock();
   }
 
   function applyEditLock() {
-    const locked = typeof pcfgIsAiotEditLocked === 'function' && pcfgIsAiotEditLocked();
+    const locked = isLocked();
     document.querySelectorAll('#aiot-planning-body textarea').forEach(ta => {
       ta.readOnly = locked;
       ta.tabIndex = locked ? -1 : 0;
     });
+    const b = document.getElementById('aiot-btn-rec');
+    if (b) b.style.display = locked ? 'none' : '';
   }
 
-  return { init, exportPdf, applyEditLock };
+  return { init, exportPdf, applyEditLock, openRecurrences, closeRecurrences, addRec, applyRecurrences };
 })();
 
 async function loadBandeau(){
