@@ -3595,8 +3595,8 @@ const mdd = (() => {
 
   function printPdf(type){
     if(!mddLoaded)return;
-    const NB_COL=3;      /* colonnes par page : 2 = plus lisible, 3 = ~35 % de papier en moins */
-    const FONT_PX=7;     /* taille du texte (6.5 à 7.5 selon lisibilité voulue) */
+    const NB_COL=2;      /* colonnes par page : 2 = plus lisible, 3 = ~35 % de papier en moins */
+    const FONT_PX=8;     /* taille du texte (6.5 à 7.5 selon lisibilité voulue) */
     const q=normalize(mddQuery);
     const nom=type==='rue'?'Rues':'Communes';
     const list=mddRecords
