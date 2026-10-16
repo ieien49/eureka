@@ -3595,46 +3595,44 @@ const mdd = (() => {
 
   function printPdf(type){
     if(!mddLoaded)return;
-    const NB_COL=2;            /* nombre de colonnes de tableaux côte à côte */
-    const LIGNES_PAR_BLOC=15;  /* lignes par mini-tableau (plus petit = moins de blanc en bas de colonne, plus d'en-têtes) */
+    const NB_COL=3;      /* colonnes par page : 2 = plus lisible, 3 = ~35 % de papier en moins */
+    const FONT_PX=7;     /* taille du texte (6.5 à 7.5 selon lisibilité voulue) */
     const q=normalize(mddQuery);
     const nom=type==='rue'?'Rues':'Communes';
     const list=mddRecords
       .filter(r=>typeVoie(r)===type&&(!q||normalize(r.voies||'').includes(q)||normalize(r.particularites||'').includes(q)))
       .sort((a,b)=>String(a.voies||'').localeCompare(String(b.voies||''),'fr',{sensitivity:'base'}));
     if(!list.length){alert('Aucune ligne de type « '+type+' » à imprimer.');return;}
-    const rows=list.map(r=>'<tr>'
-      +'<td class="v">'+esc(r.voies)+'</td>'
-      +'<td>'+esc(r.particularites)+'</td>'
-      +'<td class="m">'+esc(r.mds)+'</td>'
-      +'<td>'+esc(r.annexe)+'</td>'
-      +'<td>'+esc(r.PMI)+'</td>'
-      +'</tr>');
-    const entete='<colgroup><col style="width:33%"><col style="width:29%"><col style="width:12%"><col style="width:14%"><col style="width:12%"></colgroup>'
-      +'<thead><tr><th>Voies</th><th>Particularités</th><th>MDS</th><th>Annexe</th><th>PMI</th></tr></thead>';
-    const blocs=[];
-    for(let i=0;i<rows.length;i+=LIGNES_PAR_BLOC){
-      blocs.push('<table>'+entete+'<tbody>'+rows.slice(i,i+LIGNES_PAR_BLOC).join('')+'</tbody></table>');
-    }
-    const css='@page{size:A4 portrait;margin:9mm 8mm}'
+    /* 1 entrée = 1 bloc compact : "Voie — particularités" au fil de l'eau (pas de cellules à largeur fixe),
+       et MDS / annexe / PMI regroupés dans une seule colonne étroite à droite */
+    const rows=list.map(r=>{
+      const ann=String(r.annexe||'').trim(), pmi=String(r.PMI||'').trim();
+      const sub=[ann?'A.'+esc(ann):'',pmi?'PMI '+esc(pmi):''].filter(Boolean).join(' · ');
+      return '<div class="r">'
+        +'<div class="l"><b>'+esc(r.voies)+'</b>'+(r.particularites?' <i>— '+esc(r.particularites)+'</i>':'')+'</div>'
+        +'<div class="m"><b>'+esc(r.mds)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>'
+        +'</div>';
+    });
+    const css='@page{size:A4 portrait;margin:7mm 6mm}'
       +'body{font-family:Arial,Helvetica,sans-serif;color:#1a1e2a;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
-      +'.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #003189;padding-bottom:3px;margin-bottom:4mm}'
-      +'.top h1{font-family:Georgia,serif;font-size:14px;color:#003189;margin:0}'
-      +'.top span{font-size:8px;color:#8a8f9c}'
-      +'.cols{column-count:'+NB_COL+';column-gap:6mm;column-rule:1px solid #d5d9e4}'
-      +'table{width:100%;border-collapse:collapse;table-layout:fixed;break-inside:avoid;page-break-inside:avoid;margin-bottom:2.5mm}'
-      +'th{background:#003189;color:#fff;font-size:7px;text-align:left;padding:2px 3px;text-transform:uppercase;letter-spacing:.03em}'
-      +'td{vertical-align:top;border-bottom:1px solid #d5d9e4;padding:1.5px 3px;font-size:7.5px;line-height:1.25;overflow-wrap:anywhere}'
-      +'tr{break-inside:avoid;page-break-inside:avoid}'
-      +'tbody tr:nth-child(even){background:#f5f7fb}'
-      +'td.v{font-weight:700}'
-      +'td.m{font-weight:700;color:#003189}';
+      +'.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #003189;padding-bottom:2px;margin-bottom:2mm}'
+      +'.top h1{font-family:Georgia,serif;font-size:12px;color:#003189;margin:0}'
+      +'.top span{font-size:7px;color:#8a8f9c}'
+      +'.leg{font-size:6.5px;color:#8a8f9c;margin-bottom:2mm}'
+      +'.cols{column-count:'+NB_COL+';column-gap:4mm;column-rule:1px solid #d5d9e4}'
+      +'.r{display:flex;justify-content:space-between;gap:2mm;border-bottom:1px solid #e3e6ee;padding:1px 2px;font-size:'+FONT_PX+'px;line-height:1.2;break-inside:avoid;page-break-inside:avoid}'
+      +'.r:nth-child(even){background:#f5f7fb}'
+      +'.l{flex:1;min-width:0;overflow-wrap:anywhere}'
+      +'.l i{font-style:normal;color:#4a5060}'
+      +'.m{flex:none;text-align:right;color:#003189;white-space:nowrap}'
+      +'.m small{display:block;font-size:'+(FONT_PX-1.5)+'px;color:#8a8f9c}';
     const titre=nom+' — Quelle MDD ?'+(mddQuery?' — « '+esc(mddQuery)+' »':'');
     const win=window.open('','_blank','width=900,height=1100');
     if(!win){alert('Autorisez les popups pour imprimer.');return;}
     win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>'+titre+'</title><style>'+css+'</style></head><body>'
       +'<div class="top"><h1>'+titre+'</h1><span>MAJ le '+new Date().toLocaleDateString('fr-FR')+' · '+list.length+' ligne'+(list.length>1?'s':'')+'</span></div>'
-      +'<div class="cols">'+blocs.join('')+'</div>'
+      +'<div class="leg"><b>Voie</b> — particularités &nbsp;|&nbsp; à droite : <b>MDS</b>, A. = annexe, PMI</div>'
+      +'<div class="cols">'+rows.join('')+'</div>'
       +'<script>window.onload=function(){window.print();}<\/script></body></html>');
     win.document.close();
   }
