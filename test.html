@@ -1753,7 +1753,8 @@ const atdf = (() => {
     }
     return head + '<div class="atdf-card-lbl">ATD compétente</div>' +
       '<div class="atdf-card-atd">' + esc(a.nom) + '</div>' +
-      row('Adresse', a.adr) + row('Téléphone', a.tel) + row('Mail', a.mail) + row('Horaires', a.horaires);
+      (a.tel ? '<div style="font-size:18px;font-weight:800;color:var(--rf-blue);margin:0 0 10px">☎ ' + esc(a.tel) + '</div>' : '') +
+      row('Adresse', a.adr) + row('Mail', a.mail) + row('Horaires', a.horaires);
   }
 
   async function load() {
