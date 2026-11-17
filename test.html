@@ -75,6 +75,7 @@
     .atdf-card-row { font-size: 12.5px; margin-top: 4px; color: var(--rf-grey-800); }
     .atdf-card-sites { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rf-blue-mid); font-size: 12.5px; }
     #atdf-map { flex: 1; min-width: 0; height: 100%; }
+    #atdf-map .leaflet-tile-pane { filter: grayscale(100%) brightness(1.08) contrast(0.85); }
     @media (max-width: 760px) { #panel-atd { flex-direction: column; } .atdf-side { width: 100%; max-height: 45%; border-right: none; border-bottom: 1px solid var(--rf-grey-300); } }
 
     /* HEADER */
@@ -1924,6 +1925,7 @@ const atdf = (() => {
   async function select(i) {
     const e = entries[i];
     selectedOnce = true;
+    $('atdf-list').innerHTML = '';
     initMap();
     setTimeout(() => map.invalidateSize(), 50);
     communeLayer.clearLayers();
