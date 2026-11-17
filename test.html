@@ -1843,13 +1843,15 @@ const atdf = (() => {
 
   function drawZones(atdName) {
     if (zonesLayer) map.removeLayer(zonesLayer);
+    // Pane dédiée au-dessus du voile gris (z 250) et sous le contour du département
+    if (!map.getPane('atdZones')) { map.createPane('atdZones'); map.getPane('atdZones').style.zIndex = 320; }
     zonesLayer = L.geoJSON(ATD_ZONES, {
+      pane: 'atdZones',
       style: f => atdName && zoneMatches(f, atdName)
         ? { color: '#003189', weight: 3, fillColor: '#1f61bc', fillOpacity: 0.28 }
-        : { color: '#999', weight: 1, fillColor: '#ccc', fillOpacity: atdName ? 0.05 : 0.15 },
+        : { color: '#3d4a6b', weight: 2, fillColor: '#ffffff', fillOpacity: atdName ? 0.05 : 0.2 },
       onEachFeature: (f, l) => l.bindTooltip('ATD ' + f.properties.atd_nom, { sticky: true })
     }).addTo(map);
-    zonesLayer.bringToBack();
     if (deptLayer) deptLayer.bringToFront();
   }
 
