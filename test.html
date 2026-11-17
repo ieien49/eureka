@@ -1739,6 +1739,20 @@ const atdf = (() => {
     communeLayer = L.layerGroup().addTo(map);
   }
 
+  function resolveZone(label, centre) {
+    const strip = t => norm(t).replace(/^(atd|agence technique departementale)( (de|d|du|des))? /, '').trim();
+    const l = strip(label);
+    const feats = ATD_ZONES.features;
+    if (l) {
+      let f = feats.find(f => strip(f.properties.atd_nom) === l)
+           || feats.find(f => { const z = strip(f.properties.atd_nom); return z && (l.includes(z) || z.includes(l)); })
+           || feats.find(f => f.properties.atd_code === l);
+      if (f) return f.properties.atd_nom;
+    }
+    if (centre) return zoneAt(centre.lng, centre.lat) || '';
+    return '';
+  }
+
   function zoneMatches(f, atdName) { return norm(f.properties.atd_nom) === norm(atdName); }
 
   function drawZones(atdName) {
@@ -1838,8 +1852,9 @@ const atdf = (() => {
     const geo = await geocode(e);
     let centre = null;
     if (geo) { try { centre = L.geoJSON(geo.feature).getBounds().getCenter(); } catch (x) {} }
-    let atdName = e.atd;
-    if (!atdName && centre) atdName = zoneAt(centre.lng, centre.lat) || '';
+    const atdGrist = e.atd;
+    let atdName = resolveZone(atdGrist, centre);
+    if (!atdName) console.warn('ATD : aucune zone trouvée pour', JSON.stringify(atdGrist), '— zones :', ATD_ZONES.features.map(f => f.properties.atd_nom));
     drawZones(atdName);
 
     let bounds = null;
@@ -1847,7 +1862,7 @@ const atdf = (() => {
     let located = false;
     if (geo) {
       if (geo.parent) L.geoJSON(geo.parent, { style: { color: '#c1373c', weight: 2, dashArray: '6 4', fillOpacity: 0 }, interactive: false }).addTo(communeLayer);
-      L.geoJSON(geo.feature, { style: { color: '#c1373c', weight: 2.5, fillColor: '#c1373c', fillOpacity: 0.4 } }).bindTooltip(e.nom, { permanent: true, direction: 'center', className: '' }).addTo(communeLayer);
+      L.geoJSON(geo.feature, { style: { color: '#c1373c', weight: 2.5, fillColor: '#c1373c', fillOpacity: 0.4 } }).addTo(communeLayer);
       located = true;
     }
     const mySites = ATD_SITES.filter(s => atdName && norm(s.nom).includes(norm(atdName)));
