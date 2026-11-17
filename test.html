@@ -73,6 +73,7 @@
     .atdf-card-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--rf-grey-600); font-weight: 700; }
     .atdf-card-atd { font-size: 20px; font-weight: 800; color: var(--rf-blue); margin: 2px 0 10px; }
     .atdf-card-row { font-size: 12.5px; margin-top: 4px; color: var(--rf-grey-800); }
+    .atdf-card-sep { height: 1px; background: var(--rf-blue-mid); margin: 10px 0; }
     .atdf-card-sites { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rf-blue-mid); font-size: 12.5px; }
     #atdf-map { flex: 1; min-width: 0; height: 100%; }
     #atdf-map .leaflet-tile-pane { filter: grayscale(100%) brightness(1.08) contrast(0.85); }
@@ -1740,14 +1741,17 @@ const atdf = (() => {
         || null;
   }
 
-  function atdCardHtml(atdName) {
+  function atdCardHtml(e, atdName) {
+    const head = '<div class="atdf-card-lbl">Commune sélectionnée</div>' +
+      '<div style="font-weight:700;font-size:15px">' + esc(e.nom) + (e.parent ? ' <span style="font-weight:400;color:var(--rf-grey-600)">(' + esc(e.parent) + ')</span>' : '') + '</div>' +
+      '<div class="atdf-card-sep"></div>';
     const row = (lbl, v) => v ? '<div class="atdf-card-row"><b>' + lbl + ' :</b> ' + esc(v) + '</div>' : '';
     const a = infoAtd(atdName);
     if (!a) {
-      return '<div class="atdf-card-lbl">ATD compétente</div>' +
+      return head + '<div class="atdf-card-lbl">ATD compétente</div>' +
         '<div class="atdf-card-row" style="color:var(--rf-orange)">Aucune fiche ListeATD pour « ' + esc(atdName || '?') + ' ».</div>';
     }
-    return '<div class="atdf-card-lbl">ATD compétente</div>' +
+    return head + '<div class="atdf-card-lbl">ATD compétente</div>' +
       '<div class="atdf-card-atd">' + esc(a.nom) + '</div>' +
       row('Adresse', a.adr) + row('Téléphone', a.tel) + row('Mail', a.mail) + row('Horaires', a.horaires);
   }
@@ -1931,7 +1935,9 @@ const atdf = (() => {
     communeLayer.clearLayers();
     const card = $('atdf-card');
     card.classList.add('show');
-    card.innerHTML = '<div class="atdf-hint">Chargement…</div>';
+    card.innerHTML = '<div class="atdf-card-lbl">Commune sélectionnée</div>' +
+      '<div style="font-weight:700;font-size:15px">' + esc(e.nom) + (e.parent ? ' <span style="font-weight:400;color:var(--rf-grey-600)">(' + esc(e.parent) + ')</span>' : '') + '</div>' +
+      '<div class="atdf-hint">Recherche de l\'ATD…</div>';
 
     const geo = await geocode(e);
     let centre = null;
@@ -1949,7 +1955,7 @@ const atdf = (() => {
     }
     if (bounds) map.fitBounds(bounds, { padding: [20, 20] });
 
-    card.innerHTML = atdCardHtml(atdName);
+    card.innerHTML = atdCardHtml(e, atdName);
   }
 
   function search() {
