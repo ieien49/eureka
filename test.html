@@ -58,8 +58,11 @@
     #panel-atd { flex-direction: row; }
     .atdf-side { width: var(--sidebar-w); flex-shrink: 0; background: var(--rf-white); border-right: 1px solid var(--rf-grey-300); display: flex; flex-direction: column; padding: 16px; gap: 12px; overflow-y: auto; }
     .atdf-search-wrap { position: relative; flex-shrink: 0; }
-    #atdf-search { width: 100%; padding: 11px 14px; border: 1.5px solid var(--rf-grey-300); border-radius: var(--radius-sm); font-family: var(--font-main); font-size: 14px; outline: none; background: var(--rf-white); }
+    #atdf-search { width: 100%; padding: 11px 38px 11px 14px; border: 1.5px solid var(--rf-grey-300); border-radius: var(--radius-sm); font-family: var(--font-main); font-size: 14px; outline: none; background: var(--rf-white); }
     #atdf-search:focus { border-color: var(--rf-blue); box-shadow: 0 0 0 3px rgba(0,49,137,0.10); }
+    #atdf-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border: none; border-radius: 50%; background: var(--rf-grey-200); color: var(--rf-grey-800); cursor: pointer; display: none; align-items: center; justify-content: center; padding: 0; }
+    #atdf-clear:hover { background: var(--rf-grey-300); }
+    #atdf-clear.show { display: flex; }
     .atdf-list { display: flex; flex-direction: column; gap: 4px; }
     .atdf-item { padding: 8px 12px; border: 1px solid var(--rf-grey-200); border-radius: var(--radius-sm); cursor: pointer; background: var(--rf-white); text-align: left; font-family: var(--font-main); font-size: 13px; color: var(--rf-grey-900); }
     .atdf-item:hover { border-color: var(--rf-blue); background: var(--rf-blue-light); }
@@ -1424,6 +1427,7 @@
   <div class="atdf-side">
     <div class="atdf-search-wrap">
       <input type="text" id="atdf-search" placeholder="Nom d'une commune ou commune déléguée" autocomplete="off" spellcheck="false"/>
+      <button type="button" id="atdf-clear" title="Effacer la recherche"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     </div>
     <div id="atdf-list" class="atdf-list"><div class="atdf-hint">Chargement des données…</div></div>
     <div id="atdf-card" class="atdf-card"></div>
@@ -1699,7 +1703,7 @@ const ATD_ZONES = {"type":"FeatureCollection","features":[{"type":"Feature","pro
 const ATD_SITES = [{"nom":"Agence Technique Départementale d'Angers Segré","adr":"48 avenue Jules Verne BP 200006 LE-LION-D'ANGERS","lat":47.6171667,"lon":-0.7184115},{"nom":"Agence Technique Départementale de Beaupréau Cholet","adr":"Zone Dyna Ouest BP 28 49600 BEAUPREAU-en-MAUGES","lat":47.2083501,"lon":-0.9981579},{"nom":"Agence Technique Départementale de Baugé Saumur","adr":"220 rue Pascal Maurice Charbonnier 49700 DOUE-EN-ANJOU","lat":47.1889806,"lon":-0.2443096},{"nom":"Agence Technique Départementale de Baugé Saumur","adr":"4 bis avenue de la petite forêt 49150 BAUGE","lat":47.5472662,"lon":-0.1101235}];
 
 const atdf = (() => {
-  let entries = [], loaded = false, loading = false;
+  let entries = [], loaded = false, loading = false, pendingWarn = '';
   let map = null, zonesLayer = null, communeLayer = null, sitesLayer = null;
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1711,18 +1715,28 @@ const atdf = (() => {
     loading = true;
     try {
       const t = await grist.docApi.fetchTable('ATD');
+      const cols = Object.keys(t).filter(k => k !== 'id' && Array.isArray(t[k]));
+      console.info('ATD colonnes Grist :', cols);
+      const find = (...res) => { for (const re of res) { const k = cols.find(c => re.test(norm(c).replace(/ /g, ''))); if (k) return t[k]; } return null; };
+      const cD = find(/^communesd/, /^communedeleguee/, /deleguee/);
+      const cC = find(/^communes?$/, /^nomcommune/, /^commune(?!d)/) ;
+      const cI = find(/^insee/, /^codeinsee/), cS = find(/^statut/), cE = find(/^epci/), cA = find(/^atd$/, /^atd/);
+      const get = (c, i) => c ? val(c[i]) : '';
       const seen = new Set();
       const add = e => { const k = e.kind + '|' + norm(e.nom) + '|' + norm(e.parent); if (!e.nom || seen.has(k)) return; seen.add(k); e.n = norm(e.nom); entries.push(e); };
       for (let i = 0; i < t.id.length; i++) {
-        const commune = val(t.Communes && t.Communes[i]);
-        const deleguee = val(t.Communes_d && t.Communes_d[i]);
-        const base = { insee: val(t.INSEE && t.INSEE[i]), statut: val(t.Statut && t.Statut[i]), epci: val(t.EPCI && t.EPCI[i]), atd: val(t.ATD && t.ATD[i]) };
+        const commune = get(cC, i);
+        const deleguee = get(cD, i);
+        const base = { insee: get(cI, i), statut: get(cS, i), epci: get(cE, i), atd: get(cA, i) };
         add(Object.assign({ nom: commune, parent: '', kind: 'commune' }, base));
         if (deleguee && norm(deleguee) !== norm(commune)) add(Object.assign({ nom: deleguee, parent: commune, kind: 'deleguee' }, base));
       }
+      const nC = entries.filter(e => e.kind === 'commune').length, nD = entries.length - nC;
+      console.info('ATD entrées :', nC, 'communes,', nD, 'communes déléguées');
+      if (!nC) pendingWarn = 'Aucune commune lue dans la colonne « Communes » (colonnes trouvées : ' + cols.join(', ') + '). Si c\'est une colonne de type Référence, ses valeurs sont des numéros de ligne.';
       entries.sort((a, b) => a.n.localeCompare(b.n));
       loaded = true;
-      $('atdf-list').innerHTML = '<div class="atdf-hint">Saisissez au moins 2 lettres.</div>';
+      $('atdf-list').innerHTML = '<div class="atdf-hint">Saisissez au moins 2 lettres.</div>' + (pendingWarn ? '<div class="atdf-hint" style="color:var(--rf-orange)">' + esc(pendingWarn) + '</div>' : '');
     } catch (e) {
       console.error('ATD fetchTable', e);
       $('atdf-list').innerHTML = '<div class="atdf-hint">Table « ATD » introuvable ou illisible : ' + esc(e.message) + '</div>';
@@ -1884,6 +1898,7 @@ const atdf = (() => {
   function search() {
     const q = norm($('atdf-search').value);
     const list = $('atdf-list');
+    $('atdf-clear').classList.toggle('show', !!$('atdf-search').value);
     if (!loaded) return;
     if (q.length < 2) { list.innerHTML = '<div class="atdf-hint">Saisissez au moins 2 lettres.</div>'; return; }
     const starts = [], contains = [];
@@ -1897,7 +1912,24 @@ const atdf = (() => {
     }).join('');
   }
 
+  function reset() {
+    const inp = $('atdf-search');
+    inp.value = '';
+    $('atdf-clear').classList.remove('show');
+    $('atdf-card').classList.remove('show');
+    $('atdf-card').innerHTML = '';
+    if (loaded) $('atdf-list').innerHTML = '<div class="atdf-hint">Saisissez au moins 2 lettres.</div>' + (pendingWarn ? '<div class="atdf-hint" style="color:var(--rf-orange)">' + esc(pendingWarn) + '</div>' : '');
+    if (map) {
+      communeLayer.clearLayers(); sitesLayer.clearLayers();
+      drawZones(null);
+      try { map.fitBounds(zonesLayer.getBounds(), { padding: [10, 10] }); } catch (x) { map.setView([47.4, -0.55], 9); }
+    }
+    inp.focus();
+  }
+
   function bind() {
+    $('atdf-clear').addEventListener('click', reset);
+    $('atdf-search').addEventListener('keydown', ev => { if (ev.key === 'Escape') reset(); });
     $('atdf-search').addEventListener('input', search);
     $('atdf-search').addEventListener('keydown', ev => { if (ev.key === 'Enter') { const b = $('atdf-list').querySelector('.atdf-item'); if (b) select(+b.dataset.i); } });
     $('atdf-list').addEventListener('click', ev => { const b = ev.target.closest('.atdf-item'); if (b) select(+b.dataset.i); });
