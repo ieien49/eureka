@@ -1437,17 +1437,17 @@
   <iframe id="hdd-frame" title="Orientation des appels" style="flex:1;width:100%;height:100%;border:0;background:#fff"></iframe>
 </div>
 <!-- ═══ PANNEAU ANNUAIRE INTERNE ═══ -->
-<div id="panel-annuaire-test" class="rf-panel" style="align-items:center;justify-content:center;padding:40px;">
-  <div style="max-width:520px;text-align:center;background:#fff;border:1px solid var(--rf-grey-300);border-radius:var(--radius-md);padding:28px;box-shadow:var(--shadow-sm);">
-    <h2 style="font-size:20px;color:var(--rf-blue);margin-bottom:10px;">Annuaire interne</h2>
-    <p style="color:var(--rf-grey-600);margin-bottom:20px;">Test d'ouverture d'une page de l'intranet dans un nouvel onglet.</p>
-    <button type="button" style="padding:10px 20px;background:var(--rf-blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-main);font-size:14px;font-weight:600;cursor:pointer;"
-      onclick="window.open('https://melinfo.cg49.fr/outils/outils/annuaire/', '_blank', 'noopener')">
-      Ouvrir l'annuaire
+<div id="panel-annuaire-test" class="rf-panel" style="flex-direction:column;padding:0;">
+  <div style="display:flex;justify-content:flex-end;padding:6px 10px;background:var(--rf-white);border-bottom:1px solid var(--rf-grey-300);">
+    <button type="button" style="padding:6px 12px;background:var(--rf-blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-main);font-size:12px;font-weight:600;cursor:pointer;"
+      onclick="window.open('https://VOTRE-INTRANET/chemin/vers/annuaire', '_blank', 'noopener')">
+      Ouvrir dans un nouvel onglet
     </button>
   </div>
-</div>
-<!-- ═══ PANNEAU TROUVER ATD ═══ -->
+  <iframe src="https://VOTRE-INTRANET/chemin/vers/annuaire"
+          style="flex:1;width:100%;border:0;"
+          title="Annuaire interne"></iframe>
+</div><!-- ═══ PANNEAU TROUVER ATD ═══ -->
 <div id="panel-atd" class="rf-panel">
   <div class="atdf-side">
     <div class="atdf-search-wrap">
