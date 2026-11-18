@@ -1158,6 +1158,19 @@
       </div>
       <div class="tab-active-bar"></div>
     </button>
+        <button class="rf-tab" data-panel="annuaire-test" onclick="switchTab('annuaire-test')">
+      <div class="tab-icon-wrap">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+      <div class="tab-label-wrap">
+        <span class="tab-label-main">Annuaire interne</span>
+        <span class="tab-label-sub">Test intranet</span>
+      </div>
+      <div class="tab-active-bar"></div>
+    </button>
   </nav>
 
   <!-- Contenu -->
@@ -1423,7 +1436,17 @@
 <div id="panel-hdd" class="rf-panel">
   <iframe id="hdd-frame" title="Orientation des appels" style="flex:1;width:100%;height:100%;border:0;background:#fff"></iframe>
 </div>
-
+<!-- ═══ PANNEAU ANNUAIRE INTERNE ═══ -->
+<div id="panel-annuaire-test" class="rf-panel" style="align-items:center;justify-content:center;padding:40px;">
+  <div style="max-width:520px;text-align:center;background:#fff;border:1px solid var(--rf-grey-300);border-radius:var(--radius-md);padding:28px;box-shadow:var(--shadow-sm);">
+    <h2 style="font-size:20px;color:var(--rf-blue);margin-bottom:10px;">Annuaire interne</h2>
+    <p style="color:var(--rf-grey-600);margin-bottom:20px;">Test d'ouverture d'une page de l'intranet dans un nouvel onglet.</p>
+    <button type="button" style="padding:10px 20px;background:var(--rf-blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-main);font-size:14px;font-weight:600;cursor:pointer;"
+      onclick="window.open('https://VOTRE-INTRANET/chemin/vers/annuaire', '_blank', 'noopener')">
+      Ouvrir l'annuaire
+    </button>
+  </div>
+</div>
 <!-- ═══ PANNEAU TROUVER ATD ═══ -->
 <div id="panel-atd" class="rf-panel">
   <div class="atdf-side">
@@ -2052,6 +2075,7 @@ const PCFG_TABS = [
   { key: 'eureka',     label: 'Dispositifs', sub: 'du Département' },
   { key: 'mdd',        label: 'Quelle MDD ?', sub: 'Maisons du Département' },
   { key: 'annuaire',   label: 'Annuaire', sub: 'À la carte' },
+    { key: 'annuaire-test', label: 'Annuaire interne', sub: 'Test intranet' },
   { key: 'logigramme', label: 'Référentiels', sub: 'Logigrammes' },
   { key: 'fichesMDD',  label: 'Fiches missions', sub: 'MDD' },
   { key: 'aiot',       label: 'Planning AIOT', sub: 'AIO-Téléphone' },
