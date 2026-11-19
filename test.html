@@ -5229,7 +5229,7 @@ const aiot = (() => {
           const ta = document.createElement('textarea');
           ta.rows = 1;
           ta.placeholder = '—';
-          ta.value = rec ? (rec[col] || '') : '';
+          ta.value = rec ? (rec[col] || '') : (col === 'jeu_matin' ? '!REGUL' : '');
           ta.dataset.siteId = siteId;
           ta.dataset.col = col;
           if (rec) ta.dataset.rowId = rec.id;
